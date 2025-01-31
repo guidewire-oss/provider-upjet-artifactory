@@ -1,6 +1,6 @@
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
-  name: provider-artfactory
+  name: provider-jfrogartifactory
 spec:
-  package: myorg/provider-artfactory:v0.1.0
+  package: myorg/provider-jfrogartifactory:v0.1.0

@@ -1,4 +1,4 @@
-module github.com/myorg/provider-artfactory
+module github.com/myorg/provider-jfrogartifactory
 
 go 1.21
 

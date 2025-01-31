@@ -16,7 +16,7 @@ import (
 
 	"github.com/crossplane/upjet/pkg/terraform"
 
-	"github.com/myorg/provider-artfactory/apis/v1beta1"
+	"github.com/myorg/provider-jfrogartifactory/apis/v1beta1"
 )
 
 // Got the provider config fields from https://registry.terraform.io/providers/jfrog/artifactory/latest/docs
@@ -32,7 +32,7 @@ const (
 	errGetProviderConfig    = "cannot get referenced ProviderConfig"
 	errTrackUsage           = "cannot track ProviderConfig usage"
 	errExtractCredentials   = "cannot extract credentials"
-	errUnmarshalCredentials = "cannot unmarshal artfactory credentials as JSON"
+	errUnmarshalCredentials = "cannot unmarshal jfrogartifactory credentials as JSON"
 )
 
 // TerraformSetupBuilder builds Terraform a terraform.SetupFn function which

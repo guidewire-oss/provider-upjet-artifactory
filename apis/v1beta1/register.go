@@ -13,7 +13,7 @@ import (
 
 // Package type metadata.
 const (
-	Group   = "artfactory.upbound.io"
+	Group   = "jfrogartifactory.upbound.io"
 	Version = "v1beta1"
 )
 

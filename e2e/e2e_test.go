@@ -17,7 +17,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 
-	"github.com/myorg/provider-artfactory/apis/repository/v1alpha1"
+	"github.com/myorg/provider-jfrogartifactory/apis/repository/v1alpha1"
 	"k8s.io/apimachinery/pkg/runtime"
 )
 

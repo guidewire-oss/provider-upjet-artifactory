@@ -4,14 +4,14 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.14.0
-  name: storeconfigs.artfactory.upbound.io
+  name: storeconfigs.jfrogartifactory.upbound.io
 spec:
-  group: artfactory.upbound.io
+  group: jfrogartifactory.upbound.io
   names:
     categories:
     - crossplane
     - store
-    - artfactory
+    - jfrogartifactory
     kind: StoreConfig
     listKind: StoreConfigList
     plural: storeconfigs
@@ -31,7 +31,7 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: A StoreConfig configures how artfactory controller should store
+        description: A StoreConfig configures how jfrogartifactory controller should store
           connection details.
         properties:
           apiVersion:

@@ -21,8 +21,8 @@ import (
 	"github.com/pkg/errors"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	v1alpha1 "github.com/myorg/provider-artfactory/apis/repository/v1alpha1"
-	features "github.com/myorg/provider-artfactory/internal/features"
+	v1alpha1 "github.com/myorg/provider-jfrogartifactory/apis/repository/v1alpha1"
+	features "github.com/myorg/provider-jfrogartifactory/internal/features"
 )
 
 // Setup adds a controller that reconciles LocalNpmRepository managed resources.

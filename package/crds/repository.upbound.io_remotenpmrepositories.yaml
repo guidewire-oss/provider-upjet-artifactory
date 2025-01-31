@@ -11,7 +11,7 @@ spec:
     categories:
     - crossplane
     - managed
-    - artfactory
+    - jfrogartifactory
     kind: RemoteNpmRepository
     listKind: RemoteNpmRepositoryList
     plural: remotenpmrepositories

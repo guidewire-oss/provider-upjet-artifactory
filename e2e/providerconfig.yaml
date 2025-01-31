@@ -1,4 +1,4 @@
-apiVersion: artfactory.upbound.io/v1beta1
+apiVersion: jfrogartifactory.upbound.io/v1beta1
 kind: ProviderConfig
 metadata:
   name: my-artifactory-providerconfig

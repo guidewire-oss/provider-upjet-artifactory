@@ -10,9 +10,9 @@ package apis
 import (
 	"k8s.io/apimachinery/pkg/runtime"
 
-	v1alpha1 "github.com/myorg/provider-artfactory/apis/repository/v1alpha1"
-	v1alpha1apis "github.com/myorg/provider-artfactory/apis/v1alpha1"
-	v1beta1 "github.com/myorg/provider-artfactory/apis/v1beta1"
+	v1alpha1 "github.com/myorg/provider-jfrogartifactory/apis/repository/v1alpha1"
+	v1alpha1apis "github.com/myorg/provider-jfrogartifactory/apis/v1alpha1"
+	v1beta1 "github.com/myorg/provider-jfrogartifactory/apis/v1beta1"
 )
 
 func init() {

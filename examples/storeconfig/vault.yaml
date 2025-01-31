@@ -1,4 +1,4 @@
-apiVersion: artfactory.upbound.io/v1alpha1
+apiVersion: jfrogartifactory.upbound.io/v1alpha1
 kind: StoreConfig
 metadata:
   name: vault

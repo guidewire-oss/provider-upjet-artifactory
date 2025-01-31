@@ -4,14 +4,14 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.14.0
-  name: providerconfigusages.artfactory.upbound.io
+  name: providerconfigusages.jfrogartifactory.upbound.io
 spec:
-  group: artfactory.upbound.io
+  group: jfrogartifactory.upbound.io
   names:
     categories:
     - crossplane
     - provider
-    - artfactory
+    - jfrogartifactory
     kind: ProviderConfigUsage
     listKind: ProviderConfigUsageList
     plural: providerconfigusages

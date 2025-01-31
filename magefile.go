@@ -4,7 +4,7 @@ package main
 
 import (
 	"github.com/magefile/mage/sh"
-	"github.com/myorg/provider-artfactory/e2e"
+	"github.com/myorg/provider-jfrogartifactory/e2e"
 )
 
 // SetupE2E sets up the environment for end-to-end tests.

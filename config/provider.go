@@ -8,16 +8,16 @@ import (
 	// Note(turkenh): we are importing this to embed provider schema document
 	_ "embed"
 
-	"github.com/myorg/provider-artfactory/config/localnpmrepository"
-	"github.com/myorg/provider-artfactory/config/remotenpmrepository"
-	"github.com/myorg/provider-artfactory/config/repository"
+	"github.com/myorg/provider-jfrogartifactory/config/localnpmrepository"
+	"github.com/myorg/provider-jfrogartifactory/config/remotenpmrepository"
+	"github.com/myorg/provider-jfrogartifactory/config/repository"
 
 	ujconfig "github.com/crossplane/upjet/pkg/config"
 )
 
 const (
-	resourcePrefix = "artfactory"
-	modulePath     = "github.com/myorg/provider-artfactory"
+	resourcePrefix = "jfrogartifactory"
+	modulePath     = "github.com/myorg/provider-jfrogartifactory"
 )
 
 //go:embed schema.json

@@ -9,10 +9,10 @@ import (
 
 	"github.com/crossplane/upjet/pkg/controller"
 
-	providerconfig "github.com/myorg/provider-artfactory/internal/controller/providerconfig"
-	genericrepository "github.com/myorg/provider-artfactory/internal/controller/repository/genericrepository"
-	localnpmrepository "github.com/myorg/provider-artfactory/internal/controller/repository/localnpmrepository"
-	remotenpmrepository "github.com/myorg/provider-artfactory/internal/controller/repository/remotenpmrepository"
+	providerconfig "github.com/myorg/provider-jfrogartifactory/internal/controller/providerconfig"
+	genericrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/genericrepository"
+	localnpmrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/localnpmrepository"
+	remotenpmrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/remotenpmrepository"
 )
 
 // Setup creates all controllers with the supplied logger and adds them to
