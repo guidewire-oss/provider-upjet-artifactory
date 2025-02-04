@@ -8,9 +8,12 @@ import (
 	// Note(turkenh): we are importing this to embed provider schema document
 	_ "embed"
 
+	"github.com/myorg/provider-jfrogartifactory/config/localmavenrepository"
 	"github.com/myorg/provider-jfrogartifactory/config/localnpmrepository"
+	"github.com/myorg/provider-jfrogartifactory/config/remotemavenrepository"
 	"github.com/myorg/provider-jfrogartifactory/config/remotenpmrepository"
 	"github.com/myorg/provider-jfrogartifactory/config/repository"
+	"github.com/myorg/provider-jfrogartifactory/config/virtualmavenrepository"
 
 	ujconfig "github.com/crossplane/upjet/pkg/config"
 )
@@ -41,6 +44,9 @@ func GetProvider() *ujconfig.Provider {
 		repository.Configure,
 		localnpmrepository.Configure,
 		remotenpmrepository.Configure,
+		localmavenrepository.Configure,
+		remotemavenrepository.Configure,
+		virtualmavenrepository.Configure,
 	} {
 		configure(pc)
 	}

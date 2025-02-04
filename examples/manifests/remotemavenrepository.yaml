@@ -1,0 +1,22 @@
+apiVersion: repository.upbound.io/v1alpha1
+kind: RemoteNpmRepository
+metadata:
+  name: remotenpmrepository
+  annotations:
+    crossplane.io/external-name: "remotenpmrepository"
+spec:
+  forProvider:
+    description: "new remote npm repository"
+    url: https://amer-write.binrepo.guidewire.net/artifactory/api/npm/localnpmrepository/
+    username: sys-kanata-binrepo
+    passwordSecretRef:
+      key: passwords
+      name: secretremote
+      namespace: crossplane-system
+    contentSynchronisation:
+      - enabled:  true
+        propertiesEnabled: true
+        sourceOriginAbsenceDetection:  true
+        statisticsEnabled : true
+  providerConfigRef:
+    name: my-artifactory-providerconfig-read

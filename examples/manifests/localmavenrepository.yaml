@@ -1,0 +1,11 @@
+apiVersion: repository.upbound.io/v1alpha1
+kind: LocalNpmRepository
+metadata:
+  name: localnpmrepository
+  annotations:
+    crossplane.io/external-name: "localnpmrepository"
+spec:
+  forProvider:
+    description: "new local npm repository"
+  providerConfigRef:
+    name: my-artifactory-providerconfig
