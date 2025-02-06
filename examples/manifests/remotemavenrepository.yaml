@@ -1,17 +1,17 @@
 apiVersion: repository.upbound.io/v1alpha1
-kind: RemoteNpmRepository
+kind: RemoteMavenRepository
 metadata:
-  name: remotenpmrepository
+  name: remotemavenrepository
   annotations:
-    crossplane.io/external-name: "remotenpmrepository"
+    crossplane.io/external-name: "remotemavenrepository"
 spec:
   forProvider:
-    description: "new remote npm repository"
-    url: https://amer-write.binrepo.guidewire.net/artifactory/api/npm/localnpmrepository/
-    username: sys-kanata-binrepo
+    description: "new remote maven repository"
+    url: https://amer-write.binrepo.guidewire.net/artifactory/api/maven/localmavenrepository/
+    username: sys-re-binrepo
     passwordSecretRef:
       key: passwords
-      name: secretremote
+      name: example-creds-read
       namespace: crossplane-system
     contentSynchronisation:
       - enabled:  true
