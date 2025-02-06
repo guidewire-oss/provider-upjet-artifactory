@@ -1,11 +1,15 @@
 apiVersion: repository.upbound.io/v1alpha1
-kind: GenericRepository
+kind: VirtualMavenRepository
 metadata:
-  name: upjettestn
+  name: virtualmavenrepository
   annotations:
-    crossplane.io/external-name: "ptest"
+    crossplane.io/external-name: "virtualmavenrepository"
 spec:
   forProvider:
-    description: "new"
+    description: "new virtual maven repository"
+    repoLayoutRef: "maven-2-default"
+    repositories:
+    - alpine-mvn-release-local
+    - remotemavenrepository
   providerConfigRef:
     name: my-artifactory-providerconfig-read

@@ -61,7 +61,7 @@ open an [issue](https://github.com/myorg/provider-jfrogartifactory/issues).
 
 
 
-# Testing
+# Testing using make run
 
 Cannot use OSS Artifactory because it does not support creating repositories through REST APIs.
 Get a license for Artifactory: https://jfrog.com/start-free/#ft
@@ -86,6 +86,47 @@ kubectl apply -f e2e/providerconfig.yaml
 mage testE2E
 ```
 
+
+
+# Testing using the provider
+Note that ```...crossplane.yaml: No such file or directory``` can be ignored, and ```make build.all``` can be used to build the image for amd64 on arm64 machines
+```console
+make build
+```
+```console
+up xpkg build \
+--controller <IMAGE_NAME>:<IMAGE_TAG> \
+--package-root ./package \
+--output ./jfrogprovider.xpkg
+```
+Push the image to ECR:
+```console
+up xpkg push <ACCOUNT_ID>.dkr.ecr.us-west-2.amazonaws.com/jfrogprovider:<IMAGE_TAG> -f jfrogprovider.xpkg
+```
+
+To test on a scratch cluster, do the following:
+
+Create the following ```provider-artifactory.yaml``` on your local machine:
+```console
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+    name: provider-artifactory
+spec:
+    package: <ACCOUNT_ID>.dkr.ecr.us-west-2.amazonaws.com/jfrogprovider:<IMAGE_TAG>
+```
+Then apply it on the scratch cluster:
+```console
+kubectl apply -f <FILE_PATH>/provider-artifactory.yaml
+```
+Apply the kubernetes secrets
+```console
+kubectl apply -f examples/manifests/templates/<FILE_NAME>.yaml
+```
+Apply the provider configs and repositories
+```console
+kubectl apply -f examples/manifests/<FILE_NAME>.yaml
+```
 
 # Manual testing by applying resources
 ## Steps to use this provider artifactory
