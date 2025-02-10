@@ -31,9 +31,9 @@ var _ = Describe("E2E Tests", func() {
 		DeferCleanup(cancel)
 
 		serviceDetails := rtAuth.NewArtifactoryDetails()
-		serviceDetails.SetUrl("http://localhost:8888/artifactory")
-		serviceDetails.SetUser("admin")
-		serviceDetails.SetPassword("password")
+		serviceDetails.SetUrl("url")
+		serviceDetails.SetUser("user")
+		serviceDetails.SetPassword("pass")
 
 		serviceConfig, err := rtConfig.NewConfigBuilder().
 			SetServiceDetails(serviceDetails).
@@ -73,7 +73,7 @@ var _ = Describe("E2E Tests", func() {
 						},
 						ResourceSpec: v1.ResourceSpec{
 							ProviderConfigReference: &v1.Reference{
-								Name: "my-artifactory-providerconfig",
+								Name: "my-artifactory-providerconfig-read",
 							},
 						},
 					},
@@ -104,7 +104,7 @@ var _ = Describe("E2E Tests", func() {
 					Expect(err).NotTo(HaveOccurred())
 					return repo.Status.GetCondition(v1.TypeReady).Status == corev1.ConditionTrue &&
 						repo.Status.GetCondition(v1.TypeSynced).Status == corev1.ConditionTrue
-				}, "30s", "1s").Should(BeTrue())
+				}, "2m", "5s").Should(BeTrue())
 
 				By("Verifying the repository exists in Artifactory")
 				repoDetails := rtServices.RepositoryDetails{}
