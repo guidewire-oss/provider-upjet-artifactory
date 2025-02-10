@@ -13,7 +13,7 @@ import (
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 )
 
-type RemoteNpmRepositoryContentSynchronisationInitParameters struct {
+type ContentSynchronisationInitParameters struct {
 
 	// If set, Remote repository proxies a local or remote repository from another instance of Artifactory. Default value is 'false'.
 	Enabled *bool `json:"enabled,omitempty" tf:"enabled,omitempty"`
@@ -28,7 +28,7 @@ type RemoteNpmRepositoryContentSynchronisationInitParameters struct {
 	StatisticsEnabled *bool `json:"statisticsEnabled,omitempty" tf:"statistics_enabled,omitempty"`
 }
 
-type RemoteNpmRepositoryContentSynchronisationObservation struct {
+type ContentSynchronisationObservation struct {
 
 	// If set, Remote repository proxies a local or remote repository from another instance of Artifactory. Default value is 'false'.
 	Enabled *bool `json:"enabled,omitempty" tf:"enabled,omitempty"`
@@ -43,7 +43,7 @@ type RemoteNpmRepositoryContentSynchronisationObservation struct {
 	StatisticsEnabled *bool `json:"statisticsEnabled,omitempty" tf:"statistics_enabled,omitempty"`
 }
 
-type RemoteNpmRepositoryContentSynchronisationParameters struct {
+type ContentSynchronisationParameters struct {
 
 	// If set, Remote repository proxies a local or remote repository from another instance of Artifactory. Default value is 'false'.
 	// +kubebuilder:validation:Optional
@@ -62,7 +62,7 @@ type RemoteNpmRepositoryContentSynchronisationParameters struct {
 	StatisticsEnabled *bool `json:"statisticsEnabled,omitempty" tf:"statistics_enabled,omitempty"`
 }
 
-type RemoteNpmRepositoryInitParameters struct {
+type RemoteMavenRepositoryInitParameters struct {
 
 	// 'Lenient Host Authentication' in the UI. Allow credentials of this repository to be used on requests redirected to any other host.
 	AllowAnyHostAuth *bool `json:"allowAnyHostAuth,omitempty" tf:"allow_any_host_auth,omitempty"`
@@ -89,7 +89,7 @@ type RemoteNpmRepositoryInitParameters struct {
 	// Client TLS certificate name.
 	ClientTLSCertificate *string `json:"clientTlsCertificate,omitempty" tf:"client_tls_certificate,omitempty"`
 
-	ContentSynchronisation []RemoteNpmRepositoryContentSynchronisationInitParameters `json:"contentSynchronisation,omitempty" tf:"content_synchronisation,omitempty"`
+	ContentSynchronisation []ContentSynchronisationInitParameters `json:"contentSynchronisation,omitempty" tf:"content_synchronisation,omitempty"`
 
 	// Enable repository to be protected by the Curation service.
 	Curated *bool `json:"curated,omitempty" tf:"curated,omitempty"`
@@ -112,6 +112,18 @@ type RemoteNpmRepositoryInitParameters struct {
 	// List of artifact patterns to exclude when evaluating artifact requests, in the form of `x/y/**/z/*`.By default no artifacts are excluded.
 	ExcludesPattern *string `json:"excludesPattern,omitempty" tf:"excludes_pattern,omitempty"`
 
+	// When set, if a POM is requested, Artifactory attempts to fetch the corresponding jar in the background. This will accelerate first access time to the jar when it is subsequently requested. Default value is 'false'.
+	FetchJarsEagerly *bool `json:"fetchJarsEagerly,omitempty" tf:"fetch_jars_eagerly,omitempty"`
+
+	// When set, if a binaries jar is requested, Artifactory attempts to fetch the corresponding source jar in the background. This will accelerate first access time to the source jar when it is subsequently requested. Default value is 'false'.
+	FetchSourcesEagerly *bool `json:"fetchSourcesEagerly,omitempty" tf:"fetch_sources_eagerly,omitempty"`
+
+	// If set, Artifactory allows you to deploy release artifacts into this repository. Default value is 'true'.
+	HandleReleases *bool `json:"handleReleases,omitempty" tf:"handle_releases,omitempty"`
+
+	// If set, Artifactory allows you to deploy snapshot artifacts into this repository. Default value is 'true'.
+	HandleSnapshots *bool `json:"handleSnapshots,omitempty" tf:"handle_snapshots,omitempty"`
+
 	// When set, Artifactory will return an error to the client that causes the build to fail if there is a failure to communicate with this repository.
 	HardFail *bool `json:"hardFail,omitempty" tf:"hard_fail,omitempty"`
 
@@ -123,6 +135,9 @@ type RemoteNpmRepositoryInitParameters struct {
 
 	// The local address to be used when creating connections. Useful for specifying the interface to use on systems with multiple network interfaces.
 	LocalAddress *string `json:"localAddress,omitempty" tf:"local_address,omitempty"`
+
+	// The maximum number of unique snapshots of a single artifact to store. Once the number of snapshots exceeds this setting, older versions are removed. A value of 0 (default) indicates there is no limit, and unique snapshots are not cleaned up.
+	MaxUniqueSnapshots *float64 `json:"maxUniqueSnapshots,omitempty" tf:"max_unique_snapshots,omitempty"`
 
 	// Metadata Retrieval Cache Timeout (Sec) in the UI.This value refers to the number of seconds to wait for retrieval from the remote before serving locally cached artifact or fail the request.
 	MetadataRetrievalTimeoutSecs *float64 `json:"metadataRetrievalTimeoutSecs,omitempty" tf:"metadata_retrieval_timeout_secs,omitempty"`
@@ -161,6 +176,12 @@ type RemoteNpmRepositoryInitParameters struct {
 	// Custom HTTP query parameters that will be automatically included in all remote resource requests. For example: `param1=val1&param2=val2&param3=val3`
 	QueryParams *string `json:"queryParams,omitempty" tf:"query_params,omitempty"`
 
+	// Reject the caching of jar files that are found to be invalid. For example, pseudo jars retrieved behind a "captive portal". Default value is 'false'.
+	RejectInvalidJars *bool `json:"rejectInvalidJars,omitempty" tf:"reject_invalid_jars,omitempty"`
+
+	// Checking the Checksum effectively verifies the integrity of a deployed resource. The Checksum Policy determines how the system behaves when a client checksum for a remote resource is missing or conflicts with the locally calculated checksum. Default value is 'generate-if-absent'.
+	RemoteRepoChecksumPolicyType *string `json:"remoteRepoChecksumPolicyType,omitempty" tf:"remote_repo_checksum_policy_type,omitempty"`
+
 	// Repository layout key for the remote layout mapping. Repository can be created without this attribute (or set to an empty string). Once it's set, it can't be removed by passing an empty string or removing the attribute, that will be ignored by the Artifactory API. UI shows an error message, if the user tries to remove the value.
 	RemoteRepoLayoutRef *string `json:"remoteRepoLayoutRef,omitempty" tf:"remote_repo_layout_ref,omitempty"`
 
@@ -178,6 +199,9 @@ type RemoteNpmRepositoryInitParameters struct {
 	// When set, the repository should store cached artifacts locally. When not set, artifacts are not stored locally, and direct repository-to-client streaming is used. This can be useful for multi-server setups over a high-speed LAN, with one Artifactory caching certain data on central storage, and streaming it directly to satellite pass-though Artifactory servers.
 	StoreArtifactsLocally *bool `json:"storeArtifactsLocally,omitempty" tf:"store_artifacts_locally,omitempty"`
 
+	// By default, the system keeps your repositories healthy by refusing POMs with incorrect coordinates (path). If the groupId:artifactId:version information inside the POM does not match the deployed path, Artifactory rejects the deployment with a "409 Conflict" error. You can disable this behavior by setting this attribute to 'true'. Default value is 'false'.
+	SuppressPomConsistencyChecks *bool `json:"suppressPomConsistencyChecks,omitempty" tf:"suppress_pom_consistency_checks,omitempty"`
+
 	// When set, remote artifacts are fetched along with their properties.
 	SynchronizeProperties *bool `json:"synchronizeProperties,omitempty" tf:"synchronize_properties,omitempty"`
 
@@ -193,7 +217,7 @@ type RemoteNpmRepositoryInitParameters struct {
 	XrayIndex *bool `json:"xrayIndex,omitempty" tf:"xray_index,omitempty"`
 }
 
-type RemoteNpmRepositoryObservation struct {
+type RemoteMavenRepositoryObservation struct {
 
 	// 'Lenient Host Authentication' in the UI. Allow credentials of this repository to be used on requests redirected to any other host.
 	AllowAnyHostAuth *bool `json:"allowAnyHostAuth,omitempty" tf:"allow_any_host_auth,omitempty"`
@@ -220,7 +244,7 @@ type RemoteNpmRepositoryObservation struct {
 	// Client TLS certificate name.
 	ClientTLSCertificate *string `json:"clientTlsCertificate,omitempty" tf:"client_tls_certificate,omitempty"`
 
-	ContentSynchronisation []RemoteNpmRepositoryContentSynchronisationObservation `json:"contentSynchronisation,omitempty" tf:"content_synchronisation,omitempty"`
+	ContentSynchronisation []ContentSynchronisationObservation `json:"contentSynchronisation,omitempty" tf:"content_synchronisation,omitempty"`
 
 	// Enable repository to be protected by the Curation service.
 	Curated *bool `json:"curated,omitempty" tf:"curated,omitempty"`
@@ -243,6 +267,18 @@ type RemoteNpmRepositoryObservation struct {
 	// List of artifact patterns to exclude when evaluating artifact requests, in the form of `x/y/**/z/*`.By default no artifacts are excluded.
 	ExcludesPattern *string `json:"excludesPattern,omitempty" tf:"excludes_pattern,omitempty"`
 
+	// When set, if a POM is requested, Artifactory attempts to fetch the corresponding jar in the background. This will accelerate first access time to the jar when it is subsequently requested. Default value is 'false'.
+	FetchJarsEagerly *bool `json:"fetchJarsEagerly,omitempty" tf:"fetch_jars_eagerly,omitempty"`
+
+	// When set, if a binaries jar is requested, Artifactory attempts to fetch the corresponding source jar in the background. This will accelerate first access time to the source jar when it is subsequently requested. Default value is 'false'.
+	FetchSourcesEagerly *bool `json:"fetchSourcesEagerly,omitempty" tf:"fetch_sources_eagerly,omitempty"`
+
+	// If set, Artifactory allows you to deploy release artifacts into this repository. Default value is 'true'.
+	HandleReleases *bool `json:"handleReleases,omitempty" tf:"handle_releases,omitempty"`
+
+	// If set, Artifactory allows you to deploy snapshot artifacts into this repository. Default value is 'true'.
+	HandleSnapshots *bool `json:"handleSnapshots,omitempty" tf:"handle_snapshots,omitempty"`
+
 	// When set, Artifactory will return an error to the client that causes the build to fail if there is a failure to communicate with this repository.
 	HardFail *bool `json:"hardFail,omitempty" tf:"hard_fail,omitempty"`
 
@@ -256,6 +292,9 @@ type RemoteNpmRepositoryObservation struct {
 
 	// The local address to be used when creating connections. Useful for specifying the interface to use on systems with multiple network interfaces.
 	LocalAddress *string `json:"localAddress,omitempty" tf:"local_address,omitempty"`
+
+	// The maximum number of unique snapshots of a single artifact to store. Once the number of snapshots exceeds this setting, older versions are removed. A value of 0 (default) indicates there is no limit, and unique snapshots are not cleaned up.
+	MaxUniqueSnapshots *float64 `json:"maxUniqueSnapshots,omitempty" tf:"max_unique_snapshots,omitempty"`
 
 	// Metadata Retrieval Cache Timeout (Sec) in the UI.This value refers to the number of seconds to wait for retrieval from the remote before serving locally cached artifact or fail the request.
 	MetadataRetrievalTimeoutSecs *float64 `json:"metadataRetrievalTimeoutSecs,omitempty" tf:"metadata_retrieval_timeout_secs,omitempty"`
@@ -294,6 +333,12 @@ type RemoteNpmRepositoryObservation struct {
 	// Custom HTTP query parameters that will be automatically included in all remote resource requests. For example: `param1=val1&param2=val2&param3=val3`
 	QueryParams *string `json:"queryParams,omitempty" tf:"query_params,omitempty"`
 
+	// Reject the caching of jar files that are found to be invalid. For example, pseudo jars retrieved behind a "captive portal". Default value is 'false'.
+	RejectInvalidJars *bool `json:"rejectInvalidJars,omitempty" tf:"reject_invalid_jars,omitempty"`
+
+	// Checking the Checksum effectively verifies the integrity of a deployed resource. The Checksum Policy determines how the system behaves when a client checksum for a remote resource is missing or conflicts with the locally calculated checksum. Default value is 'generate-if-absent'.
+	RemoteRepoChecksumPolicyType *string `json:"remoteRepoChecksumPolicyType,omitempty" tf:"remote_repo_checksum_policy_type,omitempty"`
+
 	// Repository layout key for the remote layout mapping. Repository can be created without this attribute (or set to an empty string). Once it's set, it can't be removed by passing an empty string or removing the attribute, that will be ignored by the Artifactory API. UI shows an error message, if the user tries to remove the value.
 	RemoteRepoLayoutRef *string `json:"remoteRepoLayoutRef,omitempty" tf:"remote_repo_layout_ref,omitempty"`
 
@@ -311,6 +356,9 @@ type RemoteNpmRepositoryObservation struct {
 	// When set, the repository should store cached artifacts locally. When not set, artifacts are not stored locally, and direct repository-to-client streaming is used. This can be useful for multi-server setups over a high-speed LAN, with one Artifactory caching certain data on central storage, and streaming it directly to satellite pass-though Artifactory servers.
 	StoreArtifactsLocally *bool `json:"storeArtifactsLocally,omitempty" tf:"store_artifacts_locally,omitempty"`
 
+	// By default, the system keeps your repositories healthy by refusing POMs with incorrect coordinates (path). If the groupId:artifactId:version information inside the POM does not match the deployed path, Artifactory rejects the deployment with a "409 Conflict" error. You can disable this behavior by setting this attribute to 'true'. Default value is 'false'.
+	SuppressPomConsistencyChecks *bool `json:"suppressPomConsistencyChecks,omitempty" tf:"suppress_pom_consistency_checks,omitempty"`
+
 	// When set, remote artifacts are fetched along with their properties.
 	SynchronizeProperties *bool `json:"synchronizeProperties,omitempty" tf:"synchronize_properties,omitempty"`
 
@@ -326,7 +374,7 @@ type RemoteNpmRepositoryObservation struct {
 	XrayIndex *bool `json:"xrayIndex,omitempty" tf:"xray_index,omitempty"`
 }
 
-type RemoteNpmRepositoryParameters struct {
+type RemoteMavenRepositoryParameters struct {
 
 	// 'Lenient Host Authentication' in the UI. Allow credentials of this repository to be used on requests redirected to any other host.
 	// +kubebuilder:validation:Optional
@@ -362,7 +410,7 @@ type RemoteNpmRepositoryParameters struct {
 	ClientTLSCertificate *string `json:"clientTlsCertificate,omitempty" tf:"client_tls_certificate,omitempty"`
 
 	// +kubebuilder:validation:Optional
-	ContentSynchronisation []RemoteNpmRepositoryContentSynchronisationParameters `json:"contentSynchronisation,omitempty" tf:"content_synchronisation,omitempty"`
+	ContentSynchronisation []ContentSynchronisationParameters `json:"contentSynchronisation,omitempty" tf:"content_synchronisation,omitempty"`
 
 	// Enable repository to be protected by the Curation service.
 	// +kubebuilder:validation:Optional
@@ -392,6 +440,22 @@ type RemoteNpmRepositoryParameters struct {
 	// +kubebuilder:validation:Optional
 	ExcludesPattern *string `json:"excludesPattern,omitempty" tf:"excludes_pattern,omitempty"`
 
+	// When set, if a POM is requested, Artifactory attempts to fetch the corresponding jar in the background. This will accelerate first access time to the jar when it is subsequently requested. Default value is 'false'.
+	// +kubebuilder:validation:Optional
+	FetchJarsEagerly *bool `json:"fetchJarsEagerly,omitempty" tf:"fetch_jars_eagerly,omitempty"`
+
+	// When set, if a binaries jar is requested, Artifactory attempts to fetch the corresponding source jar in the background. This will accelerate first access time to the source jar when it is subsequently requested. Default value is 'false'.
+	// +kubebuilder:validation:Optional
+	FetchSourcesEagerly *bool `json:"fetchSourcesEagerly,omitempty" tf:"fetch_sources_eagerly,omitempty"`
+
+	// If set, Artifactory allows you to deploy release artifacts into this repository. Default value is 'true'.
+	// +kubebuilder:validation:Optional
+	HandleReleases *bool `json:"handleReleases,omitempty" tf:"handle_releases,omitempty"`
+
+	// If set, Artifactory allows you to deploy snapshot artifacts into this repository. Default value is 'true'.
+	// +kubebuilder:validation:Optional
+	HandleSnapshots *bool `json:"handleSnapshots,omitempty" tf:"handle_snapshots,omitempty"`
+
 	// When set, Artifactory will return an error to the client that causes the build to fail if there is a failure to communicate with this repository.
 	// +kubebuilder:validation:Optional
 	HardFail *bool `json:"hardFail,omitempty" tf:"hard_fail,omitempty"`
@@ -407,6 +471,10 @@ type RemoteNpmRepositoryParameters struct {
 	// The local address to be used when creating connections. Useful for specifying the interface to use on systems with multiple network interfaces.
 	// +kubebuilder:validation:Optional
 	LocalAddress *string `json:"localAddress,omitempty" tf:"local_address,omitempty"`
+
+	// The maximum number of unique snapshots of a single artifact to store. Once the number of snapshots exceeds this setting, older versions are removed. A value of 0 (default) indicates there is no limit, and unique snapshots are not cleaned up.
+	// +kubebuilder:validation:Optional
+	MaxUniqueSnapshots *float64 `json:"maxUniqueSnapshots,omitempty" tf:"max_unique_snapshots,omitempty"`
 
 	// Metadata Retrieval Cache Timeout (Sec) in the UI.This value refers to the number of seconds to wait for retrieval from the remote before serving locally cached artifact or fail the request.
 	// +kubebuilder:validation:Optional
@@ -457,6 +525,14 @@ type RemoteNpmRepositoryParameters struct {
 	// +kubebuilder:validation:Optional
 	QueryParams *string `json:"queryParams,omitempty" tf:"query_params,omitempty"`
 
+	// Reject the caching of jar files that are found to be invalid. For example, pseudo jars retrieved behind a "captive portal". Default value is 'false'.
+	// +kubebuilder:validation:Optional
+	RejectInvalidJars *bool `json:"rejectInvalidJars,omitempty" tf:"reject_invalid_jars,omitempty"`
+
+	// Checking the Checksum effectively verifies the integrity of a deployed resource. The Checksum Policy determines how the system behaves when a client checksum for a remote resource is missing or conflicts with the locally calculated checksum. Default value is 'generate-if-absent'.
+	// +kubebuilder:validation:Optional
+	RemoteRepoChecksumPolicyType *string `json:"remoteRepoChecksumPolicyType,omitempty" tf:"remote_repo_checksum_policy_type,omitempty"`
+
 	// Repository layout key for the remote layout mapping. Repository can be created without this attribute (or set to an empty string). Once it's set, it can't be removed by passing an empty string or removing the attribute, that will be ignored by the Artifactory API. UI shows an error message, if the user tries to remove the value.
 	// +kubebuilder:validation:Optional
 	RemoteRepoLayoutRef *string `json:"remoteRepoLayoutRef,omitempty" tf:"remote_repo_layout_ref,omitempty"`
@@ -480,6 +556,10 @@ type RemoteNpmRepositoryParameters struct {
 	// +kubebuilder:validation:Optional
 	StoreArtifactsLocally *bool `json:"storeArtifactsLocally,omitempty" tf:"store_artifacts_locally,omitempty"`
 
+	// By default, the system keeps your repositories healthy by refusing POMs with incorrect coordinates (path). If the groupId:artifactId:version information inside the POM does not match the deployed path, Artifactory rejects the deployment with a "409 Conflict" error. You can disable this behavior by setting this attribute to 'true'. Default value is 'false'.
+	// +kubebuilder:validation:Optional
+	SuppressPomConsistencyChecks *bool `json:"suppressPomConsistencyChecks,omitempty" tf:"suppress_pom_consistency_checks,omitempty"`
+
 	// When set, remote artifacts are fetched along with their properties.
 	// +kubebuilder:validation:Optional
 	SynchronizeProperties *bool `json:"synchronizeProperties,omitempty" tf:"synchronize_properties,omitempty"`
@@ -500,10 +580,10 @@ type RemoteNpmRepositoryParameters struct {
 	XrayIndex *bool `json:"xrayIndex,omitempty" tf:"xray_index,omitempty"`
 }
 
-// RemoteNpmRepositorySpec defines the desired state of RemoteNpmRepository
-type RemoteNpmRepositorySpec struct {
+// RemoteMavenRepositorySpec defines the desired state of RemoteMavenRepository
+type RemoteMavenRepositorySpec struct {
 	v1.ResourceSpec `json:",inline"`
-	ForProvider     RemoteNpmRepositoryParameters `json:"forProvider"`
+	ForProvider     RemoteMavenRepositoryParameters `json:"forProvider"`
 	// THIS IS A BETA FIELD. It will be honored
 	// unless the Management Policies feature flag is disabled.
 	// InitProvider holds the same fields as ForProvider, with the exception
@@ -514,49 +594,49 @@ type RemoteNpmRepositorySpec struct {
 	// required on creation, but we do not desire to update them after creation,
 	// for example because of an external controller is managing them, like an
 	// autoscaler.
-	InitProvider RemoteNpmRepositoryInitParameters `json:"initProvider,omitempty"`
+	InitProvider RemoteMavenRepositoryInitParameters `json:"initProvider,omitempty"`
 }
 
-// RemoteNpmRepositoryStatus defines the observed state of RemoteNpmRepository.
-type RemoteNpmRepositoryStatus struct {
+// RemoteMavenRepositoryStatus defines the observed state of RemoteMavenRepository.
+type RemoteMavenRepositoryStatus struct {
 	v1.ResourceStatus `json:",inline"`
-	AtProvider        RemoteNpmRepositoryObservation `json:"atProvider,omitempty"`
+	AtProvider        RemoteMavenRepositoryObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 // +kubebuilder:storageversion
 
-// RemoteNpmRepository is the Schema for the RemoteNpmRepositorys API. <no value>
+// RemoteMavenRepository is the Schema for the RemoteMavenRepositorys API. <no value>
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
 // +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
 // +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,jfrogartifactory}
-type RemoteNpmRepository struct {
+type RemoteMavenRepository struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Spec              RemoteNpmRepositorySpec   `json:"spec"`
-	Status            RemoteNpmRepositoryStatus `json:"status,omitempty"`
+	Spec              RemoteMavenRepositorySpec   `json:"spec"`
+	Status            RemoteMavenRepositoryStatus `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 
-// RemoteNpmRepositoryList contains a list of RemoteNpmRepositorys
-type RemoteNpmRepositoryList struct {
+// RemoteMavenRepositoryList contains a list of RemoteMavenRepositorys
+type RemoteMavenRepositoryList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []RemoteNpmRepository `json:"items"`
+	Items           []RemoteMavenRepository `json:"items"`
 }
 
 // Repository type metadata.
 var (
-	RemoteNpmRepository_Kind             = "RemoteNpmRepository"
-	RemoteNpmRepository_GroupKind        = schema.GroupKind{Group: CRDGroup, Kind: RemoteNpmRepository_Kind}.String()
-	RemoteNpmRepository_KindAPIVersion   = RemoteNpmRepository_Kind + "." + CRDGroupVersion.String()
-	RemoteNpmRepository_GroupVersionKind = CRDGroupVersion.WithKind(RemoteNpmRepository_Kind)
+	RemoteMavenRepository_Kind             = "RemoteMavenRepository"
+	RemoteMavenRepository_GroupKind        = schema.GroupKind{Group: CRDGroup, Kind: RemoteMavenRepository_Kind}.String()
+	RemoteMavenRepository_KindAPIVersion   = RemoteMavenRepository_Kind + "." + CRDGroupVersion.String()
+	RemoteMavenRepository_GroupVersionKind = CRDGroupVersion.WithKind(RemoteMavenRepository_Kind)
 )
 
 func init() {
-	SchemeBuilder.Register(&RemoteNpmRepository{}, &RemoteNpmRepositoryList{})
+	SchemeBuilder.Register(&RemoteMavenRepository{}, &RemoteMavenRepositoryList{})
 }

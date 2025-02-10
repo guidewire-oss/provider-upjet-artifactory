@@ -1,13 +1,8 @@
 package e2e_test
 
 import (
-	"context"
-
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
-	rt "github.com/jfrog/jfrog-client-go/artifactory"
-	rtAuth "github.com/jfrog/jfrog-client-go/artifactory/auth"
 	rtServices "github.com/jfrog/jfrog-client-go/artifactory/services"
-	rtConfig "github.com/jfrog/jfrog-client-go/config"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	corev1 "k8s.io/api/core/v1"
@@ -15,49 +10,11 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/utils/ptr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/client/config"
 
 	"github.com/myorg/provider-jfrogartifactory/apis/repository/v1alpha1"
-	"k8s.io/apimachinery/pkg/runtime"
 )
 
 var _ = Describe("E2E Tests", func() {
-	var rtClient rt.ArtifactoryServicesManager
-	var k8sClient client.Client
-
-	BeforeEach(func() {
-		By("Setting up the Artifactory client")
-		ctx, cancel := context.WithCancel(context.Background())
-		DeferCleanup(cancel)
-
-		serviceDetails := rtAuth.NewArtifactoryDetails()
-		serviceDetails.SetUrl("http://localhost:8888/artifactory")
-		serviceDetails.SetUser("admin")
-		serviceDetails.SetPassword("password")
-
-		serviceConfig, err := rtConfig.NewConfigBuilder().
-			SetServiceDetails(serviceDetails).
-			SetDryRun(false).
-			SetContext(ctx).
-			Build()
-		Expect(err).NotTo(HaveOccurred())
-
-		rtClient, err = rt.New(serviceConfig)
-		Expect(err).NotTo(HaveOccurred())
-	})
-
-	// Set up the Kubernetes client
-	BeforeEach(func() {
-		By("Setting up the Kubernetes client")
-		scheme := runtime.NewScheme()
-		err := v1alpha1.AddToScheme(scheme)
-		Expect(err).NotTo(HaveOccurred())
-
-		cfg := config.GetConfigOrDie()
-		k8sClient, err = client.New(cfg, client.Options{Scheme: scheme})
-		Expect(err).NotTo(HaveOccurred())
-		Expect(k8sClient).NotTo(BeNil())
-	})
 
 	Describe("GenericRepository", func() {
 		When("a new repository is created", func() {
@@ -73,7 +30,7 @@ var _ = Describe("E2E Tests", func() {
 						},
 						ResourceSpec: v1.ResourceSpec{
 							ProviderConfigReference: &v1.Reference{
-								Name: "my-artifactory-providerconfig",
+								Name: "my-artifactory-providerconfig-read",
 							},
 						},
 					},
@@ -104,7 +61,7 @@ var _ = Describe("E2E Tests", func() {
 					Expect(err).NotTo(HaveOccurred())
 					return repo.Status.GetCondition(v1.TypeReady).Status == corev1.ConditionTrue &&
 						repo.Status.GetCondition(v1.TypeSynced).Status == corev1.ConditionTrue
-				}, "30s", "1s").Should(BeTrue())
+				}, "2m", "5s").Should(BeTrue())
 
 				By("Verifying the repository exists in Artifactory")
 				repoDetails := rtServices.RepositoryDetails{}

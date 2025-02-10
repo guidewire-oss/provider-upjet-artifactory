@@ -15,12 +15,6 @@ func SetupE2E() error {
 		return err
 	}
 
-	err = e2e.EnsureArtifactory()
-
-	if err != nil {
-		return err
-	}
-
 	return e2e.UpdateCredentials()
 }
 

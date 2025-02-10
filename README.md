@@ -81,7 +81,7 @@ make run
 
 in new terminal:
 ```console
-kubectl apply -f e2e/providerconfig.yaml
+kubectl apply -f e2e/providerconfig-read.yaml
 #kubectl apply -f examples/manifests/genericrepository.yaml
 mage testE2E
 ```

@@ -1,13 +1,62 @@
 package e2e_test
 
 import (
+	"context"
 	"testing"
 
+	rt "github.com/jfrog/jfrog-client-go/artifactory"
+	rtAuth "github.com/jfrog/jfrog-client-go/artifactory/auth"
+	rtConfig "github.com/jfrog/jfrog-client-go/config"
+	"github.com/myorg/provider-jfrogartifactory/apis/repository/v1alpha1"
+	"github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"k8s.io/apimachinery/pkg/runtime"
+	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/client/config"
 )
 
 func TestE2E(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "E2E Suite")
 }
+
+var rtClient rt.ArtifactoryServicesManager
+var k8sClient client.Client
+
+var _ = ginkgo.BeforeSuite(func() {
+	// Set up the Artifactory client
+	By("Setting up the Artifactory client")
+	ctx, cancel := context.WithCancel(context.Background())
+	DeferCleanup(cancel)
+
+	serviceDetails := rtAuth.NewArtifactoryDetails()
+	serviceDetails.SetUrl("url")
+	serviceDetails.SetUser("user")
+	serviceDetails.SetPassword("pass")
+
+	serviceConfig, err := rtConfig.NewConfigBuilder().
+		SetServiceDetails(serviceDetails).
+		SetDryRun(false).
+		SetContext(ctx).
+		Build()
+	Expect(err).NotTo(HaveOccurred())
+
+	rtClient, err = rt.New(serviceConfig)
+	Expect(err).NotTo(HaveOccurred())
+
+	// Set up the Kubernetes client
+	By("Setting up the Kubernetes client")
+	scheme := runtime.NewScheme()
+	err = v1alpha1.AddToScheme(scheme)
+	Expect(err).NotTo(HaveOccurred())
+
+	cfg := config.GetConfigOrDie()
+	k8sClient, err = client.New(cfg, client.Options{Scheme: scheme})
+	Expect(err).NotTo(HaveOccurred())
+	Expect(k8sClient).NotTo(BeNil())
+})
+
+var _ = ginkgo.AfterSuite(func() {
+
+})
