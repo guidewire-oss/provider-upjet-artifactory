@@ -186,21 +186,11 @@ func EnsureArtifactory() error {
 func UpdateCredentials() error {
 	outsb := strings.Builder{}
 	errsb := strings.Builder{}
-	_, err := sh.Exec(nil, &outsb, &errsb, "kubectl", "delete", "job", "create-credentials")
-
-	if err != nil {
-		if !strings.Contains(errsb.String(), "jobs.batch \"create-credentials\" not found") {
-			fmt.Printf("Unhandled error: %s\n", err.Error())
-			fmt.Printf("Standard output: %s\n", outsb.String())
-			fmt.Printf("Error output: %s\n", errsb.String())
-
-			return err
-		}
-	}
 
 	outsb.Reset()
 	errsb.Reset()
-	_, err = sh.Exec(nil, &outsb, &errsb, "kubectl", "apply", "-f", "e2e/create-credentials.yaml")
+
+	_, err := sh.Exec(nil, &outsb, &errsb, "kubectl", "create", "secret", "generic", "artifactory-credentials", "--from-file=e2e/creds.json")
 
 	if err != nil {
 		fmt.Printf("Unhandled error: %s\n", err.Error())

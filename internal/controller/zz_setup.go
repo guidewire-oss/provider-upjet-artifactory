@@ -11,8 +11,11 @@ import (
 
 	providerconfig "github.com/myorg/provider-jfrogartifactory/internal/controller/providerconfig"
 	genericrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/genericrepository"
+	localmavenrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/localmavenrepository"
 	localnpmrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/localnpmrepository"
+	remotemavenrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/remotemavenrepository"
 	remotenpmrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/remotenpmrepository"
+	virtualmavenrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/virtualmavenrepository"
 )
 
 // Setup creates all controllers with the supplied logger and adds them to
@@ -21,8 +24,11 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
 		providerconfig.Setup,
 		genericrepository.Setup,
+		localmavenrepository.Setup,
 		localnpmrepository.Setup,
+		remotemavenrepository.Setup,
 		remotenpmrepository.Setup,
+		virtualmavenrepository.Setup,
 	} {
 		if err := setup(mgr, o); err != nil {
 			return err
