@@ -65,7 +65,7 @@ var _ = Describe("E2E Tests", func() {
 
 				By("Verifying the repository exists in Artifactory")
 				repoDetails := rtServices.RepositoryDetails{}
-				err = rtClient.GetRepository("test-repo", &repoDetails)
+				err = rtReadClient.GetRepository("test-repo", &repoDetails)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(repoDetails.Key).To(Equal("test-repo"))
 				Expect(repoDetails.Description).To(Equal("Test repository"))
