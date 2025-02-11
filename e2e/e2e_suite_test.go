@@ -21,12 +21,13 @@ func TestE2E(t *testing.T) {
 	RunSpecs(t, "E2E Suite")
 }
 
-var rtClient rt.ArtifactoryServicesManager
+var rtReadClient rt.ArtifactoryServicesManager
+var rtWriteClient rt.ArtifactoryServicesManager
 var k8sClient client.Client
 
 var _ = ginkgo.BeforeSuite(func() {
-	// Set up the Artifactory client
-	By("Setting up the Artifactory client")
+	// Set up the Artifactory client to read instance
+	By("Setting up the Artifactory client to read instance")
 	ctx, cancel := context.WithCancel(context.Background())
 	DeferCleanup(cancel)
 
@@ -42,7 +43,27 @@ var _ = ginkgo.BeforeSuite(func() {
 		Build()
 	Expect(err).NotTo(HaveOccurred())
 
-	rtClient, err = rt.New(serviceConfig)
+	rtReadClient, err = rt.New(serviceConfig)
+	Expect(err).NotTo(HaveOccurred())
+
+	// Set up the Artifactory client to write instance
+	By("Setting up the Artifactory client to write instance")
+	ctx, cancel = context.WithCancel(context.Background())
+	DeferCleanup(cancel)
+
+	serviceDetails = rtAuth.NewArtifactoryDetails()
+	serviceDetails.SetUrl("url")
+	serviceDetails.SetUser("user")
+	serviceDetails.SetPassword("pass")
+
+	serviceConfig, err = rtConfig.NewConfigBuilder().
+		SetServiceDetails(serviceDetails).
+		SetDryRun(false).
+		SetContext(ctx).
+		Build()
+	Expect(err).NotTo(HaveOccurred())
+
+	rtWriteClient, err = rt.New(serviceConfig)
 	Expect(err).NotTo(HaveOccurred())
 
 	// Set up the Kubernetes client

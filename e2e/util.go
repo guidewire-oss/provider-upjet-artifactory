@@ -190,8 +190,24 @@ func UpdateCredentials() error {
 	outsb.Reset()
 	errsb.Reset()
 
-	_, err := sh.Exec(nil, &outsb, &errsb, "kubectl", "create", "secret", "generic", "artifactory-credentials", "--from-file=e2e/creds.json")
+	_, err := sh.Exec(nil, &outsb, &errsb, "kubectl", "create", "secret", "generic", "artifactory-credentials-read", "--from-file=e2e/creds-read.json")
+	if err != nil {
+		fmt.Printf("Unhandled error: %s\n", err.Error())
+		fmt.Printf("Standard output: %s\n", outsb.String())
+		fmt.Printf("Error output: %s\n", errsb.String())
 
+		return err
+	}
+	_, err = sh.Exec(nil, &outsb, &errsb, "kubectl", "create", "secret", "generic", "artifactory-credentials-write", "--from-file=e2e/creds-write.json")
+	if err != nil {
+		fmt.Printf("Unhandled error: %s\n", err.Error())
+		fmt.Printf("Standard output: %s\n", outsb.String())
+		fmt.Printf("Error output: %s\n", errsb.String())
+
+		return err
+	}
+
+	_, err = sh.Exec(nil, &outsb, &errsb, "kubectl", "create", "secret", "generic", "secretremote", "--from-file=passwords=e2e/credsremote.json")
 	if err != nil {
 		fmt.Printf("Unhandled error: %s\n", err.Error())
 		fmt.Printf("Standard output: %s\n", outsb.String())
