@@ -2,6 +2,8 @@ package e2e_test
 
 import (
 	"context"
+	"fmt"
+	"os"
 	"testing"
 
 	rt "github.com/jfrog/jfrog-client-go/artifactory"
@@ -32,9 +34,9 @@ var _ = ginkgo.BeforeSuite(func() {
 	DeferCleanup(cancel)
 
 	serviceDetails := rtAuth.NewArtifactoryDetails()
-	serviceDetails.SetUrl("url")
-	serviceDetails.SetUser("user")
-	serviceDetails.SetPassword("pass")
+	serviceDetails.SetUrl(os.Getenv("READ_URL") + "/artifactory")
+	serviceDetails.SetUser(os.Getenv("READ_CREDENTIAL_USER"))
+	serviceDetails.SetPassword(os.Getenv("READ_CREDENTIAL_ACCESS_TOKEN"))
 
 	serviceConfig, err := rtConfig.NewConfigBuilder().
 		SetServiceDetails(serviceDetails).
@@ -52,9 +54,9 @@ var _ = ginkgo.BeforeSuite(func() {
 	DeferCleanup(cancel)
 
 	serviceDetails = rtAuth.NewArtifactoryDetails()
-	serviceDetails.SetUrl("url")
-	serviceDetails.SetUser("user")
-	serviceDetails.SetPassword("pass")
+	serviceDetails.SetUrl(os.Getenv("WRITE_URL") + "/artifactory")
+	serviceDetails.SetUser(os.Getenv("WRITE_CREDENTIAL_USER"))
+	serviceDetails.SetPassword(os.Getenv("WRITE_CREDENTIAL_ACCESS_TOKEN"))
 
 	serviceConfig, err = rtConfig.NewConfigBuilder().
 		SetServiceDetails(serviceDetails).
