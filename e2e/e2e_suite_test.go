@@ -2,7 +2,6 @@ package e2e_test
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"testing"
 
