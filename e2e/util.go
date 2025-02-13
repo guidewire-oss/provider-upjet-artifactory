@@ -200,6 +200,8 @@ func UpdateCredentials() error {
 		return err
 	}
 
+	fmt.Printf("Successfully created artifactory-credentials-read secret\n")
+
 	credsWrite := fmt.Sprintf("creds-write.json={\n\t\"url\": \"%s\",\n\t\"access_token\": \"%s\"\n}", os.Getenv("WRITE_URL"), os.Getenv("WRITE_CREDENTIAL_ACCESS_TOKEN"))
 	_, err = sh.Exec(nil, &outsb, &errsb, "kubectl", "create", "secret", "generic", "artifactory-credentials-write", "--from-literal=" + credsWrite)
 	if err != nil {
@@ -210,6 +212,8 @@ func UpdateCredentials() error {
 		return err
 	}
 
+	fmt.Printf("Successfully created artifactory-credentials-write secret\n")
+
 	secretRemote := fmt.Sprintf("passwords=%s", os.Getenv("WRITE_CREDENTIAL_ACCESS_TOKEN"))
 	_, err = sh.Exec(nil, &outsb, &errsb, "kubectl", "create", "secret", "generic", "secretremote", "--from-literal=" + secretRemote)
 	if err != nil {
@@ -219,6 +223,8 @@ func UpdateCredentials() error {
 
 		return err
 	}
+
+	fmt.Printf("Successfully created secret secretremote for read repo to read from write repo\n")
 
 	return nil
 }

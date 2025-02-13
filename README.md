@@ -61,16 +61,11 @@ open an [issue](https://github.com/myorg/provider-jfrogartifactory/issues).
 
 
 
-# Testing using make run
-
-Cannot use OSS Artifactory because it does not support creating repositories through REST APIs.
-Get a license for Artifactory: https://jfrog.com/start-free/#ft
-Set the environment variable `ARTIFACTORY_LICENSE_KEY` in your local ~/.zshrc and restart your IDE.
+# Running e2e tests using make run
 
 in a terminal in the dev container:
 ```console
 mage setupE2E
-kubectl port-forward --namespace jfrog svc/artifactory-artifactory-nginx 8888:80
 ```
 
 in new terminal:
@@ -81,9 +76,6 @@ make run
 
 in new terminal:
 ```console
-kubectl apply -f e2e/providerconfig-read.yaml
-kubectl apply -f e2e/providerconfig-write.yaml
-#kubectl apply -f examples/manifests/genericrepository.yaml
 mage testE2E
 ```
 

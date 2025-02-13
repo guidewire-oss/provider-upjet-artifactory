@@ -1,6 +1,7 @@
 package e2e_test
 
 import (
+	"os"
 	"strings"
 
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
@@ -84,7 +85,7 @@ var _ = Describe("RemoteMavenRepository", Ordered, func() {
 								StatisticsEnabled:            ptr.To(true),
 							},
 						},
-						Username: ptr.To("edge_poc"),
+						Username: ptr.To(os.Getenv("WRITE_CREDENTIAL_USER")),
 						PasswordSecretRef: &v1.SecretKeySelector{
 							Key: "passwords",
 							SecretReference: v1.SecretReference{
@@ -158,7 +159,7 @@ var _ = Describe("RemoteMavenRepository", Ordered, func() {
 								StatisticsEnabled:            ptr.To(true),
 							},
 						},
-						Username: ptr.To("edge_poc"),
+						Username: ptr.To(os.Getenv("WRITE_CREDENTIAL_USER")),
 						PasswordSecretRef: &v1.SecretKeySelector{
 							Key: "invalid-passwords",
 							SecretReference: v1.SecretReference{
@@ -232,7 +233,7 @@ var _ = Describe("RemoteMavenRepository", Ordered, func() {
 								StatisticsEnabled:            ptr.To(true),
 							},
 						},
-						Username: ptr.To("edge_poc"),
+						Username: ptr.To(os.Getenv("WRITE_CREDENTIAL_USER")),
 						PasswordSecretRef: &v1.SecretKeySelector{
 							Key: "passwords",
 							SecretReference: v1.SecretReference{
