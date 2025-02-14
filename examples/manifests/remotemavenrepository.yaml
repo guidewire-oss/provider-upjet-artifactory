@@ -11,7 +11,7 @@ spec:
     username: <uname>
     passwordSecretRef:
       key: passwords
-      name: example-creds-read
+      name: secret-read
       namespace: crossplane-system
     contentSynchronisation:
       - enabled:  true

@@ -1,0 +1,14 @@
+apiVersion: repository.upbound.io/v1alpha1
+kind: VirtualNpmRepository
+metadata:
+  name: virtualnpmrepository
+  annotations:
+    crossplane.io/external-name: "virtualnpmrepository"
+spec:
+  forProvider:
+    description: "new virtual npm repository"
+    repositories:
+    - alpine-mvn-release-local
+    - remotenpmrepository
+  providerConfigRef:
+    name: my-artifactory-providerconfig-read

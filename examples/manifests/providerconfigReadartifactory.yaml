@@ -6,6 +6,6 @@ spec:
   credentials:
     source: Secret
     secretRef:
-      name: example-creds-read
+      name: secret-read
       namespace: crossplane-system
       key: credentials

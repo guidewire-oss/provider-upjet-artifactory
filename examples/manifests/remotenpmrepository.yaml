@@ -10,8 +10,8 @@ spec:
     url: <url>
     username: <uname>
     passwordSecretRef:
-      key: passwords
-      name: secretremote
+      key: password
+      name: secret-read
       namespace: crossplane-system
     contentSynchronisation:
       - enabled:  true
