@@ -10,7 +10,16 @@ package v1alpha1
 func (tr *GenericRepository) Hub() {}
 
 // Hub marks this type as a conversion hub.
+func (tr *LocalMavenRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
 func (tr *LocalNpmRepository) Hub() {}
 
 // Hub marks this type as a conversion hub.
+func (tr *RemoteMavenRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
 func (tr *RemoteNpmRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *VirtualMavenRepository) Hub() {}

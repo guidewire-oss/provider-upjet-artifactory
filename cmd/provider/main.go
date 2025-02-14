@@ -80,7 +80,7 @@ func main() {
 		ctrl.SetLogger(zap.New(zap.WriteTo(io.Discard)))
 	}
 
-	logr.Debug("Starting", "sync-period", syncPeriod.String(), "poll-interval", pollInterval.String(), "max-reconcile-rate", *maxReconcileRate)
+	log.Debug("Starting", "sync-period", syncPeriod.String(), "poll-interval", pollInterval.String(), "max-reconcile-rate", *maxReconcileRate)
 
 	cfg, err := ctrl.GetConfig()
 	kingpin.FatalIfError(err, "Cannot get API server rest config")
@@ -106,7 +106,7 @@ func main() {
 
 	o := tjcontroller.Options{
 		Options: xpcontroller.Options{
-			Logger:                  logr,
+			Logger:                  log,
 			GlobalRateLimiter:       ratelimiter.NewGlobal(*maxReconcileRate),
 			PollInterval:            *pollInterval,
 			MaxConcurrentReconciles: *maxReconcileRate,
@@ -120,18 +120,18 @@ func main() {
 		Provider: config.GetProvider(),
 		// use the following WorkspaceStoreOption to enable the shared gRPC mode
 		// terraform.WithProviderRunner(terraform.NewSharedProvider(logr, os.Getenv("TERRAFORM_NATIVE_PROVIDER_PATH"), terraform.WithNativeProviderArgs("-debuggable")))
-		WorkspaceStore: terraform.NewWorkspaceStore(logr),
+		WorkspaceStore: terraform.NewWorkspaceStore(log),
 		SetupFn:        clients.TerraformSetupBuilder(*terraformVersion, *providerSource, *providerVersion),
 	}
 
 	if *enableExternalSecretStores {
 		o.Features.Enable(features.EnableAlphaExternalSecretStores)
 		o.SecretStoreConfigGVK = &v1alpha1.StoreConfigGroupVersionKind
-		logr.Info("Alpha feature enabled", "flag", features.EnableAlphaExternalSecretStores)
+		log.Info("Alpha feature enabled", "flag", features.EnableAlphaExternalSecretStores)
 
 		o.ESSOptions = &tjcontroller.ESSOptions{}
 		if *essTLSCertsPath != "" {
-			logr.Info("ESS TLS certificates path is set. Loading mTLS configuration.")
+			log.Info("ESS TLS certificates path is set. Loading mTLS configuration.")
 			tCfg, err := certificates.LoadMTLSConfig(filepath.Join(*essTLSCertsPath, "ca.crt"), filepath.Join(*essTLSCertsPath, "tls.crt"), filepath.Join(*essTLSCertsPath, "tls.key"), false)
 			kingpin.FatalIfError(err, "Cannot load ESS TLS config.")
 
@@ -155,7 +155,7 @@ func main() {
 
 	if *enableManagementPolicies {
 		o.Features.Enable(features.EnableBetaManagementPolicies)
-		logr.Info("Beta feature enabled", "flag", features.EnableBetaManagementPolicies)
+		log.Info("Beta feature enabled", "flag", features.EnableBetaManagementPolicies)
 	}
 
 	kingpin.FatalIfError(controller.Setup(mgr, o), "Cannot setup Artifactory controllers")

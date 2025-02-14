@@ -28,7 +28,7 @@
 	"remoteEnv": {
 		"PATH": "${containerEnv:PATH}:/home/vscode",
 		"ARTIFACTORY_LICENSE_KEY": "${localEnv:ARTIFACTORY_LICENSE_KEY}"
-	}
+	},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
@@ -41,4 +41,13 @@
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"
+
+	"containerEnv" : {
+        "READ_URL": "<>",
+        "READ_CREDENTIAL_USER": "<>",
+        "READ_CREDENTIAL_ACCESS_TOKEN": "<>",
+        "WRITE_URL": "<>",
+        "WRITE_CREDENTIAL_USER": "<>",
+        "WRITE_CREDENTIAL_ACCESS_TOKEN": "<>"
+    }
 }

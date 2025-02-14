@@ -186,22 +186,12 @@ func EnsureArtifactory() error {
 func UpdateCredentials() error {
 	outsb := strings.Builder{}
 	errsb := strings.Builder{}
-	_, err := sh.Exec(nil, &outsb, &errsb, "kubectl", "delete", "job", "create-credentials")
-
-	if err != nil {
-		if !strings.Contains(errsb.String(), "jobs.batch \"create-credentials\" not found") {
-			fmt.Printf("Unhandled error: %s\n", err.Error())
-			fmt.Printf("Standard output: %s\n", outsb.String())
-			fmt.Printf("Error output: %s\n", errsb.String())
-
-			return err
-		}
-	}
 
 	outsb.Reset()
 	errsb.Reset()
-	_, err = sh.Exec(nil, &outsb, &errsb, "kubectl", "apply", "-f", "e2e/create-credentials.yaml")
 
+	credsRead := fmt.Sprintf("creds-read.json={\n\t\"url\": \"%s\",\n\t\"access_token\": \"%s\"\n}", os.Getenv("READ_URL"), os.Getenv("READ_CREDENTIAL_ACCESS_TOKEN"))
+	_, err := sh.Exec(nil, &outsb, &errsb, "kubectl", "create", "secret", "generic", "artifactory-credentials-read", "--from-literal="+credsRead)
 	if err != nil {
 		fmt.Printf("Unhandled error: %s\n", err.Error())
 		fmt.Printf("Standard output: %s\n", outsb.String())
@@ -209,6 +199,32 @@ func UpdateCredentials() error {
 
 		return err
 	}
+
+	fmt.Printf("Successfully created artifactory-credentials-read secret\n")
+
+	credsWrite := fmt.Sprintf("creds-write.json={\n\t\"url\": \"%s\",\n\t\"access_token\": \"%s\"\n}", os.Getenv("WRITE_URL"), os.Getenv("WRITE_CREDENTIAL_ACCESS_TOKEN"))
+	_, err = sh.Exec(nil, &outsb, &errsb, "kubectl", "create", "secret", "generic", "artifactory-credentials-write", "--from-literal="+credsWrite)
+	if err != nil {
+		fmt.Printf("Unhandled error: %s\n", err.Error())
+		fmt.Printf("Standard output: %s\n", outsb.String())
+		fmt.Printf("Error output: %s\n", errsb.String())
+
+		return err
+	}
+
+	fmt.Printf("Successfully created artifactory-credentials-write secret\n")
+
+	secretRemote := fmt.Sprintf("passwords=%s", os.Getenv("WRITE_CREDENTIAL_ACCESS_TOKEN"))
+	_, err = sh.Exec(nil, &outsb, &errsb, "kubectl", "create", "secret", "generic", "secretremote", "--from-literal="+secretRemote)
+	if err != nil {
+		fmt.Printf("Unhandled error: %s\n", err.Error())
+		fmt.Printf("Standard output: %s\n", outsb.String())
+		fmt.Printf("Error output: %s\n", errsb.String())
+
+		return err
+	}
+
+	fmt.Printf("Successfully created secret secretremote for read repo to read from write repo\n")
 
 	return nil
 }

@@ -59,18 +59,11 @@ make build
 For filing bugs, suggesting improvements, or requesting new features, please
 open an [issue](https://github.com/myorg/provider-jfrogartifactory/issues).
 
-
-
-# Testing
-
-Cannot use OSS Artifactory because it does not support creating repositories through REST APIs.
-Get a license for Artifactory: https://jfrog.com/start-free/#ft
-Set the environment variable `ARTIFACTORY_LICENSE_KEY` in your local ~/.zshrc and restart your IDE.
+# Running e2e tests using make run (using dev edge nodes)
 
 in a terminal in the dev container:
 ```console
 mage setupE2E
-kubectl port-forward --namespace jfrog svc/artifactory-artifactory-nginx 8888:80
 ```
 
 in new terminal:
@@ -81,11 +74,54 @@ make run
 
 in new terminal:
 ```console
-kubectl apply -f e2e/providerconfig.yaml
-#kubectl apply -f examples/manifests/genericrepository.yaml
 mage testE2E
 ```
 
+# Get temporary artifactory license (alternative to using dev edge nodes for e2e testing)
+- Cannot use OSS Artifactory because it does not support creating repositories through REST APIs.
+- Get a license for Artifactory: https://jfrog.com/start-free/#ft
+- Set the environment variable `ARTIFACTORY_LICENSE_KEY` in your local ~/.zshrc and restart your IDE.
+- After running ```mage setupE2E```, run ```kubectl port-forward --namespace jfrog svc/artifactory-artifactory-nginx 8888:80```
+
+# Testing using the provider
+Note that ```...crossplane.yaml: No such file or directory``` can be ignored, and ```make build.all``` can be used to build the image for amd64 on arm64 machines
+```console
+make build
+```
+```console
+up xpkg build \
+--controller <IMAGE_NAME>:<IMAGE_TAG> \
+--package-root ./package \
+--output ./jfrogprovider.xpkg
+```
+Push the image to ECR:
+```console
+up xpkg push <ACCOUNT_ID>.dkr.ecr.us-west-2.amazonaws.com/jfrogprovider:<IMAGE_TAG> -f jfrogprovider.xpkg
+```
+
+To test on a scratch cluster using provider , do the following:
+
+Create the following ```provider-artifactory.yaml``` on your local machine:
+```console
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+    name: provider-artifactory
+spec:
+    package: <ACCOUNT_ID>.dkr.ecr.us-west-2.amazonaws.com/jfrogprovider:<IMAGE_TAG>
+```
+Then apply it on the scratch cluster:
+```console
+kubectl apply -f <FILE_PATH>/provider-artifactory.yaml
+```
+Apply the kubernetes secrets
+```console
+kubectl apply -f examples/manifests/templates/<FILE_NAME>.yaml
+```
+Apply the provider configs and repositories
+```console
+kubectl apply -f examples/manifests/<FILE_NAME>.yaml
+```
 
 # Manual testing by applying resources
 ## Steps to use this provider artifactory

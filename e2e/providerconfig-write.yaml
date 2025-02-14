@@ -1,0 +1,11 @@
+apiVersion: jfrogartifactory.upbound.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: my-artifactory-providerconfig-write
+spec:
+  credentials:
+    source: Secret
+    secretRef:
+      name: artifactory-credentials-write
+      namespace: default
+      key: creds-write.json
