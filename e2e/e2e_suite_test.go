@@ -105,5 +105,5 @@ var _ = ginkgo.AfterSuite(func() {
 	Expect(err).NotTo(HaveOccurred())
 	_, err = sh.Exec(nil, &outsb, &errsb, "kubectl", "delete", "-f", "providerconfig-write.yaml")
 	Expect(err).NotTo(HaveOccurred())
-	fmt.Printf("Deleted provider configs\n")
+	fmt.Printf("Deleted provider configs for read and write\n")
 })
