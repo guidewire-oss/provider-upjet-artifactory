@@ -97,7 +97,7 @@ Push the image to ECR:
 up xpkg push <ACCOUNT_ID>.dkr.ecr.us-west-2.amazonaws.com/jfrogprovider:<IMAGE_TAG> -f jfrogprovider.xpkg
 ```
 
-To test on a scratch cluster, do the following:
+To test on a scratch cluster using provider , do the following:
 
 Create the following ```provider-artifactory.yaml``` on your local machine:
 ```console
