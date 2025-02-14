@@ -31,16 +31,35 @@ var rtWriteClient rt.ArtifactoryServicesManager
 var k8sClient client.Client
 
 var _ = ginkgo.BeforeSuite(func() {
+
+	// Set up the Artifactory client to write instance
+	By("Setting up the Artifactory client to write instance")
+	ctx, cancel := context.WithCancel(context.Background())
+	DeferCleanup(cancel)
+
+	serviceDetailsWrite := rtAuth.NewArtifactoryDetails()
+	serviceDetailsWrite.SetUrl(os.Getenv("WRITE_URL") + "/artifactory")
+	serviceDetailsWrite.SetUser(os.Getenv("WRITE_CREDENTIAL_USER"))
+	serviceDetailsWrite.SetPassword(os.Getenv("WRITE_CREDENTIAL_ACCESS_TOKEN"))
+	serviceConfigWrite, err := rtConfig.NewConfigBuilder().
+		SetServiceDetails(serviceDetailsWrite).
+		SetDryRun(false).
+		SetContext(ctx).
+		Build()
+	Expect(err).NotTo(HaveOccurred())
+
+	rtWriteClient, err = rt.New(serviceConfigWrite)
+	Expect(err).NotTo(HaveOccurred())
+
 	// Set up the Artifactory client to read instance
 	By("Setting up the Artifactory client to read instance")
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel = context.WithCancel(context.Background())
 	DeferCleanup(cancel)
 
 	serviceDetails := rtAuth.NewArtifactoryDetails()
 	serviceDetails.SetUrl(os.Getenv("READ_URL") + "/artifactory")
 	serviceDetails.SetUser(os.Getenv("READ_CREDENTIAL_USER"))
 	serviceDetails.SetPassword(os.Getenv("READ_CREDENTIAL_ACCESS_TOKEN"))
-
 	serviceConfig, err := rtConfig.NewConfigBuilder().
 		SetServiceDetails(serviceDetails).
 		SetDryRun(false).
@@ -49,26 +68,6 @@ var _ = ginkgo.BeforeSuite(func() {
 	Expect(err).NotTo(HaveOccurred())
 
 	rtReadClient, err = rt.New(serviceConfig)
-	Expect(err).NotTo(HaveOccurred())
-
-	// Set up the Artifactory client to write instance
-	By("Setting up the Artifactory client to write instance")
-	ctx, cancel = context.WithCancel(context.Background())
-	DeferCleanup(cancel)
-
-	serviceDetails = rtAuth.NewArtifactoryDetails()
-	serviceDetails.SetUrl(os.Getenv("WRITE_URL") + "/artifactory")
-	serviceDetails.SetUser(os.Getenv("WRITE_CREDENTIAL_USER"))
-	serviceDetails.SetPassword(os.Getenv("WRITE_CREDENTIAL_ACCESS_TOKEN"))
-
-	serviceConfig, err = rtConfig.NewConfigBuilder().
-		SetServiceDetails(serviceDetails).
-		SetDryRun(false).
-		SetContext(ctx).
-		Build()
-	Expect(err).NotTo(HaveOccurred())
-
-	rtWriteClient, err = rt.New(serviceConfig)
 	Expect(err).NotTo(HaveOccurred())
 
 	// Set up the Kubernetes client

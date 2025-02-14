@@ -14,6 +14,7 @@ import (
 	"github.com/myorg/provider-jfrogartifactory/config/remotenpmrepository"
 	"github.com/myorg/provider-jfrogartifactory/config/repository"
 	"github.com/myorg/provider-jfrogartifactory/config/virtualmavenrepository"
+	"github.com/myorg/provider-jfrogartifactory/config/virtualnpmrepository"
 
 	ujconfig "github.com/crossplane/upjet/pkg/config"
 )
@@ -44,6 +45,7 @@ func GetProvider() *ujconfig.Provider {
 		repository.Configure,
 		localnpmrepository.Configure,
 		remotenpmrepository.Configure,
+		virtualnpmrepository.Configure,
 		localmavenrepository.Configure,
 		remotemavenrepository.Configure,
 		virtualmavenrepository.Configure,
