@@ -100,7 +100,7 @@ var _ = ginkgo.AfterSuite(func() {
 	errsb := strings.Builder{}
 	outsb.Reset()
 	errsb.Reset()
-	fmt.Printf("Deleting provider configs\n")
+	fmt.Printf("Deleting provider configs for read and write \n")
 	_, err := sh.Exec(nil, &outsb, &errsb, "kubectl", "delete", "-f", "providerconfig-read.yaml")
 	Expect(err).NotTo(HaveOccurred())
 	_, err = sh.Exec(nil, &outsb, &errsb, "kubectl", "delete", "-f", "providerconfig-write.yaml")
