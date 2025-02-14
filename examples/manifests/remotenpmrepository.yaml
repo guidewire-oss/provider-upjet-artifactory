@@ -1,0 +1,22 @@
+apiVersion: repository.upbound.io/v1alpha1
+kind: RemoteNpmRepository
+metadata:
+  name: remotenpmrepository
+  annotations:
+    crossplane.io/external-name: "remotenpmrepository"
+spec:
+  forProvider:
+    description: "new remote npm repository"
+    url: <url>
+    username: <uname>
+    passwordSecretRef:
+      key: passwords
+      name: secretremote
+      namespace: crossplane-system
+    contentSynchronisation:
+      - enabled:  true
+        propertiesEnabled: true
+        sourceOriginAbsenceDetection:  true
+        statisticsEnabled : true
+  providerConfigRef:
+    name: my-artifactory-providerconfig-read
