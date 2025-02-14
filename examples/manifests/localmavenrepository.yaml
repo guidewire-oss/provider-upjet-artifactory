@@ -1,0 +1,11 @@
+apiVersion: repository.upbound.io/v1alpha1
+kind: LocalMavenRepository
+metadata:
+  name: localmavenrepository
+  annotations:
+    crossplane.io/external-name: "localmavenrepository"
+spec:
+  forProvider:
+    description: "new local maven repository"
+  providerConfigRef:
+    name: my-artifactory-providerconfig
