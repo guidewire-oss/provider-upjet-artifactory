@@ -367,3 +367,63 @@ func (mg *VirtualMavenRepository) SetPublishConnectionDetailsTo(r *xpv1.PublishC
 func (mg *VirtualMavenRepository) SetWriteConnectionSecretToReference(r *xpv1.SecretReference) {
 	mg.Spec.WriteConnectionSecretToReference = r
 }
+
+// GetCondition of this VirtualNpmRepository.
+func (mg *VirtualNpmRepository) GetCondition(ct xpv1.ConditionType) xpv1.Condition {
+	return mg.Status.GetCondition(ct)
+}
+
+// GetDeletionPolicy of this VirtualNpmRepository.
+func (mg *VirtualNpmRepository) GetDeletionPolicy() xpv1.DeletionPolicy {
+	return mg.Spec.DeletionPolicy
+}
+
+// GetManagementPolicies of this VirtualNpmRepository.
+func (mg *VirtualNpmRepository) GetManagementPolicies() xpv1.ManagementPolicies {
+	return mg.Spec.ManagementPolicies
+}
+
+// GetProviderConfigReference of this VirtualNpmRepository.
+func (mg *VirtualNpmRepository) GetProviderConfigReference() *xpv1.Reference {
+	return mg.Spec.ProviderConfigReference
+}
+
+// GetPublishConnectionDetailsTo of this VirtualNpmRepository.
+func (mg *VirtualNpmRepository) GetPublishConnectionDetailsTo() *xpv1.PublishConnectionDetailsTo {
+	return mg.Spec.PublishConnectionDetailsTo
+}
+
+// GetWriteConnectionSecretToReference of this VirtualNpmRepository.
+func (mg *VirtualNpmRepository) GetWriteConnectionSecretToReference() *xpv1.SecretReference {
+	return mg.Spec.WriteConnectionSecretToReference
+}
+
+// SetConditions of this VirtualNpmRepository.
+func (mg *VirtualNpmRepository) SetConditions(c ...xpv1.Condition) {
+	mg.Status.SetConditions(c...)
+}
+
+// SetDeletionPolicy of this VirtualNpmRepository.
+func (mg *VirtualNpmRepository) SetDeletionPolicy(r xpv1.DeletionPolicy) {
+	mg.Spec.DeletionPolicy = r
+}
+
+// SetManagementPolicies of this VirtualNpmRepository.
+func (mg *VirtualNpmRepository) SetManagementPolicies(r xpv1.ManagementPolicies) {
+	mg.Spec.ManagementPolicies = r
+}
+
+// SetProviderConfigReference of this VirtualNpmRepository.
+func (mg *VirtualNpmRepository) SetProviderConfigReference(r *xpv1.Reference) {
+	mg.Spec.ProviderConfigReference = r
+}
+
+// SetPublishConnectionDetailsTo of this VirtualNpmRepository.
+func (mg *VirtualNpmRepository) SetPublishConnectionDetailsTo(r *xpv1.PublishConnectionDetailsTo) {
+	mg.Spec.PublishConnectionDetailsTo = r
+}
+
+// SetWriteConnectionSecretToReference of this VirtualNpmRepository.
+func (mg *VirtualNpmRepository) SetWriteConnectionSecretToReference(r *xpv1.SecretReference) {
+	mg.Spec.WriteConnectionSecretToReference = r
+}

@@ -23,3 +23,6 @@ func (tr *RemoteNpmRepository) Hub() {}
 
 // Hub marks this type as a conversion hub.
 func (tr *VirtualMavenRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *VirtualNpmRepository) Hub() {}
