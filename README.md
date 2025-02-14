@@ -81,6 +81,7 @@ mage testE2E
 - Cannot use OSS Artifactory because it does not support creating repositories through REST APIs.
 - Get a license for Artifactory: https://jfrog.com/start-free/#ft
 - Set the environment variable `ARTIFACTORY_LICENSE_KEY` in your local ~/.zshrc and restart your IDE.
+- After running ```mage setupE2E```, run ```kubectl port-forward --namespace jfrog svc/artifactory-artifactory-nginx 8888:80```
 
 # Testing using the provider
 Note that ```...crossplane.yaml: No such file or directory``` can be ignored, and ```make build.all``` can be used to build the image for amd64 on arm64 machines
