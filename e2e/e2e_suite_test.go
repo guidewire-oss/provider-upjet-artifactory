@@ -3,10 +3,11 @@ package e2e_test
 import (
 	"context"
 	"fmt"
-	"github.com/magefile/mage/sh"
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/magefile/mage/sh"
 
 	rt "github.com/jfrog/jfrog-client-go/artifactory"
 	rtAuth "github.com/jfrog/jfrog-client-go/artifactory/auth"

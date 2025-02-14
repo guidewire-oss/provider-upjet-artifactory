@@ -15,6 +15,12 @@ func SetupE2E() error {
 		return err
 	}
 
+	// Uncomment if you want to install artifactory in a pod in a kind cluster
+	//err = e2e.EnsureArtifactory()
+	//if err != nil {
+	//	return err
+	//}
+
 	return e2e.UpdateCredentials()
 }
 
