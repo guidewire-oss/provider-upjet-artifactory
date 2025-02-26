@@ -47,7 +47,7 @@ var _ = Describe("RemoteMavenRepository", Ordered, func() {
 				repo.Status.GetCondition(v1.TypeSynced).Status == corev1.ConditionTrue
 		}, "2m", "5s").Should(BeTrue())
 
-		//Test for actual resource existance in artifactory instance
+		// Test for actual resource existance in artifactory instance
 		By("Verifying the repository exists in Artifactory write instances")
 		repoDetails := rtServices.RepositoryDetails{}
 		err = rtWriteClient.GetRepository("test-local-maven-write-repo", &repoDetails)
@@ -74,7 +74,7 @@ var _ = Describe("RemoteMavenRepository", Ordered, func() {
 			err := k8sClient.Get(ctx, client.ObjectKey{Name: "test-local-maven-write-repo"}, repo)
 			return errors.IsNotFound(err)
 		}, "2m", "5s").Should(BeTrue())
-		//Test actual repository to be deleted
+		// 	Test actual repository to be deleted
 		By("Verifying the repository exists in Artifactory write instances")
 		repoDetails := rtServices.RepositoryDetails{}
 		err = rtWriteClient.GetRepository("test-local-maven-write-repo", &repoDetails)
@@ -91,7 +91,7 @@ var _ = Describe("RemoteMavenRepository", Ordered, func() {
 				Spec: v1alpha1.RemoteMavenRepositorySpec{
 					ForProvider: v1alpha1.RemoteMavenRepositoryParameters{
 						Description: ptr.To("Test Remote Maven Repository Read"),
-						//Replace the below from git history
+						// Replace the below from git history
 						URL: ptr.To(os.Getenv("WRITE_URL") + `/artifactory/test-local-maven-write-repo/`),
 						ContentSynchronisation: []v1alpha1.ContentSynchronisationParameters{
 							{
@@ -166,7 +166,7 @@ var _ = Describe("RemoteMavenRepository", Ordered, func() {
 				Spec: v1alpha1.RemoteMavenRepositorySpec{
 					ForProvider: v1alpha1.RemoteMavenRepositoryParameters{
 						Description: ptr.To("Test Remote Maven Repository Read"),
-						//Replace the below from git history
+						// Replace the below from git history
 						URL: ptr.To(os.Getenv("WRITE_URL") + `/artifactory/test-local-maven-write-repo/`),
 						ContentSynchronisation: []v1alpha1.ContentSynchronisationParameters{
 							{

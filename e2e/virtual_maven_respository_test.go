@@ -45,7 +45,7 @@ var _ = Describe("VirtualMavenRepository", Ordered, func() {
 			return repo.Status.GetCondition(v1.TypeReady).Status == corev1.ConditionTrue &&
 				repo.Status.GetCondition(v1.TypeSynced).Status == corev1.ConditionTrue
 		}, "2m", "5s").Should(BeTrue())
-		//Check for the actual existance as well
+		// Check for the actual existance as well
 		By("Verifying the repository exists in Artifactory")
 		repoDetails := rtServices.RepositoryDetails{}
 		err = rtReadClient.GetRepository("test-local-maven-read-repo", &repoDetails)
