@@ -3,7 +3,9 @@ package e2e_test
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"os"
+	"path"
 	"strings"
 	"testing"
 
@@ -49,7 +51,10 @@ var _ = ginkgo.SynchronizedBeforeSuite(func() {
 	DeferCleanup(cancel)
 
 	serviceDetails := rtAuth.NewArtifactoryDetails()
-	serviceDetails.SetUrl(os.Getenv("READ_URL") + "/artifactory")
+	u, err := url.Parse(os.Getenv("READ_URL"))
+	Expect(err).NotTo(HaveOccurred())
+	u.Path = path.Join(u.Path, "artifactory")
+	serviceDetails.SetUrl(u.String())
 	serviceDetails.SetUser(os.Getenv("READ_CREDENTIAL_USER"))
 	serviceDetails.SetPassword(os.Getenv("READ_CREDENTIAL_ACCESS_TOKEN"))
 
@@ -69,7 +74,10 @@ var _ = ginkgo.SynchronizedBeforeSuite(func() {
 	DeferCleanup(cancel)
 
 	serviceDetails = rtAuth.NewArtifactoryDetails()
-	serviceDetails.SetUrl(os.Getenv("WRITE_URL") + "/artifactory")
+	u, err = url.Parse(os.Getenv("WRITE_URL"))
+	Expect(err).NotTo(HaveOccurred())
+	u.Path = path.Join(u.Path, "artifactory")
+	serviceDetails.SetUrl(u.String())
 	serviceDetails.SetUser(os.Getenv("WRITE_CREDENTIAL_USER"))
 	serviceDetails.SetPassword(os.Getenv("WRITE_CREDENTIAL_ACCESS_TOKEN"))
 
