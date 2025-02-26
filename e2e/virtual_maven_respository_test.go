@@ -1,6 +1,7 @@
 package e2e_test
 
 import (
+	"fmt"
 	"strings"
 
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
@@ -16,13 +17,15 @@ import (
 	"github.com/myorg/provider-jfrogartifactory/apis/repository/v1alpha1"
 )
 
-var _ = Describe("VirtualMavenRepository", Ordered, func() {
+var _ = Describe("VirtualMavenRepository", func() {
+	var localRepoName string
 
-	BeforeAll(func(ctx SpecContext) {
+	BeforeEach(func(ctx SpecContext) {
+		localRepoName = fmt.Sprintf("test-local-maven-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
 		By("Creating a local repository resource with read ProviderConfig in Kubernetes")
 		err := k8sClient.Create(ctx, &v1alpha1.LocalMavenRepository{
 			ObjectMeta: metav1.ObjectMeta{
-				Name: "test-local-maven-read-repo",
+				Name: localRepoName,
 			},
 			Spec: v1alpha1.LocalMavenRepositorySpec{
 				ForProvider: v1alpha1.LocalMavenRepositoryParameters{
@@ -40,7 +43,7 @@ var _ = Describe("VirtualMavenRepository", Ordered, func() {
 		By("Waiting for the local repository to be ready in Kubernetes")
 		Eventually(func() bool {
 			repo := &v1alpha1.LocalMavenRepository{}
-			err := k8sClient.Get(ctx, client.ObjectKey{Name: "test-local-maven-read-repo"}, repo)
+			err := k8sClient.Get(ctx, client.ObjectKey{Name: localRepoName}, repo)
 			Expect(err).NotTo(HaveOccurred())
 			return repo.Status.GetCondition(v1.TypeReady).Status == corev1.ConditionTrue &&
 				repo.Status.GetCondition(v1.TypeSynced).Status == corev1.ConditionTrue
@@ -48,19 +51,19 @@ var _ = Describe("VirtualMavenRepository", Ordered, func() {
 		// Check for the actual existence as well
 		By("Verifying the repository exists in Artifactory")
 		repoDetails := rtServices.RepositoryDetails{}
-		err = rtReadClient.GetRepository("test-local-maven-read-repo", &repoDetails)
+		err = rtReadClient.GetRepository(localRepoName, &repoDetails)
 		Expect(err).NotTo(HaveOccurred())
-		Expect(repoDetails.Key).To(Equal("test-local-maven-read-repo"))
+		Expect(repoDetails.Key).To(Equal(localRepoName))
 		Expect(repoDetails.Description).To(Equal("Test Local Maven Read Repository"))
 		Expect(repoDetails.GetRepoType()).To(Equal("local"))
 		Expect(repoDetails.PackageType).To(Equal("maven"))
 	})
 
-	AfterAll(func(ctx SpecContext) {
+	AfterEach(func(ctx SpecContext) {
 		By("Deleting the local repository resource from Kubernetes")
 		err := k8sClient.Delete(ctx, &v1alpha1.LocalMavenRepository{
 			ObjectMeta: metav1.ObjectMeta{
-				Name: "test-local-maven-read-repo",
+				Name: localRepoName,
 			},
 		})
 		Expect(err).NotTo(HaveOccurred())
@@ -68,24 +71,25 @@ var _ = Describe("VirtualMavenRepository", Ordered, func() {
 		By("Waiting for the local repository resource to be deleted")
 		Eventually(func() bool {
 			repo := &v1alpha1.LocalMavenRepository{}
-			err := k8sClient.Get(ctx, client.ObjectKey{Name: "test-local-maven-read-repo"}, repo)
+			err := k8sClient.Get(ctx, client.ObjectKey{Name: localRepoName}, repo)
 			return errors.IsNotFound(err)
 		}, "2m", "5s").Should(BeTrue())
 	})
 
 	When("a new repository is created", func() {
 		It("should exist in Artifactory read instance", func(ctx SpecContext) {
+			repoName := fmt.Sprintf("test-virtual-maven-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
 			By("Creating a virtual repository resource with read ProviderConfig in Kubernetes")
 			err := k8sClient.Create(ctx, &v1alpha1.VirtualMavenRepository{
 				ObjectMeta: metav1.ObjectMeta{
-					Name: "test-virtual-maven-repo-read",
+					Name: repoName,
 				},
 				Spec: v1alpha1.VirtualMavenRepositorySpec{
 					ForProvider: v1alpha1.VirtualMavenRepositoryParameters{
 						Description:   ptr.To("Test Virtual Maven Read Repository"),
 						RepoLayoutRef: ptr.To("maven-2-default"),
 						Repositories: []*string{
-							ptr.To("test-local-maven-read-repo"),
+							ptr.To(localRepoName),
 						},
 					},
 					ResourceSpec: v1.ResourceSpec{
@@ -101,7 +105,7 @@ var _ = Describe("VirtualMavenRepository", Ordered, func() {
 				By("Deleting the virtual repository resource from Kubernetes")
 				err := k8sClient.Delete(ctx, &v1alpha1.VirtualMavenRepository{
 					ObjectMeta: metav1.ObjectMeta{
-						Name: "test-virtual-maven-repo-read",
+						Name: repoName,
 					},
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -109,7 +113,7 @@ var _ = Describe("VirtualMavenRepository", Ordered, func() {
 				By("Waiting for the virtual repository resource to be deleted")
 				Eventually(func() bool {
 					repo := &v1alpha1.VirtualMavenRepository{}
-					err := k8sClient.Get(ctx, client.ObjectKey{Name: "test-virtual-maven-repo-read"}, repo)
+					err := k8sClient.Get(ctx, client.ObjectKey{Name: repoName}, repo)
 					return errors.IsNotFound(err)
 				}, "2m", "5s").Should(BeTrue())
 			})
@@ -117,7 +121,7 @@ var _ = Describe("VirtualMavenRepository", Ordered, func() {
 			By("Waiting for the virtual repository to be ready in Kubernetes")
 			Eventually(func() bool {
 				repo := &v1alpha1.VirtualMavenRepository{}
-				err := k8sClient.Get(ctx, client.ObjectKey{Name: "test-virtual-maven-repo-read"}, repo)
+				err := k8sClient.Get(ctx, client.ObjectKey{Name: repoName}, repo)
 				Expect(err).NotTo(HaveOccurred())
 				return repo.Status.GetCondition(v1.TypeReady).Status == corev1.ConditionTrue &&
 					repo.Status.GetCondition(v1.TypeSynced).Status == corev1.ConditionTrue
@@ -125,9 +129,9 @@ var _ = Describe("VirtualMavenRepository", Ordered, func() {
 
 			By("Verifying the virtual repository exists in Artifactory")
 			repoDetails := rtServices.RepositoryDetails{}
-			err = rtReadClient.GetRepository("test-virtual-maven-repo-read", &repoDetails)
+			err = rtReadClient.GetRepository(repoName, &repoDetails)
 			Expect(err).NotTo(HaveOccurred())
-			Expect(repoDetails.Key).To(Equal("test-virtual-maven-repo-read"))
+			Expect(repoDetails.Key).To(Equal(repoName))
 			Expect(repoDetails.Description).To(Equal("Test Virtual Maven Read Repository"))
 			Expect(repoDetails.GetRepoType()).To(Equal("virtual"))
 			Expect(repoDetails.PackageType).To(Equal("maven"))
@@ -136,10 +140,11 @@ var _ = Describe("VirtualMavenRepository", Ordered, func() {
 
 	When("a new repository is created with non existing local repo in read instance", func() {
 		It("should not exist in Artifactory read instance", func(ctx SpecContext) {
+			repoName := fmt.Sprintf("test-virtual-maven-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
 			By("Creating a virtual repository resource with read ProviderConfig in Kubernetes")
 			err := k8sClient.Create(ctx, &v1alpha1.VirtualMavenRepository{
 				ObjectMeta: metav1.ObjectMeta{
-					Name: "test-virtual-maven-repo-read",
+					Name: repoName,
 				},
 				Spec: v1alpha1.VirtualMavenRepositorySpec{
 					ForProvider: v1alpha1.VirtualMavenRepositoryParameters{
@@ -162,7 +167,7 @@ var _ = Describe("VirtualMavenRepository", Ordered, func() {
 				By("Deleting the virtual repository resource from Kubernetes")
 				err := k8sClient.Delete(ctx, &v1alpha1.VirtualMavenRepository{
 					ObjectMeta: metav1.ObjectMeta{
-						Name: "test-virtual-maven-repo-read",
+						Name: repoName,
 					},
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -170,7 +175,7 @@ var _ = Describe("VirtualMavenRepository", Ordered, func() {
 				By("Waiting for the virtual repository resource to be deleted")
 				Eventually(func() bool {
 					repo := &v1alpha1.VirtualMavenRepository{}
-					err := k8sClient.Get(ctx, client.ObjectKey{Name: "test-virtual-maven-repo-read"}, repo)
+					err := k8sClient.Get(ctx, client.ObjectKey{Name: repoName}, repo)
 					return errors.IsNotFound(err)
 				}, "2m", "5s").Should(BeTrue())
 			})
@@ -178,7 +183,7 @@ var _ = Describe("VirtualMavenRepository", Ordered, func() {
 			By("Waiting for the virtual repository to be ready in Kubernetes")
 			Eventually(func() bool {
 				repo := &v1alpha1.VirtualMavenRepository{}
-				err := k8sClient.Get(ctx, client.ObjectKey{Name: "test-virtual-maven-repo-read"}, repo)
+				err := k8sClient.Get(ctx, client.ObjectKey{Name: repoName}, repo)
 				Expect(err).NotTo(HaveOccurred())
 				return repo.Status.GetCondition(v1.TypeReady).Status == corev1.ConditionFalse &&
 					repo.Status.GetCondition(v1.TypeSynced).Status == corev1.ConditionFalse &&
@@ -188,7 +193,7 @@ var _ = Describe("VirtualMavenRepository", Ordered, func() {
 
 			By("Verifying the virtual repository exists in Artifactory")
 			repoDetails := rtServices.RepositoryDetails{}
-			err = rtReadClient.GetRepository("test-virtual-maven-repo-read", &repoDetails)
+			err = rtReadClient.GetRepository(repoName, &repoDetails)
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("400"))
 			Expect(err.Error()).To(ContainSubstring("Bad Request"))

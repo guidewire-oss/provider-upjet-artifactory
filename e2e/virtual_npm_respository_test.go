@@ -1,6 +1,7 @@
 package e2e_test
 
 import (
+	"fmt"
 	"strings"
 
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
@@ -16,13 +17,15 @@ import (
 	"github.com/myorg/provider-jfrogartifactory/apis/repository/v1alpha1"
 )
 
-var _ = Describe("VirtualNpmRepository", Ordered, func() {
+var _ = Describe("VirtualNpmRepository", func() {
+	var localRepoName string
 
-	BeforeAll(func(ctx SpecContext) {
+	BeforeEach(func(ctx SpecContext) {
+		localRepoName = fmt.Sprintf("test-local-npm-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
 		By("Creating a local repository resource with read ProviderConfig in Kubernetes")
 		err := k8sClient.Create(ctx, &v1alpha1.LocalNpmRepository{
 			ObjectMeta: metav1.ObjectMeta{
-				Name: "test-local-npm-read-repo",
+				Name: localRepoName,
 			},
 			Spec: v1alpha1.LocalNpmRepositorySpec{
 				ForProvider: v1alpha1.LocalNpmRepositoryParameters{
@@ -40,7 +43,7 @@ var _ = Describe("VirtualNpmRepository", Ordered, func() {
 		By("Waiting for the local repository to be ready in Kubernetes")
 		Eventually(func() bool {
 			repo := &v1alpha1.LocalNpmRepository{}
-			err := k8sClient.Get(ctx, client.ObjectKey{Name: "test-local-npm-read-repo"}, repo)
+			err := k8sClient.Get(ctx, client.ObjectKey{Name: localRepoName}, repo)
 			Expect(err).NotTo(HaveOccurred())
 			return repo.Status.GetCondition(v1.TypeReady).Status == corev1.ConditionTrue &&
 				repo.Status.GetCondition(v1.TypeSynced).Status == corev1.ConditionTrue
@@ -48,19 +51,19 @@ var _ = Describe("VirtualNpmRepository", Ordered, func() {
 		// Check for the actual existence as well
 		By("Verifying the repository exists in Artifactory")
 		repoDetails := rtServices.RepositoryDetails{}
-		err = rtReadClient.GetRepository("test-local-npm-read-repo", &repoDetails)
+		err = rtReadClient.GetRepository(localRepoName, &repoDetails)
 		Expect(err).NotTo(HaveOccurred())
-		Expect(repoDetails.Key).To(Equal("test-local-npm-read-repo"))
+		Expect(repoDetails.Key).To(Equal(localRepoName))
 		Expect(repoDetails.Description).To(Equal("Test Local Npm Read Repository"))
 		Expect(repoDetails.GetRepoType()).To(Equal("local"))
 		Expect(repoDetails.PackageType).To(Equal("npm"))
 	})
 
-	AfterAll(func(ctx SpecContext) {
+	AfterEach(func(ctx SpecContext) {
 		By("Deleting the local repository resource from Kubernetes")
 		err := k8sClient.Delete(ctx, &v1alpha1.LocalNpmRepository{
 			ObjectMeta: metav1.ObjectMeta{
-				Name: "test-local-npm-read-repo",
+				Name: localRepoName,
 			},
 		})
 		Expect(err).NotTo(HaveOccurred())
@@ -68,23 +71,24 @@ var _ = Describe("VirtualNpmRepository", Ordered, func() {
 		By("Waiting for the local repository resource to be deleted")
 		Eventually(func() bool {
 			repo := &v1alpha1.LocalNpmRepository{}
-			err := k8sClient.Get(ctx, client.ObjectKey{Name: "test-local-npm-read-repo"}, repo)
+			err := k8sClient.Get(ctx, client.ObjectKey{Name: localRepoName}, repo)
 			return errors.IsNotFound(err)
 		}, "2m", "5s").Should(BeTrue())
 	})
 
 	When("a new repository is created", func() {
 		It("should exist in Artifactory read instance", func(ctx SpecContext) {
+			repoName := fmt.Sprintf("test-virtual-npm-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
 			By("Creating a virtual repository resource with read ProviderConfig in Kubernetes")
 			err := k8sClient.Create(ctx, &v1alpha1.VirtualNpmRepository{
 				ObjectMeta: metav1.ObjectMeta{
-					Name: "test-virtual-npm-repo-read",
+					Name: repoName,
 				},
 				Spec: v1alpha1.VirtualNpmRepositorySpec{
 					ForProvider: v1alpha1.VirtualNpmRepositoryParameters{
 						Description: ptr.To("Test Virtual Npm Read Repository"),
 						Repositories: []*string{
-							ptr.To("test-local-npm-read-repo"),
+							ptr.To(localRepoName),
 						},
 					},
 					ResourceSpec: v1.ResourceSpec{
@@ -100,7 +104,7 @@ var _ = Describe("VirtualNpmRepository", Ordered, func() {
 				By("Deleting the virtual repository resource from Kubernetes")
 				err := k8sClient.Delete(ctx, &v1alpha1.VirtualNpmRepository{
 					ObjectMeta: metav1.ObjectMeta{
-						Name: "test-virtual-npm-repo-read",
+						Name: repoName,
 					},
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -108,7 +112,7 @@ var _ = Describe("VirtualNpmRepository", Ordered, func() {
 				By("Waiting for the virtual repository resource to be deleted")
 				Eventually(func() bool {
 					repo := &v1alpha1.VirtualNpmRepository{}
-					err := k8sClient.Get(ctx, client.ObjectKey{Name: "test-virtual-npm-repo-read"}, repo)
+					err := k8sClient.Get(ctx, client.ObjectKey{Name: repoName}, repo)
 					return errors.IsNotFound(err)
 				}, "2m", "5s").Should(BeTrue())
 			})
@@ -116,7 +120,7 @@ var _ = Describe("VirtualNpmRepository", Ordered, func() {
 			By("Waiting for the virtual repository to be ready in Kubernetes")
 			Eventually(func() bool {
 				repo := &v1alpha1.VirtualNpmRepository{}
-				err := k8sClient.Get(ctx, client.ObjectKey{Name: "test-virtual-npm-repo-read"}, repo)
+				err := k8sClient.Get(ctx, client.ObjectKey{Name: repoName}, repo)
 				Expect(err).NotTo(HaveOccurred())
 				return repo.Status.GetCondition(v1.TypeReady).Status == corev1.ConditionTrue &&
 					repo.Status.GetCondition(v1.TypeSynced).Status == corev1.ConditionTrue
@@ -124,9 +128,9 @@ var _ = Describe("VirtualNpmRepository", Ordered, func() {
 
 			By("Verifying the virtual repository exists in Artifactory")
 			repoDetails := rtServices.RepositoryDetails{}
-			err = rtReadClient.GetRepository("test-virtual-npm-repo-read", &repoDetails)
+			err = rtReadClient.GetRepository(repoName, &repoDetails)
 			Expect(err).NotTo(HaveOccurred())
-			Expect(repoDetails.Key).To(Equal("test-virtual-npm-repo-read"))
+			Expect(repoDetails.Key).To(Equal(repoName))
 			Expect(repoDetails.Description).To(Equal("Test Virtual Npm Read Repository"))
 			Expect(repoDetails.GetRepoType()).To(Equal("virtual"))
 			Expect(repoDetails.PackageType).To(Equal("npm"))
@@ -135,10 +139,11 @@ var _ = Describe("VirtualNpmRepository", Ordered, func() {
 
 	When("a new repository is created with non existing local repo in read instance", func() {
 		It("should not exist in Artifactory read instance", func(ctx SpecContext) {
+			repoName := fmt.Sprintf("test-virtual-npm-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
 			By("Creating a virtual repository resource with read ProviderConfig in Kubernetes")
 			err := k8sClient.Create(ctx, &v1alpha1.VirtualNpmRepository{
 				ObjectMeta: metav1.ObjectMeta{
-					Name: "test-virtual-npm-repo-read",
+					Name: repoName,
 				},
 				Spec: v1alpha1.VirtualNpmRepositorySpec{
 					ForProvider: v1alpha1.VirtualNpmRepositoryParameters{
@@ -160,7 +165,7 @@ var _ = Describe("VirtualNpmRepository", Ordered, func() {
 				By("Deleting the virtual repository resource from Kubernetes")
 				err := k8sClient.Delete(ctx, &v1alpha1.VirtualNpmRepository{
 					ObjectMeta: metav1.ObjectMeta{
-						Name: "test-virtual-npm-repo-read",
+						Name: repoName,
 					},
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -168,7 +173,7 @@ var _ = Describe("VirtualNpmRepository", Ordered, func() {
 				By("Waiting for the virtual repository resource to be deleted")
 				Eventually(func() bool {
 					repo := &v1alpha1.VirtualNpmRepository{}
-					err := k8sClient.Get(ctx, client.ObjectKey{Name: "test-virtual-npm-repo-read"}, repo)
+					err := k8sClient.Get(ctx, client.ObjectKey{Name: repoName}, repo)
 					return errors.IsNotFound(err)
 				}, "2m", "5s").Should(BeTrue())
 			})
@@ -176,7 +181,7 @@ var _ = Describe("VirtualNpmRepository", Ordered, func() {
 			By("Waiting for the virtual repository to be ready in Kubernetes")
 			Eventually(func() bool {
 				repo := &v1alpha1.VirtualNpmRepository{}
-				err := k8sClient.Get(ctx, client.ObjectKey{Name: "test-virtual-npm-repo-read"}, repo)
+				err := k8sClient.Get(ctx, client.ObjectKey{Name: repoName}, repo)
 				Expect(err).NotTo(HaveOccurred())
 				return repo.Status.GetCondition(v1.TypeReady).Status == corev1.ConditionFalse &&
 					repo.Status.GetCondition(v1.TypeSynced).Status == corev1.ConditionFalse &&
@@ -186,7 +191,7 @@ var _ = Describe("VirtualNpmRepository", Ordered, func() {
 
 			By("Verifying the virtual repository exists in Artifactory")
 			repoDetails := rtServices.RepositoryDetails{}
-			err = rtReadClient.GetRepository("test-virtual-npm-repo-read", &repoDetails)
+			err = rtReadClient.GetRepository(repoName, &repoDetails)
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("400"))
 			Expect(err.Error()).To(ContainSubstring("Bad Request"))

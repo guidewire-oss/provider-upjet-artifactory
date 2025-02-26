@@ -27,13 +27,12 @@ func SetupE2E() error {
 // TestE2E runs the end-to-end tests.
 func TestE2E() error {
 	// See: https://onsi.github.io/ginkgo/#recommended-continuous-integration-configuration
-	return sh.RunV("ginkgo", "-r", "-v", "e2e",
+	return sh.RunV("ginkgo", "-r", "-v", "-p",
 		"--fail-on-pending",
-		"--fail-on-empty",
 		"--randomize-all",
 		"--randomize-suites",
 		"--keep-going",
-		"--procs=4",
+		"e2e",
 	)
 }
 

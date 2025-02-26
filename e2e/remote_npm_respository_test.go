@@ -18,13 +18,14 @@ import (
 	"github.com/myorg/provider-jfrogartifactory/apis/repository/v1alpha1"
 )
 
-var _ = Describe("RemoteNpmRepository", Ordered, func() {
-
-	BeforeAll(func(ctx SpecContext) {
+var _ = Describe("RemoteNpmRepository", func() {
+	var localRepoName string
+	BeforeEach(func(ctx SpecContext) {
+		localRepoName = fmt.Sprintf("test-local-npm-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
 		By("Creating a local Npm repository resource with write ProviderConfig in Kubernetes")
 		err := k8sClient.Create(ctx, &v1alpha1.LocalNpmRepository{
 			ObjectMeta: metav1.ObjectMeta{
-				Name: "test-local-npm-write-repo",
+				Name: localRepoName,
 			},
 			Spec: v1alpha1.LocalNpmRepositorySpec{
 				ForProvider: v1alpha1.LocalNpmRepositoryParameters{
@@ -37,13 +38,12 @@ var _ = Describe("RemoteNpmRepository", Ordered, func() {
 				},
 			},
 		})
-		fmt.Println(err)
 		Expect(err).NotTo(HaveOccurred())
 
 		By("Waiting for the local repository to be ready in Kubernetes")
 		Eventually(func() bool {
 			repo := &v1alpha1.LocalNpmRepository{}
-			err := k8sClient.Get(ctx, client.ObjectKey{Name: "test-local-npm-write-repo"}, repo)
+			err := k8sClient.Get(ctx, client.ObjectKey{Name: localRepoName}, repo)
 			Expect(err).NotTo(HaveOccurred())
 			return repo.Status.GetCondition(v1.TypeReady).Status == corev1.ConditionTrue &&
 				repo.Status.GetCondition(v1.TypeSynced).Status == corev1.ConditionTrue
@@ -52,20 +52,20 @@ var _ = Describe("RemoteNpmRepository", Ordered, func() {
 		// Test for actual resource existence
 		By("Verifying the repository exists in Artifactory")
 		repoDetails := rtServices.RepositoryDetails{}
-		err = rtWriteClient.GetRepository("test-local-npm-write-repo", &repoDetails)
+		err = rtWriteClient.GetRepository(localRepoName, &repoDetails)
 		Expect(err).NotTo(HaveOccurred())
-		Expect(repoDetails.Key).To(Equal("test-local-npm-write-repo"))
+		Expect(repoDetails.Key).To(Equal(localRepoName))
 		Expect(repoDetails.Description).To(Equal("Test Local Npm Write Repository"))
 		Expect(repoDetails.GetRepoType()).To(Equal("local"))
 		Expect(repoDetails.PackageType).To(Equal("npm"))
 
 	})
 
-	AfterAll(func(ctx SpecContext) {
+	AfterEach(func(ctx SpecContext) {
 		By("Deleting the local repository resource from Kubernetes")
 		err := k8sClient.Delete(ctx, &v1alpha1.LocalNpmRepository{
 			ObjectMeta: metav1.ObjectMeta{
-				Name: "test-local-npm-write-repo",
+				Name: localRepoName,
 			},
 		})
 		Expect(err).NotTo(HaveOccurred())
@@ -73,27 +73,30 @@ var _ = Describe("RemoteNpmRepository", Ordered, func() {
 		By("Waiting for the local repository resource to be deleted")
 		Eventually(func() bool {
 			repo := &v1alpha1.LocalNpmRepository{}
-			err := k8sClient.Get(ctx, client.ObjectKey{Name: "test-local-npm-write-repo"}, repo)
+			err := k8sClient.Get(ctx, client.ObjectKey{Name: localRepoName}, repo)
 			return errors.IsNotFound(err)
 		}, "2m", "5s").Should(BeTrue())
 		// Test actual repository to be deleted
 		By("Verifying the repository not exists in Artifactory write instances")
 		repoDetails := rtServices.RepositoryDetails{}
-		err = rtWriteClient.GetRepository("test-local-npm-write-repo", &repoDetails)
+		err = rtWriteClient.GetRepository(localRepoName, &repoDetails)
 		Expect(err).To(HaveOccurred())
+		Expect(err.Error()).To(ContainSubstring("400"))
+		Expect(err.Error()).To(ContainSubstring("Bad Request"))
 	})
 
-	When("a new npm repository is created with valid remote artifactory instance creds and pointing to a valid local repo in remote instance", func() {
+	When("a new npm remote repository is created with valid remote artifactory instance creds and pointing to a valid local repo in remote instance", func() {
 		It("should exist in Artifactory read instance", func(ctx SpecContext) {
 			By("Creating a remote repository resource with read ProviderConfig in Kubernetes")
+			repoName := fmt.Sprintf("test-remote-npm-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
 			err := k8sClient.Create(ctx, &v1alpha1.RemoteNpmRepository{
 				ObjectMeta: metav1.ObjectMeta{
-					Name: "test-remote-npm-repo-read",
+					Name: repoName,
 				},
 				Spec: v1alpha1.RemoteNpmRepositorySpec{
 					ForProvider: v1alpha1.RemoteNpmRepositoryParameters{
 						Description: ptr.To("Test Remote Npm Repository Read"),
-						URL:         ptr.To(os.Getenv("WRITE_URL") + `/artifactory/test-local-npm-write-repo/`),
+						URL:         ptr.To(os.Getenv("WRITE_URL") + "/artifactory/" + localRepoName),
 						ContentSynchronisation: []v1alpha1.RemoteNpmRepositoryContentSynchronisationParameters{
 							{
 								Enabled:                      ptr.To(true),
@@ -124,7 +127,7 @@ var _ = Describe("RemoteNpmRepository", Ordered, func() {
 				By("Deleting the remote repository resource from Kubernetes")
 				err := k8sClient.Delete(ctx, &v1alpha1.RemoteNpmRepository{
 					ObjectMeta: metav1.ObjectMeta{
-						Name: "test-remote-npm-repo-read",
+						Name: repoName,
 					},
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -132,7 +135,7 @@ var _ = Describe("RemoteNpmRepository", Ordered, func() {
 				By("Waiting for the remote repository resource to be deleted")
 				Eventually(func() bool {
 					repo := &v1alpha1.RemoteNpmRepository{}
-					err := k8sClient.Get(ctx, client.ObjectKey{Name: "test-remote-npm-repo-read"}, repo)
+					err := k8sClient.Get(ctx, client.ObjectKey{Name: repoName}, repo)
 					return errors.IsNotFound(err)
 				}, "2m", "5s").Should(BeTrue())
 			})
@@ -140,7 +143,7 @@ var _ = Describe("RemoteNpmRepository", Ordered, func() {
 			By("Waiting for the remote repository to be ready in Kubernetes")
 			Eventually(func() bool {
 				repo := &v1alpha1.RemoteNpmRepository{}
-				err := k8sClient.Get(ctx, client.ObjectKey{Name: "test-remote-npm-repo-read"}, repo)
+				err := k8sClient.Get(ctx, client.ObjectKey{Name: repoName}, repo)
 				Expect(err).NotTo(HaveOccurred())
 				return repo.Status.GetCondition(v1.TypeReady).Status == corev1.ConditionTrue &&
 					repo.Status.GetCondition(v1.TypeSynced).Status == corev1.ConditionTrue
@@ -148,26 +151,27 @@ var _ = Describe("RemoteNpmRepository", Ordered, func() {
 
 			By("Verifying the repository exists in Artifactory")
 			repoDetails := rtServices.RepositoryDetails{}
-			err = rtReadClient.GetRepository("test-remote-npm-repo-read", &repoDetails)
+			err = rtReadClient.GetRepository(repoName, &repoDetails)
 			Expect(err).NotTo(HaveOccurred())
-			Expect(repoDetails.Key).To(Equal("test-remote-npm-repo-read"))
+			Expect(repoDetails.Key).To(Equal(repoName))
 			Expect(repoDetails.Description).To(Equal("Test Remote Npm Repository Read"))
 			Expect(repoDetails.GetRepoType()).To(Equal("remote"))
 			Expect(repoDetails.PackageType).To(Equal("npm"))
 		})
 	})
 
-	When("a new npm repository is created invalid creds for remote artifactory instance", func() {
+	When("a new npm remote repository is created with invalid creds for remote artifactory instance", func() {
 		It("should not exist in Artifactory read instance", func(ctx SpecContext) {
 			By("Creating a remote repository resource with read ProviderConfig in Kubernetes")
+			repoName := fmt.Sprintf("test-remote-npm-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
 			err := k8sClient.Create(ctx, &v1alpha1.RemoteNpmRepository{
 				ObjectMeta: metav1.ObjectMeta{
-					Name: "test-remote-npm-repo-read",
+					Name: repoName,
 				},
 				Spec: v1alpha1.RemoteNpmRepositorySpec{
 					ForProvider: v1alpha1.RemoteNpmRepositoryParameters{
 						Description: ptr.To("Test Remote Npm Repository Read"),
-						URL:         ptr.To(os.Getenv("WRITE_URL") + `/artifactory/test-local-npm-write-repo/`),
+						URL:         ptr.To(os.Getenv("WRITE_URL") + "/artifactory/" + localRepoName),
 						ContentSynchronisation: []v1alpha1.RemoteNpmRepositoryContentSynchronisationParameters{
 							{
 								Enabled:                      ptr.To(true),
@@ -198,7 +202,7 @@ var _ = Describe("RemoteNpmRepository", Ordered, func() {
 				By("Deleting the remote repository resource from Kubernetes")
 				err := k8sClient.Delete(ctx, &v1alpha1.RemoteNpmRepository{
 					ObjectMeta: metav1.ObjectMeta{
-						Name: "test-remote-npm-repo-read",
+						Name: repoName,
 					},
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -206,7 +210,7 @@ var _ = Describe("RemoteNpmRepository", Ordered, func() {
 				By("Waiting for the remote repository resource to be deleted")
 				Eventually(func() bool {
 					repo := &v1alpha1.RemoteNpmRepository{}
-					err := k8sClient.Get(ctx, client.ObjectKey{Name: "test-remote-npm-repo-read"}, repo)
+					err := k8sClient.Get(ctx, client.ObjectKey{Name: repoName}, repo)
 					return errors.IsNotFound(err)
 				}, "2m", "5s").Should(BeTrue())
 			})
@@ -214,7 +218,7 @@ var _ = Describe("RemoteNpmRepository", Ordered, func() {
 			By("Waiting for the remote repository to fail in Kubernetes")
 			Eventually(func() bool {
 				repo := &v1alpha1.RemoteNpmRepository{}
-				err := k8sClient.Get(ctx, client.ObjectKey{Name: "test-remote-npm-repo-read"}, repo)
+				err := k8sClient.Get(ctx, client.ObjectKey{Name: repoName}, repo)
 				Expect(err).NotTo(HaveOccurred())
 				return repo.Status.GetCondition(v1.TypeReady).Status == corev1.ConditionFalse &&
 					repo.Status.GetCondition(v1.TypeSynced).Status == corev1.ConditionFalse &&
@@ -224,24 +228,25 @@ var _ = Describe("RemoteNpmRepository", Ordered, func() {
 
 			By("Verifying the repository did not exists in Artifactory")
 			repoDetails := rtServices.RepositoryDetails{}
-			err = rtReadClient.GetRepository("test-remote-npm-repo-read", &repoDetails)
+			err = rtReadClient.GetRepository(repoName, &repoDetails)
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("400"))
 			Expect(err.Error()).To(ContainSubstring("Bad Request"))
 		})
 	})
 
-	When("a new npm repository is created pointing to a invalid local repo in remote instance", func() {
+	When("a new npm remote repository is created pointing to an invalid local repo in the remote instance", func() {
 		It("should not exist in Artifactory read instance", func(ctx SpecContext) {
 			By("Creating a remote repository resource with read ProviderConfig in Kubernetes")
+			repoName := fmt.Sprintf("test-remote-npm-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
 			err := k8sClient.Create(ctx, &v1alpha1.RemoteNpmRepository{
 				ObjectMeta: metav1.ObjectMeta{
-					Name: "test-remote-npm-repo-read",
+					Name: repoName,
 				},
 				Spec: v1alpha1.RemoteNpmRepositorySpec{
 					ForProvider: v1alpha1.RemoteNpmRepositoryParameters{
 						Description: ptr.To("Test Remote Npm Repository Read"),
-						URL:         ptr.To(os.Getenv("WRITE_URL") + `/artifactory/test-npm-write-repo/`),
+						URL:         ptr.To(os.Getenv("WRITE_URL") + "/artifactory/test-npm-write-repo/"),
 						ContentSynchronisation: []v1alpha1.RemoteNpmRepositoryContentSynchronisationParameters{
 							{
 								Enabled:                      ptr.To(true),
@@ -272,7 +277,7 @@ var _ = Describe("RemoteNpmRepository", Ordered, func() {
 				By("Deleting the remote repository resource from Kubernetes")
 				err := k8sClient.Delete(ctx, &v1alpha1.RemoteNpmRepository{
 					ObjectMeta: metav1.ObjectMeta{
-						Name: "test-remote-npm-repo-read",
+						Name: repoName,
 					},
 				})
 				Expect(err).NotTo(HaveOccurred())
@@ -280,7 +285,7 @@ var _ = Describe("RemoteNpmRepository", Ordered, func() {
 				By("Waiting for the remote repository resource to be deleted")
 				Eventually(func() bool {
 					repo := &v1alpha1.RemoteNpmRepository{}
-					err := k8sClient.Get(ctx, client.ObjectKey{Name: "test-remote-npm-repo-read"}, repo)
+					err := k8sClient.Get(ctx, client.ObjectKey{Name: repoName}, repo)
 					return errors.IsNotFound(err)
 				}, "2m", "5s").Should(BeTrue())
 			})
@@ -288,7 +293,7 @@ var _ = Describe("RemoteNpmRepository", Ordered, func() {
 			By("Waiting for the remote repository to fail in Kubernetes")
 			Eventually(func() bool {
 				repo := &v1alpha1.RemoteNpmRepository{}
-				err := k8sClient.Get(ctx, client.ObjectKey{Name: "test-remote-npm-repo-read"}, repo)
+				err := k8sClient.Get(ctx, client.ObjectKey{Name: repoName}, repo)
 				Expect(err).NotTo(HaveOccurred())
 				return repo.Status.GetCondition(v1.TypeReady).Status == corev1.ConditionFalse &&
 					repo.Status.GetCondition(v1.TypeSynced).Status == corev1.ConditionFalse &&
@@ -298,7 +303,7 @@ var _ = Describe("RemoteNpmRepository", Ordered, func() {
 
 			By("Verifying the repository did not exists in Artifactory")
 			repoDetails := rtServices.RepositoryDetails{}
-			err = rtReadClient.GetRepository("test-remote-npm-repo-read", &repoDetails)
+			err = rtReadClient.GetRepository(repoName, &repoDetails)
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("400"))
 			Expect(err.Error()).To(ContainSubstring("Bad Request"))
