@@ -26,9 +26,10 @@ var _ = Describe("Assume control of an existing resource", func() {
 			params.Key = repoName
 			params.Description = "Test Local Npm Repository"
 			err := rtWriteClient.CreateLocalRepository().Npm(params)
+			Expect(err).NotTo(HaveOccurred())
 
+			// Clean it up, if it still exists at the end of the test
 			DeferCleanup(func(ctx SpecContext) {
-				// Clean it up, if it still exists at the end of the test
 				rtWriteClient.DeleteRepository(repoName)
 			})
 

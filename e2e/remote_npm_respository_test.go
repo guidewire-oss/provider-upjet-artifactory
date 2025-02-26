@@ -2,7 +2,9 @@ package e2e_test
 
 import (
 	"fmt"
+	"net/url"
 	"os"
+	"path"
 	"strings"
 
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
@@ -20,6 +22,7 @@ import (
 
 var _ = Describe("RemoteNpmRepository", func() {
 	var localRepoName string
+	var localRepoURL string
 	BeforeEach(func(ctx SpecContext) {
 		localRepoName = fmt.Sprintf("test-local-npm-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
 		By("Creating a local Npm repository resource with write ProviderConfig in Kubernetes")
@@ -39,6 +42,11 @@ var _ = Describe("RemoteNpmRepository", func() {
 			},
 		})
 		Expect(err).NotTo(HaveOccurred())
+
+		u, err := url.Parse(os.Getenv("WRITE_URL"))
+		Expect(err).NotTo(HaveOccurred())
+		u.Path = path.Join(u.Path, "artifactory", localRepoName)
+		localRepoURL = u.String()
 
 		By("Waiting for the local repository to be ready in Kubernetes")
 		Eventually(func() bool {
@@ -96,7 +104,7 @@ var _ = Describe("RemoteNpmRepository", func() {
 				Spec: v1alpha1.RemoteNpmRepositorySpec{
 					ForProvider: v1alpha1.RemoteNpmRepositoryParameters{
 						Description: ptr.To("Test Remote Npm Repository Read"),
-						URL:         ptr.To(os.Getenv("WRITE_URL") + "/artifactory/" + localRepoName),
+						URL:         ptr.To(localRepoURL),
 						ContentSynchronisation: []v1alpha1.RemoteNpmRepositoryContentSynchronisationParameters{
 							{
 								Enabled:                      ptr.To(true),
@@ -171,7 +179,7 @@ var _ = Describe("RemoteNpmRepository", func() {
 				Spec: v1alpha1.RemoteNpmRepositorySpec{
 					ForProvider: v1alpha1.RemoteNpmRepositoryParameters{
 						Description: ptr.To("Test Remote Npm Repository Read"),
-						URL:         ptr.To(os.Getenv("WRITE_URL") + "/artifactory/" + localRepoName),
+						URL:         ptr.To(localRepoURL),
 						ContentSynchronisation: []v1alpha1.RemoteNpmRepositoryContentSynchronisationParameters{
 							{
 								Enabled:                      ptr.To(true),
