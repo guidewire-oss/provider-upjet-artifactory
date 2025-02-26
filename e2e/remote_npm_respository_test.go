@@ -49,7 +49,7 @@ var _ = Describe("RemoteNpmRepository", Ordered, func() {
 				repo.Status.GetCondition(v1.TypeSynced).Status == corev1.ConditionTrue
 		}, "2m", "5s").Should(BeTrue())
 
-		//Test for actual resource existance
+		// Test for actual resource existence
 		By("Verifying the repository exists in Artifactory")
 		repoDetails := rtServices.RepositoryDetails{}
 		err = rtWriteClient.GetRepository("test-local-npm-write-repo", &repoDetails)

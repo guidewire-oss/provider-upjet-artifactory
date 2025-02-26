@@ -47,7 +47,7 @@ var _ = Describe("RemoteMavenRepository", Ordered, func() {
 				repo.Status.GetCondition(v1.TypeSynced).Status == corev1.ConditionTrue
 		}, "2m", "5s").Should(BeTrue())
 
-		// Test for actual resource existance in artifactory instance
+		// Test for actual resource existence in artifactory instance
 		By("Verifying the repository exists in Artifactory write instances")
 		repoDetails := rtServices.RepositoryDetails{}
 		err = rtWriteClient.GetRepository("test-local-maven-write-repo", &repoDetails)
