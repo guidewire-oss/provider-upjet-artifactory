@@ -16,19 +16,19 @@ import (
 	"github.com/myorg/provider-jfrogartifactory/apis/repository/v1alpha1"
 )
 
-var _ = Describe("LocalMavenRepository", func() {
+var _ = Describe("LocalNpmRepository", func() {
 
-	When("a new local maven repository is created", func() {
+	When("a new local npm repository is created", func() {
 		It("should exist in Artifactory", func(ctx SpecContext) {
-			repoName := fmt.Sprintf("test-local-maven-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
+			repoName := fmt.Sprintf("test-local-npm-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
 			By("Creating a repository resource in Kubernetes")
-			err := k8sClient.Create(ctx, &v1alpha1.LocalMavenRepository{
+			err := k8sClient.Create(ctx, &v1alpha1.LocalNpmRepository{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: repoName,
 				},
-				Spec: v1alpha1.LocalMavenRepositorySpec{
-					ForProvider: v1alpha1.LocalMavenRepositoryParameters{
-						Description: ptr.To("Test Local Maven Repository"),
+				Spec: v1alpha1.LocalNpmRepositorySpec{
+					ForProvider: v1alpha1.LocalNpmRepositoryParameters{
+						Description: ptr.To("Test Local Npm Repository"),
 					},
 					ResourceSpec: v1.ResourceSpec{
 						ProviderConfigReference: &v1.Reference{
@@ -37,11 +37,12 @@ var _ = Describe("LocalMavenRepository", func() {
 					},
 				},
 			})
+
 			Expect(err).NotTo(HaveOccurred())
 
 			DeferCleanup(func(ctx SpecContext) {
 				By("Deleting the repository resource from Kubernetes")
-				err := k8sClient.Delete(ctx, &v1alpha1.LocalMavenRepository{
+				err := k8sClient.Delete(ctx, &v1alpha1.LocalNpmRepository{
 					ObjectMeta: metav1.ObjectMeta{
 						Name: repoName,
 					},
@@ -50,7 +51,7 @@ var _ = Describe("LocalMavenRepository", func() {
 
 				By("Waiting for the repository resource to be deleted")
 				Eventually(func() bool {
-					repo := &v1alpha1.LocalMavenRepository{}
+					repo := &v1alpha1.LocalNpmRepository{}
 					err := k8sClient.Get(ctx, client.ObjectKey{Name: repoName}, repo)
 					return errors.IsNotFound(err)
 				}, "2m", "5s").Should(BeTrue())
@@ -65,7 +66,7 @@ var _ = Describe("LocalMavenRepository", func() {
 
 			By("Waiting for the repository to be ready in Kubernetes")
 			Eventually(func() bool {
-				repo := &v1alpha1.LocalMavenRepository{}
+				repo := &v1alpha1.LocalNpmRepository{}
 				err := k8sClient.Get(ctx, client.ObjectKey{Name: repoName}, repo)
 				Expect(err).NotTo(HaveOccurred())
 				return repo.Status.GetCondition(v1.TypeReady).Status == corev1.ConditionTrue &&
@@ -77,9 +78,9 @@ var _ = Describe("LocalMavenRepository", func() {
 			err = rtWriteClient.GetRepository(repoName, &repoDetails)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(repoDetails.Key).To(Equal(repoName))
-			Expect(repoDetails.Description).To(Equal("Test Local Maven Repository"))
+			Expect(repoDetails.Description).To(Equal("Test Local Npm Repository"))
 			Expect(repoDetails.GetRepoType()).To(Equal("local"))
-			Expect(repoDetails.PackageType).To(Equal("maven"))
+			Expect(repoDetails.PackageType).To(Equal("npm"))
 		})
 	})
 })

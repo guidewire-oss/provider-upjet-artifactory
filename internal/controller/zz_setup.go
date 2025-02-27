@@ -16,6 +16,7 @@ import (
 	remotemavenrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/remotemavenrepository"
 	remotenpmrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/remotenpmrepository"
 	virtualmavenrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/virtualmavenrepository"
+	virtualnpmrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/virtualnpmrepository"
 )
 
 // Setup creates all controllers with the supplied logger and adds them to
@@ -29,6 +30,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 		remotemavenrepository.Setup,
 		remotenpmrepository.Setup,
 		virtualmavenrepository.Setup,
+		virtualnpmrepository.Setup,
 	} {
 		if err := setup(mgr, o); err != nil {
 			return err

@@ -3,7 +3,9 @@ package e2e_test
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"os"
+	"path"
 	"strings"
 	"testing"
 
@@ -30,14 +32,29 @@ var rtReadClient rt.ArtifactoryServicesManager
 var rtWriteClient rt.ArtifactoryServicesManager
 var k8sClient client.Client
 
-var _ = ginkgo.BeforeSuite(func() {
+var _ = ginkgo.SynchronizedBeforeSuite(func() {
+	// Applying provider configs
+	outsb := strings.Builder{}
+	errsb := strings.Builder{}
+	outsb.Reset()
+	errsb.Reset()
+	fmt.Printf("Applying provider configs\n")
+	_, err := sh.Exec(nil, &outsb, &errsb, "kubectl", "apply", "-f", "providerconfig-read.yaml")
+	Expect(err).NotTo(HaveOccurred())
+	_, err = sh.Exec(nil, &outsb, &errsb, "kubectl", "apply", "-f", "providerconfig-write.yaml")
+	Expect(err).NotTo(HaveOccurred())
+	fmt.Printf("Applied provider configs\n")
+}, func() {
 	// Set up the Artifactory client to read instance
 	By("Setting up the Artifactory client to read instance")
 	ctx, cancel := context.WithCancel(context.Background())
 	DeferCleanup(cancel)
 
 	serviceDetails := rtAuth.NewArtifactoryDetails()
-	serviceDetails.SetUrl(os.Getenv("READ_URL") + "/artifactory")
+	u, err := url.Parse(os.Getenv("READ_URL"))
+	Expect(err).NotTo(HaveOccurred())
+	u.Path = path.Join(u.Path, "artifactory")
+	serviceDetails.SetUrl(u.String())
 	serviceDetails.SetUser(os.Getenv("READ_CREDENTIAL_USER"))
 	serviceDetails.SetPassword(os.Getenv("READ_CREDENTIAL_ACCESS_TOKEN"))
 
@@ -57,7 +74,10 @@ var _ = ginkgo.BeforeSuite(func() {
 	DeferCleanup(cancel)
 
 	serviceDetails = rtAuth.NewArtifactoryDetails()
-	serviceDetails.SetUrl(os.Getenv("WRITE_URL") + "/artifactory")
+	u, err = url.Parse(os.Getenv("WRITE_URL"))
+	Expect(err).NotTo(HaveOccurred())
+	u.Path = path.Join(u.Path, "artifactory")
+	serviceDetails.SetUrl(u.String())
 	serviceDetails.SetUser(os.Getenv("WRITE_CREDENTIAL_USER"))
 	serviceDetails.SetPassword(os.Getenv("WRITE_CREDENTIAL_ACCESS_TOKEN"))
 
@@ -81,21 +101,9 @@ var _ = ginkgo.BeforeSuite(func() {
 	k8sClient, err = client.New(cfg, client.Options{Scheme: scheme})
 	Expect(err).NotTo(HaveOccurred())
 	Expect(k8sClient).NotTo(BeNil())
-
-	// Applying provider configs
-	outsb := strings.Builder{}
-	errsb := strings.Builder{}
-	outsb.Reset()
-	errsb.Reset()
-	fmt.Printf("Applying provider configs\n")
-	_, err = sh.Exec(nil, &outsb, &errsb, "kubectl", "apply", "-f", "providerconfig-read.yaml")
-	Expect(err).NotTo(HaveOccurred())
-	_, err = sh.Exec(nil, &outsb, &errsb, "kubectl", "apply", "-f", "providerconfig-write.yaml")
-	Expect(err).NotTo(HaveOccurred())
-	fmt.Printf("Applied provider configs\n")
 })
 
-var _ = ginkgo.AfterSuite(func() {
+var _ = ginkgo.SynchronizedAfterSuite(func() {}, func() {
 	// Deleting provider configs
 	outsb := strings.Builder{}
 	errsb := strings.Builder{}

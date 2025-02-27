@@ -37,7 +37,7 @@ func KindClusterExists(name string) (bool, error) {
 
 // CreateKindCluster creates a new Kind cluster with the given name.
 func CreateKindCluster(name string) error {
-	err := sh.RunV("kind", "create", "cluster", "--name", name)
+	err := sh.RunV("kind", "create", "cluster", "--name", name, "--config", "e2e/config/kind-config.yaml")
 
 	if err != nil {
 		return err

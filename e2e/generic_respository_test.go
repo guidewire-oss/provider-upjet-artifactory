@@ -1,6 +1,8 @@
 package e2e_test
 
 import (
+	"fmt"
+
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 	rtServices "github.com/jfrog/jfrog-client-go/artifactory/services"
 	. "github.com/onsi/ginkgo/v2"
@@ -19,10 +21,11 @@ var _ = Describe("E2E Tests", func() {
 	Describe("GenericRepository", func() {
 		When("a new repository is created", func() {
 			It("should exist in Artifactory", func(ctx SpecContext) {
+				repoName := fmt.Sprintf("test-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
 				By("Creating a repository resource in Kubernetes")
 				err := k8sClient.Create(ctx, &v1alpha1.GenericRepository{
 					ObjectMeta: metav1.ObjectMeta{
-						Name: "test-repo",
+						Name: repoName,
 					},
 					Spec: v1alpha1.GenericRepositorySpec{
 						ForProvider: v1alpha1.GenericRepositoryParameters{
@@ -41,7 +44,7 @@ var _ = Describe("E2E Tests", func() {
 					By("Deleting the repository resource from Kubernetes")
 					err := k8sClient.Delete(ctx, &v1alpha1.GenericRepository{
 						ObjectMeta: metav1.ObjectMeta{
-							Name: "test-repo",
+							Name: repoName,
 						},
 					})
 					Expect(err).NotTo(HaveOccurred())
@@ -49,7 +52,7 @@ var _ = Describe("E2E Tests", func() {
 					By("Waiting for the repository resource to be deleted")
 					Eventually(func() bool {
 						repo := &v1alpha1.GenericRepository{}
-						err := k8sClient.Get(ctx, client.ObjectKey{Name: "test-repo"}, repo)
+						err := k8sClient.Get(ctx, client.ObjectKey{Name: repoName}, repo)
 						return errors.IsNotFound(err)
 					}, "2m", "5s").Should(BeTrue())
 				})
@@ -57,7 +60,7 @@ var _ = Describe("E2E Tests", func() {
 				By("Waiting for the repository to be ready in Kubernetes")
 				Eventually(func() bool {
 					repo := &v1alpha1.GenericRepository{}
-					err := k8sClient.Get(ctx, client.ObjectKey{Name: "test-repo"}, repo)
+					err := k8sClient.Get(ctx, client.ObjectKey{Name: repoName}, repo)
 					Expect(err).NotTo(HaveOccurred())
 					return repo.Status.GetCondition(v1.TypeReady).Status == corev1.ConditionTrue &&
 						repo.Status.GetCondition(v1.TypeSynced).Status == corev1.ConditionTrue
@@ -65,9 +68,9 @@ var _ = Describe("E2E Tests", func() {
 
 				By("Verifying the repository exists in Artifactory")
 				repoDetails := rtServices.RepositoryDetails{}
-				err = rtReadClient.GetRepository("test-repo", &repoDetails)
+				err = rtReadClient.GetRepository(repoName, &repoDetails)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(repoDetails.Key).To(Equal("test-repo"))
+				Expect(repoDetails.Key).To(Equal(repoName))
 				Expect(repoDetails.Description).To(Equal("Test repository"))
 				Expect(repoDetails.GetRepoType()).To(Equal("local"))
 				Expect(repoDetails.PackageType).To(Equal("generic"))
