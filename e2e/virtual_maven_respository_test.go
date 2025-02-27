@@ -117,6 +117,13 @@ var _ = Describe("VirtualMavenRepository", func() {
 					err := k8sClient.Get(ctx, client.ObjectKey{Name: repoName}, repo)
 					return errors.IsNotFound(err)
 				}, "2m", "5s").Should(BeTrue())
+
+				By("Verifying virtual repository does not exist in Artifactory")
+				repoDetails := rtServices.RepositoryDetails{}
+				err = rtReadClient.GetRepository(repoName, &repoDetails)
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring("400"))
+				Expect(err.Error()).To(ContainSubstring("Bad Request"))
 			})
 
 			By("Waiting for the virtual repository to be ready in Kubernetes")
@@ -179,6 +186,13 @@ var _ = Describe("VirtualMavenRepository", func() {
 					err := k8sClient.Get(ctx, client.ObjectKey{Name: repoName}, repo)
 					return errors.IsNotFound(err)
 				}, "2m", "5s").Should(BeTrue())
+
+				By("Verifying virtual repository does not exist in Artifactory")
+				repoDetails := rtServices.RepositoryDetails{}
+				err = rtReadClient.GetRepository(repoName, &repoDetails)
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring("400"))
+				Expect(err.Error()).To(ContainSubstring("Bad Request"))
 			})
 
 			By("Waiting for the virtual repository to be ready in Kubernetes")
