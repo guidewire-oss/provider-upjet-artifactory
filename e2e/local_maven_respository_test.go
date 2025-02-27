@@ -18,21 +18,21 @@ import (
 
 var _ = Describe("LocalMavenRepository", func() {
 
-	When("a new repository is created", func() {
-		It("should exist in Artifactory read instance", func(ctx SpecContext) {
+	When("a new local maven repository is created", func() {
+		It("should exist in Artifactory", func(ctx SpecContext) {
 			repoName := fmt.Sprintf("test-local-maven-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
-			By("Creating a repository resource with read ProviderConfig in Kubernetes")
+			By("Creating a repository resource in Kubernetes")
 			err := k8sClient.Create(ctx, &v1alpha1.LocalMavenRepository{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: repoName,
 				},
 				Spec: v1alpha1.LocalMavenRepositorySpec{
 					ForProvider: v1alpha1.LocalMavenRepositoryParameters{
-						Description: ptr.To("Test Local Maven Read Repository"),
+						Description: ptr.To("Test Local Maven Repository"),
 					},
 					ResourceSpec: v1.ResourceSpec{
 						ProviderConfigReference: &v1.Reference{
-							Name: "my-artifactory-providerconfig-read",
+							Name: "my-artifactory-providerconfig-write",
 						},
 					},
 				},
@@ -65,12 +65,12 @@ var _ = Describe("LocalMavenRepository", func() {
 					repo.Status.GetCondition(v1.TypeSynced).Status == corev1.ConditionTrue
 			}, "2m", "5s").Should(BeTrue())
 
-			By("Verifying the repository exists in Artifactory read instances")
+			By("Verifying the repository exists in Artifactory")
 			repoDetails := rtServices.RepositoryDetails{}
-			err = rtReadClient.GetRepository(repoName, &repoDetails)
+			err = rtWriteClient.GetRepository(repoName, &repoDetails)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(repoDetails.Key).To(Equal(repoName))
-			Expect(repoDetails.Description).To(Equal("Test Local Maven Read Repository"))
+			Expect(repoDetails.Description).To(Equal("Test Local Maven Repository"))
 			Expect(repoDetails.GetRepoType()).To(Equal("local"))
 			Expect(repoDetails.PackageType).To(Equal("maven"))
 		})

@@ -2,7 +2,9 @@ package e2e_test
 
 import (
 	"fmt"
+	"net/url"
 	"os"
+	"path"
 	"strings"
 
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
@@ -20,17 +22,18 @@ import (
 
 var _ = Describe("RemoteMavenRepository", func() {
 	var localRepoName string
+	var localRepoURL string
 
 	BeforeEach(func(ctx SpecContext) {
 		localRepoName = fmt.Sprintf("test-local-maven-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
-		By("Creating a local repository resource with write ProviderConfig in Kubernetes")
+		By("Creating a local repository resource in Kubernetes")
 		err := k8sClient.Create(ctx, &v1alpha1.LocalMavenRepository{
 			ObjectMeta: metav1.ObjectMeta{
 				Name: localRepoName,
 			},
 			Spec: v1alpha1.LocalMavenRepositorySpec{
 				ForProvider: v1alpha1.LocalMavenRepositoryParameters{
-					Description: ptr.To("Test Local Maven Write Repository"),
+					Description: ptr.To("Test Local Maven Repository"),
 				},
 				ResourceSpec: v1.ResourceSpec{
 					ProviderConfigReference: &v1.Reference{
@@ -40,6 +43,11 @@ var _ = Describe("RemoteMavenRepository", func() {
 			},
 		})
 		Expect(err).NotTo(HaveOccurred())
+
+		u, err := url.Parse(os.Getenv("WRITE_URL"))
+		Expect(err).NotTo(HaveOccurred())
+		u.Path = path.Join(u.Path, "artifactory", localRepoName)
+		localRepoURL = u.String()
 
 		By("Waiting for the local repository to be ready in Kubernetes")
 		Eventually(func() bool {
@@ -51,12 +59,12 @@ var _ = Describe("RemoteMavenRepository", func() {
 		}, "2m", "5s").Should(BeTrue())
 
 		// Test for actual resource existence in artifactory instance
-		By("Verifying the repository exists in Artifactory write instances")
+		By("Verifying the repository exists in Artifactory")
 		repoDetails := rtServices.RepositoryDetails{}
 		err = rtWriteClient.GetRepository(localRepoName, &repoDetails)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(repoDetails.Key).To(Equal(localRepoName))
-		Expect(repoDetails.Description).To(Equal("Test Local Maven Write Repository"))
+		Expect(repoDetails.Description).To(Equal("Test Local Maven Repository"))
 		Expect(repoDetails.GetRepoType()).To(Equal("local"))
 		Expect(repoDetails.PackageType).To(Equal("maven"))
 
@@ -78,25 +86,24 @@ var _ = Describe("RemoteMavenRepository", func() {
 			return errors.IsNotFound(err)
 		}, "2m", "5s").Should(BeTrue())
 		// 	Test actual repository to be deleted
-		By("Verifying the repository does not exists in Artifactory write instance")
+		By("Verifying the repository does not exists in Artifactory")
 		repoDetails := rtServices.RepositoryDetails{}
 		err = rtWriteClient.GetRepository(localRepoName, &repoDetails)
 		Expect(err).To(HaveOccurred())
 	})
 
 	When("a new maven repository is created with valid remote artifactory instance creds and pointing to a valid local repo in remote instance", func() {
-		It("should exist in Artifactory read instance", func(ctx SpecContext) {
+		It("should exist in Artifactory", func(ctx SpecContext) {
 			repoName := fmt.Sprintf("test-remote-maven-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
-			By("Creating a remote repository resource with read ProviderConfig in Kubernetes")
+			By("Creating a remote repository resource in Kubernetes")
 			err := k8sClient.Create(ctx, &v1alpha1.RemoteMavenRepository{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: repoName,
 				},
 				Spec: v1alpha1.RemoteMavenRepositorySpec{
 					ForProvider: v1alpha1.RemoteMavenRepositoryParameters{
-						Description: ptr.To("Test Remote Maven Repository Read"),
-						// Replace the below from git history
-						URL: ptr.To(os.Getenv("WRITE_URL") + "/artifactory/" + localRepoName),
+						Description: ptr.To("Test Remote Maven Repository"),
+						URL:         ptr.To(localRepoURL),
 						ContentSynchronisation: []v1alpha1.ContentSynchronisationParameters{
 							{
 								Enabled:                      ptr.To(true),
@@ -154,25 +161,24 @@ var _ = Describe("RemoteMavenRepository", func() {
 			err = rtReadClient.GetRepository(repoName, &repoDetails)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(repoDetails.Key).To(Equal(repoName))
-			Expect(repoDetails.Description).To(Equal("Test Remote Maven Repository Read"))
+			Expect(repoDetails.Description).To(Equal("Test Remote Maven Repository"))
 			Expect(repoDetails.GetRepoType()).To(Equal("remote"))
 			Expect(repoDetails.PackageType).To(Equal("maven"))
 		})
 	})
 
-	When("a new repository is created invalid creds for remote artifactory instance", func() {
-		It("should not exist in Artifactory read instance", func(ctx SpecContext) {
+	When("a new repository is created with invalid creds for remote artifactory instance", func() {
+		It("should not exist in Artifactory", func(ctx SpecContext) {
 			repoName := fmt.Sprintf("test-remote-maven-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
-			By("Creating a remote repository resource with read ProviderConfig in Kubernetes")
+			By("Creating a remote repository resource in Kubernetes")
 			err := k8sClient.Create(ctx, &v1alpha1.RemoteMavenRepository{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: repoName,
 				},
 				Spec: v1alpha1.RemoteMavenRepositorySpec{
 					ForProvider: v1alpha1.RemoteMavenRepositoryParameters{
-						Description: ptr.To("Test Remote Maven Repository Read"),
-						// Replace the below from git history
-						URL: ptr.To(os.Getenv("WRITE_URL") + "/artifactory/" + localRepoName),
+						Description: ptr.To("Test Remote Maven Repository"),
+						URL:         ptr.To(localRepoURL),
 						ContentSynchronisation: []v1alpha1.ContentSynchronisationParameters{
 							{
 								Enabled:                      ptr.To(true),
@@ -227,7 +233,7 @@ var _ = Describe("RemoteMavenRepository", func() {
 						"Upstream repository credentials or user permissions insufficient")
 			}, "2m", "5s").Should(BeTrue())
 
-			By("Verifying the repository did not exists in Artifactory")
+			By("Verifying the repository does not exist in Artifactory")
 			repoDetails := rtServices.RepositoryDetails{}
 			err = rtReadClient.GetRepository(repoName, &repoDetails)
 			Expect(err).To(HaveOccurred())
@@ -237,17 +243,17 @@ var _ = Describe("RemoteMavenRepository", func() {
 	})
 
 	When("a new repository is created pointing to a invalid local repo in remote instance", func() {
-		It("should not exist in Artifactory read instance", func(ctx SpecContext) {
+		It("should not exist in Artifactory", func(ctx SpecContext) {
 			repoName := fmt.Sprintf("test-remote-maven-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
-			By("Creating a remote repository resource with read ProviderConfig in Kubernetes")
+			By("Creating a remote repository resource in Kubernetes")
 			err := k8sClient.Create(ctx, &v1alpha1.RemoteMavenRepository{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: repoName,
 				},
 				Spec: v1alpha1.RemoteMavenRepositorySpec{
 					ForProvider: v1alpha1.RemoteMavenRepositoryParameters{
-						Description: ptr.To("Test Remote Maven Repository Read"),
-						URL:         ptr.To(os.Getenv("WRITE_URL") + "/artifactory/test-maven-write-repo/"),
+						Description: ptr.To("Test Remote Maven Repository"),
+						URL:         ptr.To(localRepoURL + "-invalid"),
 						ContentSynchronisation: []v1alpha1.ContentSynchronisationParameters{
 							{
 								Enabled:                      ptr.To(true),
@@ -302,7 +308,7 @@ var _ = Describe("RemoteMavenRepository", func() {
 						"Upstream repository not found or not accessible")
 			}, "2m", "5s").Should(BeTrue())
 
-			By("Verifying the repository did not exists in Artifactory")
+			By("Verifying the repository does not exist in Artifactory")
 			repoDetails := rtServices.RepositoryDetails{}
 			err = rtReadClient.GetRepository(repoName, &repoDetails)
 			Expect(err).To(HaveOccurred())

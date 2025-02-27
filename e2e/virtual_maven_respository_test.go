@@ -22,14 +22,14 @@ var _ = Describe("VirtualMavenRepository", func() {
 
 	BeforeEach(func(ctx SpecContext) {
 		localRepoName = fmt.Sprintf("test-local-maven-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
-		By("Creating a local repository resource with read ProviderConfig in Kubernetes")
+		By("Creating a local repository resource in Kubernetes")
 		err := k8sClient.Create(ctx, &v1alpha1.LocalMavenRepository{
 			ObjectMeta: metav1.ObjectMeta{
 				Name: localRepoName,
 			},
 			Spec: v1alpha1.LocalMavenRepositorySpec{
 				ForProvider: v1alpha1.LocalMavenRepositoryParameters{
-					Description: ptr.To("Test Local Maven Read Repository"),
+					Description: ptr.To("Test Local Maven Repository"),
 				},
 				ResourceSpec: v1.ResourceSpec{
 					ProviderConfigReference: &v1.Reference{
@@ -48,13 +48,14 @@ var _ = Describe("VirtualMavenRepository", func() {
 			return repo.Status.GetCondition(v1.TypeReady).Status == corev1.ConditionTrue &&
 				repo.Status.GetCondition(v1.TypeSynced).Status == corev1.ConditionTrue
 		}, "2m", "5s").Should(BeTrue())
+
 		// Check for the actual existence as well
 		By("Verifying the repository exists in Artifactory")
 		repoDetails := rtServices.RepositoryDetails{}
 		err = rtReadClient.GetRepository(localRepoName, &repoDetails)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(repoDetails.Key).To(Equal(localRepoName))
-		Expect(repoDetails.Description).To(Equal("Test Local Maven Read Repository"))
+		Expect(repoDetails.Description).To(Equal("Test Local Maven Repository"))
 		Expect(repoDetails.GetRepoType()).To(Equal("local"))
 		Expect(repoDetails.PackageType).To(Equal("maven"))
 	})
@@ -77,16 +78,16 @@ var _ = Describe("VirtualMavenRepository", func() {
 	})
 
 	When("a new repository is created", func() {
-		It("should exist in Artifactory read instance", func(ctx SpecContext) {
+		It("should exist in Artifactory", func(ctx SpecContext) {
 			repoName := fmt.Sprintf("test-virtual-maven-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
-			By("Creating a virtual repository resource with read ProviderConfig in Kubernetes")
+			By("Creating a virtual repository resource in Kubernetes")
 			err := k8sClient.Create(ctx, &v1alpha1.VirtualMavenRepository{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: repoName,
 				},
 				Spec: v1alpha1.VirtualMavenRepositorySpec{
 					ForProvider: v1alpha1.VirtualMavenRepositoryParameters{
-						Description:   ptr.To("Test Virtual Maven Read Repository"),
+						Description:   ptr.To("Test Virtual Maven Repository"),
 						RepoLayoutRef: ptr.To("maven-2-default"),
 						Repositories: []*string{
 							ptr.To(localRepoName),
@@ -132,23 +133,23 @@ var _ = Describe("VirtualMavenRepository", func() {
 			err = rtReadClient.GetRepository(repoName, &repoDetails)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(repoDetails.Key).To(Equal(repoName))
-			Expect(repoDetails.Description).To(Equal("Test Virtual Maven Read Repository"))
+			Expect(repoDetails.Description).To(Equal("Test Virtual Maven Repository"))
 			Expect(repoDetails.GetRepoType()).To(Equal("virtual"))
 			Expect(repoDetails.PackageType).To(Equal("maven"))
 		})
 	})
 
-	When("a new repository is created with non existing local repo in read instance", func() {
-		It("should not exist in Artifactory read instance", func(ctx SpecContext) {
+	When("a new repository is created with non existing local repo ", func() {
+		It("should not exist in Artifactory", func(ctx SpecContext) {
 			repoName := fmt.Sprintf("test-virtual-maven-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
-			By("Creating a virtual repository resource with read ProviderConfig in Kubernetes")
+			By("Creating a virtual repository resource in Kubernetes")
 			err := k8sClient.Create(ctx, &v1alpha1.VirtualMavenRepository{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: repoName,
 				},
 				Spec: v1alpha1.VirtualMavenRepositorySpec{
 					ForProvider: v1alpha1.VirtualMavenRepositoryParameters{
-						Description:   ptr.To("Test Virtual Maven Read Repository"),
+						Description:   ptr.To("Test Virtual Maven Repository"),
 						RepoLayoutRef: ptr.To("maven-2-default"),
 						Repositories: []*string{
 							ptr.To("test-local-maven-read-repo-nonexistent"),

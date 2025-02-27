@@ -22,14 +22,14 @@ var _ = Describe("VirtualNpmRepository", func() {
 
 	BeforeEach(func(ctx SpecContext) {
 		localRepoName = fmt.Sprintf("test-local-npm-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
-		By("Creating a local repository resource with read ProviderConfig in Kubernetes")
+		By("Creating a local repository resource in Kubernetes")
 		err := k8sClient.Create(ctx, &v1alpha1.LocalNpmRepository{
 			ObjectMeta: metav1.ObjectMeta{
 				Name: localRepoName,
 			},
 			Spec: v1alpha1.LocalNpmRepositorySpec{
 				ForProvider: v1alpha1.LocalNpmRepositoryParameters{
-					Description: ptr.To("Test Local Npm Read Repository"),
+					Description: ptr.To("Test Local Npm Repository"),
 				},
 				ResourceSpec: v1.ResourceSpec{
 					ProviderConfigReference: &v1.Reference{
@@ -48,13 +48,14 @@ var _ = Describe("VirtualNpmRepository", func() {
 			return repo.Status.GetCondition(v1.TypeReady).Status == corev1.ConditionTrue &&
 				repo.Status.GetCondition(v1.TypeSynced).Status == corev1.ConditionTrue
 		}, "2m", "5s").Should(BeTrue())
+
 		// Check for the actual existence as well
 		By("Verifying the repository exists in Artifactory")
 		repoDetails := rtServices.RepositoryDetails{}
 		err = rtReadClient.GetRepository(localRepoName, &repoDetails)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(repoDetails.Key).To(Equal(localRepoName))
-		Expect(repoDetails.Description).To(Equal("Test Local Npm Read Repository"))
+		Expect(repoDetails.Description).To(Equal("Test Local Npm Repository"))
 		Expect(repoDetails.GetRepoType()).To(Equal("local"))
 		Expect(repoDetails.PackageType).To(Equal("npm"))
 	})
@@ -77,16 +78,16 @@ var _ = Describe("VirtualNpmRepository", func() {
 	})
 
 	When("a new repository is created", func() {
-		It("should exist in Artifactory read instance", func(ctx SpecContext) {
+		It("should exist in Artifactory", func(ctx SpecContext) {
 			repoName := fmt.Sprintf("test-virtual-npm-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
-			By("Creating a virtual repository resource with read ProviderConfig in Kubernetes")
+			By("Creating a virtual repository resource in Kubernetes")
 			err := k8sClient.Create(ctx, &v1alpha1.VirtualNpmRepository{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: repoName,
 				},
 				Spec: v1alpha1.VirtualNpmRepositorySpec{
 					ForProvider: v1alpha1.VirtualNpmRepositoryParameters{
-						Description: ptr.To("Test Virtual Npm Read Repository"),
+						Description: ptr.To("Test Virtual Npm Repository"),
 						Repositories: []*string{
 							ptr.To(localRepoName),
 						},
@@ -131,23 +132,23 @@ var _ = Describe("VirtualNpmRepository", func() {
 			err = rtReadClient.GetRepository(repoName, &repoDetails)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(repoDetails.Key).To(Equal(repoName))
-			Expect(repoDetails.Description).To(Equal("Test Virtual Npm Read Repository"))
+			Expect(repoDetails.Description).To(Equal("Test Virtual Npm Repository"))
 			Expect(repoDetails.GetRepoType()).To(Equal("virtual"))
 			Expect(repoDetails.PackageType).To(Equal("npm"))
 		})
 	})
 
-	When("a new repository is created with non existing local repo in read instance", func() {
-		It("should not exist in Artifactory read instance", func(ctx SpecContext) {
+	When("a new repository is created with non existing local repo", func() {
+		It("should not exist in Artifactory", func(ctx SpecContext) {
 			repoName := fmt.Sprintf("test-virtual-npm-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
-			By("Creating a virtual repository resource with read ProviderConfig in Kubernetes")
+			By("Creating a virtual repository resource in Kubernetes")
 			err := k8sClient.Create(ctx, &v1alpha1.VirtualNpmRepository{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: repoName,
 				},
 				Spec: v1alpha1.VirtualNpmRepositorySpec{
 					ForProvider: v1alpha1.VirtualNpmRepositoryParameters{
-						Description: ptr.To("Test Virtual Npm Read Repository"),
+						Description: ptr.To("Test Virtual Npm Repository"),
 						Repositories: []*string{
 							ptr.To("test-local-npm-read-repo-nonexistent"),
 						},

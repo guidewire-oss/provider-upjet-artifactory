@@ -21,7 +21,7 @@ var _ = Describe("Assume control of an existing resource", func() {
 	When("a local NPM repository already exists in Artifactory", func() {
 		It("should assume control of that repository", func(ctx SpecContext) {
 			repoName := fmt.Sprintf("test-local-npm-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
-			By("Creating a local repository resource in the Artifactory write instance")
+			By("Creating a local repository resource in Artifactory")
 			params := services.NewNpmLocalRepositoryParams()
 			params.Key = repoName
 			params.Description = "Test Local Npm Repository"
@@ -33,7 +33,7 @@ var _ = Describe("Assume control of an existing resource", func() {
 				rtWriteClient.DeleteRepository(repoName)
 			})
 
-			By("Verifying the repository exists in Artifactory write instances")
+			By("Verifying the repository exists in Artifactory")
 			repoDetails := rtServices.RepositoryDetails{}
 			err = rtWriteClient.GetRepository(repoName, &repoDetails)
 			Expect(err).NotTo(HaveOccurred())
@@ -60,7 +60,7 @@ var _ = Describe("Assume control of an existing resource", func() {
 			})
 			Expect(err).NotTo(HaveOccurred())
 
-			By("Waiting for the repository to be ready in Kubernetes")
+			By("Waiting for the repository resource to be ready in Kubernetes")
 			Eventually(func() bool {
 				repo := &v1alpha1.LocalNpmRepository{}
 				err := k8sClient.Get(ctx, client.ObjectKey{Name: repoName}, repo)

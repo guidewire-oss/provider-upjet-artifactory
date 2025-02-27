@@ -19,9 +19,9 @@ import (
 var _ = Describe("LocalNpmRepository", func() {
 
 	When("a new local npm repository is created", func() {
-		It("should exist in Artifactory write instance", func(ctx SpecContext) {
+		It("should exist in Artifactory", func(ctx SpecContext) {
 			repoName := fmt.Sprintf("test-local-npm-repo-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
-			By("Creating a local repository resource with write ProviderConfig in Kubernetes")
+			By("Creating a repository resource in Kubernetes")
 			err := k8sClient.Create(ctx, &v1alpha1.LocalNpmRepository{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: repoName,
@@ -66,7 +66,7 @@ var _ = Describe("LocalNpmRepository", func() {
 					repo.Status.GetCondition(v1.TypeSynced).Status == corev1.ConditionTrue
 			}, "2m", "5s").Should(BeTrue())
 
-			By("Verifying the repository exists in Artifactory write instances")
+			By("Verifying the repository exists in Artifactory")
 			repoDetails := rtServices.RepositoryDetails{}
 			err = rtWriteClient.GetRepository(repoName, &repoDetails)
 			Expect(err).NotTo(HaveOccurred())
