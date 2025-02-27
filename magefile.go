@@ -32,7 +32,6 @@ func TestE2E() error {
 		"--randomize-all",
 		"--randomize-suites",
 		"--keep-going",
-		"--procs=2",
 		"e2e",
 	)
 }
