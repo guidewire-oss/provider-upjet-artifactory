@@ -14,7 +14,9 @@ import (
 	rt "github.com/jfrog/jfrog-client-go/artifactory"
 	rtAuth "github.com/jfrog/jfrog-client-go/artifactory/auth"
 	rtConfig "github.com/jfrog/jfrog-client-go/config"
-	"github.com/myorg/provider-jfrogartifactory/apis/repository/v1alpha1"
+	v1alpha1repository "github.com/myorg/provider-jfrogartifactory/apis/repository/v1alpha1"
+	v1alpha1user "github.com/myorg/provider-jfrogartifactory/apis/user/v1alpha1"
+	v1alpha1group "github.com/myorg/provider-jfrogartifactory/apis/group/v1alpha1"
 	"github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -94,7 +96,11 @@ var _ = ginkgo.SynchronizedBeforeSuite(func() {
 	// Set up the Kubernetes client
 	By("Setting up the Kubernetes client")
 	scheme := runtime.NewScheme()
-	err = v1alpha1.AddToScheme(scheme)
+	err = v1alpha1repository.AddToScheme(scheme)
+	Expect(err).NotTo(HaveOccurred())
+	err = v1alpha1user.AddToScheme(scheme)
+	Expect(err).NotTo(HaveOccurred())
+	err = v1alpha1group.AddToScheme(scheme)
 	Expect(err).NotTo(HaveOccurred())
 
 	cfg := config.GetConfigOrDie()

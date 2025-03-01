@@ -67,11 +67,6 @@ func (in *ArtifactoryGroupInitParameters) DeepCopyInto(out *ArtifactoryGroupInit
 		*out = new(string)
 		**out = **in
 	}
-	if in.Name != nil {
-		in, out := &in.Name, &out.Name
-		*out = new(string)
-		**out = **in
-	}
 	if in.PolicyManager != nil {
 		in, out := &in.PolicyManager, &out.PolicyManager
 		*out = new(bool)
@@ -185,11 +180,6 @@ func (in *ArtifactoryGroupObservation) DeepCopyInto(out *ArtifactoryGroupObserva
 		*out = new(string)
 		**out = **in
 	}
-	if in.Name != nil {
-		in, out := &in.Name, &out.Name
-		*out = new(string)
-		**out = **in
-	}
 	if in.PolicyManager != nil {
 		in, out := &in.PolicyManager, &out.PolicyManager
 		*out = new(bool)
@@ -263,11 +253,6 @@ func (in *ArtifactoryGroupParameters) DeepCopyInto(out *ArtifactoryGroupParamete
 	}
 	if in.ExternalID != nil {
 		in, out := &in.ExternalID, &out.ExternalID
-		*out = new(string)
-		**out = **in
-	}
-	if in.Name != nil {
-		in, out := &in.Name, &out.Name
 		*out = new(string)
 		**out = **in
 	}

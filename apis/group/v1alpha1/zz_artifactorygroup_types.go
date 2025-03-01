@@ -30,9 +30,6 @@ type ArtifactoryGroupInitParameters struct {
 	// New external group ID used to configure the corresponding group in Azure AD.
 	ExternalID *string `json:"externalId,omitempty" tf:"external_id,omitempty"`
 
-	// Name of the group.
-	Name *string `json:"name,omitempty" tf:"name,omitempty"`
-
 	// When this override is set, User in the group can set Xray security and compliance policies. Default value is `false`.
 	PolicyManager *bool `json:"policyManager,omitempty" tf:"policy_manager,omitempty"`
 
@@ -71,9 +68,6 @@ type ArtifactoryGroupObservation struct {
 	ExternalID *string `json:"externalId,omitempty" tf:"external_id,omitempty"`
 
 	ID *string `json:"id,omitempty" tf:"id,omitempty"`
-
-	// Name of the group.
-	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
 	// When this override is set, User in the group can set Xray security and compliance policies. Default value is `false`.
 	PolicyManager *bool `json:"policyManager,omitempty" tf:"policy_manager,omitempty"`
@@ -116,10 +110,6 @@ type ArtifactoryGroupParameters struct {
 	// New external group ID used to configure the corresponding group in Azure AD.
 	// +kubebuilder:validation:Optional
 	ExternalID *string `json:"externalId,omitempty" tf:"external_id,omitempty"`
-
-	// Name of the group.
-	// +kubebuilder:validation:Optional
-	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
 	// When this override is set, User in the group can set Xray security and compliance policies. Default value is `false`.
 	// +kubebuilder:validation:Optional
@@ -183,9 +173,8 @@ type ArtifactoryGroupStatus struct {
 type ArtifactoryGroup struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.name) || (has(self.initProvider) && has(self.initProvider.name))",message="spec.forProvider.name is a required parameter"
-	Spec   ArtifactoryGroupSpec   `json:"spec"`
-	Status ArtifactoryGroupStatus `json:"status,omitempty"`
+	Spec              ArtifactoryGroupSpec   `json:"spec"`
+	Status            ArtifactoryGroupStatus `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true
