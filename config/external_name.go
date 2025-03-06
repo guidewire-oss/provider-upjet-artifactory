@@ -19,7 +19,7 @@ var ExternalNameConfigs = map[string]config.ExternalName{
 	"artifactory_virtual_maven_repository": config.ParameterAsIdentifier("key"),
 	"artifactory_remote_maven_repository":  config.ParameterAsIdentifier("key"),
 	"artifactory_user":                     config.ParameterAsIdentifier("name"),
-	"artifactory_permission_target":        config.ParameterAsIdentifier("name"),
+	"platform_permission":        			config.ParameterAsIdentifier("name"),
 	"artifactory_group":                    config.ParameterAsIdentifier("name"),
 }
 

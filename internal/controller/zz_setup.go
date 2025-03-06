@@ -10,7 +10,6 @@ import (
 	"github.com/crossplane/upjet/pkg/controller"
 
 	artifactorygroup "github.com/myorg/provider-jfrogartifactory/internal/controller/group/artifactorygroup"
-	artifactorypermissiontarget "github.com/myorg/provider-jfrogartifactory/internal/controller/permissiontarget/artifactorypermissiontarget"
 	providerconfig "github.com/myorg/provider-jfrogartifactory/internal/controller/providerconfig"
 	genericrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/genericrepository"
 	localmavenrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/localmavenrepository"
@@ -27,7 +26,6 @@ import (
 func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
 		artifactorygroup.Setup,
-		artifactorypermissiontarget.Setup,
 		providerconfig.Setup,
 		genericrepository.Setup,
 		localmavenrepository.Setup,

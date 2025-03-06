@@ -23,8 +23,8 @@ var _ = Describe("Artifactory Group", func() {
 
 	BeforeEach(func(ctx SpecContext) {
 		By("Creating an artifactory user resource in Kubernetes")
-		userName := fmt.Sprintf("test-artifactory-user-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
-		email := fmt.Sprintf("testartifactoryuser%d_%d@guidewire.com", GinkgoRandomSeed(), GinkgoParallelProcess())
+		userName = fmt.Sprintf("test-artifactory-user-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
+		email = fmt.Sprintf("testartifactoryuser%d_%d@guidewire.com", GinkgoRandomSeed(), GinkgoParallelProcess())
 		err := k8sClient.Create(ctx, &v1alpha1user.ArtifactoryUser{
 			ObjectMeta: metav1.ObjectMeta{
 				Name: userName,
