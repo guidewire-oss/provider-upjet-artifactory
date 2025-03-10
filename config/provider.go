@@ -9,7 +9,6 @@ import (
 	_ "embed"
 
 	"github.com/myorg/provider-jfrogartifactory/config/artifactorygroup"
-	"github.com/myorg/provider-jfrogartifactory/config/artifactorypermissiontarget"
 	"github.com/myorg/provider-jfrogartifactory/config/artifactoryuser"
 	"github.com/myorg/provider-jfrogartifactory/config/localmavenrepository"
 	"github.com/myorg/provider-jfrogartifactory/config/localnpmrepository"
@@ -53,7 +52,6 @@ func GetProvider() *ujconfig.Provider {
 		remotemavenrepository.Configure,
 		virtualmavenrepository.Configure,
 		artifactoryuser.Configure,
-		artifactorypermissiontarget.Configure,
 		artifactorygroup.Configure,
 	} {
 		configure(pc)
