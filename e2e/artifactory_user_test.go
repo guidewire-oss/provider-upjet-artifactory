@@ -22,7 +22,7 @@ var _ = Describe("Artifactory User", func() {
 		It("should exists in Artifactory read instance", func(ctx SpecContext) {
 			// Create Kubernetes object of Artifactory User
 			userName := fmt.Sprintf("test-artifactory-user-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
-			email := fmt.Sprintf("testartifactoryuser%d_%d@guidewire.com", GinkgoRandomSeed(), GinkgoParallelProcess()) 
+			email := fmt.Sprintf("testartifactoryuser%d_%d@guidewire.com", GinkgoRandomSeed(), GinkgoParallelProcess())
 			By("Creating an artifactory user resource in Kubernetes")
 			err := k8sClient.Create(ctx, &v1alpha1.ArtifactoryUser{
 				ObjectMeta: metav1.ObjectMeta{
