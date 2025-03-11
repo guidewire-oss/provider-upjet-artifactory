@@ -17,7 +17,7 @@ import (
 	v1alpha1group "github.com/myorg/provider-jfrogartifactory/apis/group/v1alpha1"
 	v1alpha1repository "github.com/myorg/provider-jfrogartifactory/apis/repository/v1alpha1"
 	v1alpha1user "github.com/myorg/provider-jfrogartifactory/apis/user/v1alpha1"
-	// v1alpha1permission "github.com/myorg/provider-jfrogartifactory/apis/permissiontarget/v1alpha1"
+
 	"github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
