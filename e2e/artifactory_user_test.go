@@ -20,7 +20,7 @@ import (
 	"github.com/myorg/provider-jfrogartifactory/apis/user/v1alpha1"
 )
 
-var _ = FDescribe("Artifactory User", func() {
+var _ = Describe("Artifactory User", func() {
 
 	When("a new user is created", func() {
 		It("should exists in Artifactory read instance", func(ctx SpecContext) {
