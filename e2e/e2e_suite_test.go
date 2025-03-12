@@ -17,6 +17,7 @@ import (
 	v1alpha1group "github.com/myorg/provider-jfrogartifactory/apis/group/v1alpha1"
 	v1alpha1repository "github.com/myorg/provider-jfrogartifactory/apis/repository/v1alpha1"
 	v1alpha1user "github.com/myorg/provider-jfrogartifactory/apis/user/v1alpha1"
+	corev1 "k8s.io/api/core/v1"
 
 	"github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/ginkgo/v2"
@@ -103,8 +104,8 @@ var _ = ginkgo.SynchronizedBeforeSuite(func() {
 	Expect(err).NotTo(HaveOccurred())
 	err = v1alpha1group.AddToScheme(scheme)
 	Expect(err).NotTo(HaveOccurred())
-	// err = v1alpha1permission.AddToScheme(scheme)
-	// Expect(err).NotTo(HaveOccurred())
+	err = corev1.AddToScheme(scheme)
+	Expect(err).NotTo(HaveOccurred())
 
 	cfg := config.GetConfigOrDie()
 	k8sClient, err = client.New(cfg, client.Options{Scheme: scheme})

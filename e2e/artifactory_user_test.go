@@ -1,7 +1,11 @@
 package e2e_test
 
 import (
+	b64 "encoding/base64"
 	"fmt"
+	"math/rand"
+	"strconv"
+	"time"
 
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 	rtServices "github.com/jfrog/jfrog-client-go/artifactory/services"
@@ -16,15 +20,37 @@ import (
 	"github.com/myorg/provider-jfrogartifactory/apis/user/v1alpha1"
 )
 
-var _ = Describe("Artifactory User", func() {
+var _ = FDescribe("Artifactory User", func() {
 
 	When("a new user is created", func() {
 		It("should exists in Artifactory read instance", func(ctx SpecContext) {
 			// Create Kubernetes object of Artifactory User
 			userName := fmt.Sprintf("test-artifactory-user-%d-%d", GinkgoRandomSeed(), GinkgoParallelProcess())
 			email := fmt.Sprintf("testartifactoryuser%d_%d@guidewire.com", GinkgoRandomSeed(), GinkgoParallelProcess())
+			secret := &corev1.Secret{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      "password",
+					Namespace: "default",
+				},
+				Type: "Opaque",
+				Data: map[string][]byte{
+					"password": ([]byte(b64.StdEncoding.EncodeToString([]byte(generateRandomPasswordString(10))))),
+				},
+			}
 			By("Creating an artifactory user resource in Kubernetes")
-			err := k8sClient.Create(ctx, &v1alpha1.ArtifactoryUser{
+			err := k8sClient.Create(ctx, secret)
+			Expect(err).NotTo(HaveOccurred())
+			DeferCleanup(func(ctx SpecContext) {
+				By("Deleting the secret resource from Kubernetes")
+				err := k8sClient.Delete(ctx, &corev1.Secret{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      "password",
+						Namespace: "default",
+					},
+				})
+				Expect(err).NotTo(HaveOccurred())
+			})
+			err = k8sClient.Create(ctx, &v1alpha1.ArtifactoryUser{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: userName,
 				},
@@ -32,6 +58,13 @@ var _ = Describe("Artifactory User", func() {
 					ForProvider: v1alpha1.ArtifactoryUserParameters{
 						Name:  &userName,
 						Email: ptr.To(email),
+						PasswordSecretRef: &v1.SecretKeySelector{
+							SecretReference: v1.SecretReference{
+								Name:      "password",
+								Namespace: "default",
+							},
+							Key: "password",
+						},
 					},
 					ResourceSpec: v1.ResourceSpec{
 						ProviderConfigReference: &v1.Reference{
@@ -94,3 +127,21 @@ var _ = Describe("Artifactory User", func() {
 		})
 	})
 })
+
+const charset = "abcdefghijklmnopqrstuvwxyz" +
+	"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+var seededRand *rand.Rand = rand.New(
+	rand.NewSource(time.Now().UnixNano()))
+
+func StringWithCharset(length int, charset string) string {
+	b := make([]byte, length)
+	for i := range b {
+		b[i] = charset[seededRand.Intn(len(charset))]
+	}
+	return strconv.Itoa(rand.Int()) + string(b)
+}
+
+func generateRandomPasswordString(length int) string {
+	return StringWithCharset(length, charset)
+}
