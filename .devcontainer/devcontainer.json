@@ -23,12 +23,18 @@
 		"ghcr.io/devcontainers-extra/features/tfswitch:1": {}
 	},
 
-	"onCreateCommand": "tfswitch -b /home/vscode/terraform 1.5.7 ; helm repo add jfrog https://charts.jfrog.io ; go install github.com/magefile/mage@v1.15.0 ; go install github.com/onsi/ginkgo/v2/ginkgo ; go install golang.org/x/tools/cmd/goimports@v0.24.0",
+	"onCreateCommand": "sudo chmod 755 /var/run ; tfswitch -b /home/vscode/terraform 1.5.7 ; helm repo add jfrog https://charts.jfrog.io ; go install github.com/magefile/mage@v1.15.0 ; go install github.com/onsi/ginkgo/v2/ginkgo ; go install golang.org/x/tools/cmd/goimports@v0.24.0",
 	"updateContentCommand": "go install github.com/golangci/golangci-lint/cmd/golangci-lint@v$(grep -E '^GOLANGCILINT_VERSION[[:space:]]*\\?=[[:space:]]*[[:digit:][:punct:]]*' Makefile | cut -d'=' -f2 | tr -d '[:space:]')",
 	"remoteEnv": {
 		"PATH": "${containerEnv:PATH}:/home/vscode",
-		"ARTIFACTORY_LICENSE_KEY": "${localEnv:ARTIFACTORY_LICENSE_KEY}"
-	},
+		"ARTIFACTORY_LICENSE_KEY": "${localEnv:ARTIFACTORY_LICENSE_KEY}",
+		"READ_URL": "${localEnv:READ_URL}",
+		"READ_CREDENTIAL_USER": "${localEnv:READ_CREDENTIAL_USER}",
+		"READ_CREDENTIAL_ACCESS_TOKEN": "${localEnv:READ_CREDENTIAL_ACCESS_TOKEN}",
+		"WRITE_URL": "${localEnv:WRITE_URL}",
+		"WRITE_CREDENTIAL_USER": "${localEnv:WRITE_CREDENTIAL_USER}",
+		"WRITE_CREDENTIAL_ACCESS_TOKEN": "${localEnv:WRITE_CREDENTIAL_ACCESS_TOKEN}"
+	}
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
@@ -41,13 +47,4 @@
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"
-
-	"containerEnv" : {
-        "READ_URL": "<>",
-        "READ_CREDENTIAL_USER": "<>",
-        "READ_CREDENTIAL_ACCESS_TOKEN": "<>",
-        "WRITE_URL": "<>",
-        "WRITE_CREDENTIAL_USER": "<>",
-        "WRITE_CREDENTIAL_ACCESS_TOKEN": "<>"
-    }
 }
