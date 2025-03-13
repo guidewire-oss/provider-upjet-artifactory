@@ -9,6 +9,7 @@ import (
 
 	"github.com/crossplane/upjet/pkg/controller"
 
+	artifactorygroup "github.com/myorg/provider-jfrogartifactory/internal/controller/group/artifactorygroup"
 	providerconfig "github.com/myorg/provider-jfrogartifactory/internal/controller/providerconfig"
 	genericrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/genericrepository"
 	localmavenrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/localmavenrepository"
@@ -17,12 +18,14 @@ import (
 	remotenpmrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/remotenpmrepository"
 	virtualmavenrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/virtualmavenrepository"
 	virtualnpmrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/virtualnpmrepository"
+	artifactoryuser "github.com/myorg/provider-jfrogartifactory/internal/controller/user/artifactoryuser"
 )
 
 // Setup creates all controllers with the supplied logger and adds them to
 // the supplied manager.
 func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
+		artifactorygroup.Setup,
 		providerconfig.Setup,
 		genericrepository.Setup,
 		localmavenrepository.Setup,
@@ -31,6 +34,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 		remotenpmrepository.Setup,
 		virtualmavenrepository.Setup,
 		virtualnpmrepository.Setup,
+		artifactoryuser.Setup,
 	} {
 		if err := setup(mgr, o); err != nil {
 			return err
