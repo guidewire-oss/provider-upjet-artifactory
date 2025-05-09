@@ -9,6 +9,7 @@ import (
 	"context"
 	_ "embed"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/myorg/provider-jfrogartifactory/config/artifactorygroup"
 	"github.com/myorg/provider-jfrogartifactory/config/artifactoryuser"
 	"github.com/myorg/provider-jfrogartifactory/config/localmavenrepository"
@@ -38,6 +39,22 @@ var providerMetadata string
 
 // GetProvider returns provider configuration
 func GetProvider(ctx context.Context) (*ujconfig.Provider, error) {
+	newProvider := artifactory.SdkV2()
+	//newProvider.ResourcesMap artifactory.SdkV2().DataSourcesMap
+
+	combinedMap := make(map[string]*schema.Resource)
+
+	// Add resources to the combined map
+	for key, resource := range artifactory.SdkV2().ResourcesMap {
+	combinedMap[key] = resource
+	}
+
+	// Add data sources to the combined map
+	for key, dataSource := range artifactory.SdkV2().DataSourcesMap {
+	combinedMap[key] = dataSource
+	}
+	newProvider.ResourcesMap = combinedMap
+	
 	pc := ujconfig.NewProvider([]byte(providerSchema), resourcePrefix, modulePath, []byte(providerMetadata),
 		ujconfig.WithRootGroup("upbound.io"),
 		ujconfig.WithShortName("artifactory"),
@@ -45,7 +62,7 @@ func GetProvider(ctx context.Context) (*ujconfig.Provider, error) {
 		ujconfig.WithTerraformPluginSDKIncludeList(resourceList(terraformPluginSDKExternalNameConfigs)),
 		ujconfig.WithFeaturesPackage("internal/features"),
 		ujconfig.WithReferenceInjectors([]ujconfig.ReferenceInjector{reference.NewInjector(modulePath)}),
-		ujconfig.WithTerraformProvider(artifactory.SdkV2()), 
+		ujconfig.WithTerraformProvider(newProvider), 
 		ujconfig.WithDefaultResourceOptions(
 			resourceConfigurator(),
 		))

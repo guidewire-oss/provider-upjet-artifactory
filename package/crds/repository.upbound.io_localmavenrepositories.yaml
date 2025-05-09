@@ -11,7 +11,7 @@ spec:
     categories:
     - crossplane
     - managed
-    - jfrogartifactory
+    - artifactory
     kind: LocalMavenRepository
     listKind: LocalMavenRepositoryList
     plural: localmavenrepositories
@@ -129,7 +129,8 @@ spec:
                       The maximum number of unique snapshots of a single artifact to store.
                       Once the number of snapshots exceeds this setting, older versions are removed.
                       A value of 0 (default) indicates there is no limit, and unique snapshots are not cleaned up.
-                    type: number
+                    format: int64
+                    type: integer
                   notes:
                     description: Internal description.
                     type: string
@@ -252,7 +253,8 @@ spec:
                       The maximum number of unique snapshots of a single artifact to store.
                       Once the number of snapshots exceeds this setting, older versions are removed.
                       A value of 0 (default) indicates there is no limit, and unique snapshots are not cleaned up.
-                    type: number
+                    format: int64
+                    type: integer
                   notes:
                     description: Internal description.
                     type: string
@@ -537,7 +539,8 @@ spec:
                       The maximum number of unique snapshots of a single artifact to store.
                       Once the number of snapshots exceeds this setting, older versions are removed.
                       A value of 0 (default) indicates there is no limit, and unique snapshots are not cleaned up.
-                    type: number
+                    format: int64
+                    type: integer
                   notes:
                     description: Internal description.
                     type: string

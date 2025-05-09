@@ -11,7 +11,7 @@ spec:
     categories:
     - crossplane
     - managed
-    - jfrogartifactory
+    - artifactory
     kind: ArtifactoryUser
     listKind: ArtifactoryUserList
     plural: artifactoryusers
@@ -86,10 +86,7 @@ spec:
                     description: Email for user.
                     type: string
                   groups:
-                    description: List of groups this user is a part of. **Notes:**
-                      If this attribute is not specified then user's group membership
-                      is set to empty. User will not be part of default "readers"
-                      group automatically.
+                    description: List of groups this user is a part of.
                     items:
                       type: string
                     type: array
@@ -100,30 +97,8 @@ spec:
                       authentication (such as LDAP) is enabled.'
                     type: boolean
                   name:
-                    description: 'Username for user. May contain lowercase letters,
-                      numbers and symbols: ''.-_@'' for self-hosted. For SaaS, ''+''
-                      is also allowed.'
+                    description: Username for user.
                     type: string
-                  passwordSecretRef:
-                    description: '(Optional, Sensitive) Password for the user. When
-                      omitted, a random password is generated using the following
-                      password policy: 12 characters with 1 digit, 1 symbol, with
-                      upper and lower case letters'
-                    properties:
-                      key:
-                        description: The key to select.
-                        type: string
-                      name:
-                        description: Name of the secret.
-                        type: string
-                      namespace:
-                        description: Namespace of the secret.
-                        type: string
-                    required:
-                    - key
-                    - name
-                    - namespace
-                    type: object
                   profileUpdatable:
                     description: '(Optional, Default: true) When enabled, this user
                       can update their profile details (except for the password. Only
@@ -161,10 +136,7 @@ spec:
                     description: Email for user.
                     type: string
                   groups:
-                    description: List of groups this user is a part of. **Notes:**
-                      If this attribute is not specified then user's group membership
-                      is set to empty. User will not be part of default "readers"
-                      group automatically.
+                    description: List of groups this user is a part of.
                     items:
                       type: string
                     type: array
@@ -174,26 +146,6 @@ spec:
                       the fallback mechanism for using an internal password when external
                       authentication (such as LDAP) is enabled.'
                     type: boolean
-                  passwordSecretRef:
-                    description: '(Optional, Sensitive) Password for the user. When
-                      omitted, a random password is generated using the following
-                      password policy: 12 characters with 1 digit, 1 symbol, with
-                      upper and lower case letters'
-                    properties:
-                      key:
-                        description: The key to select.
-                        type: string
-                      name:
-                        description: Name of the secret.
-                        type: string
-                      namespace:
-                        description: Namespace of the secret.
-                        type: string
-                    required:
-                    - key
-                    - name
-                    - namespace
-                    type: object
                   profileUpdatable:
                     description: '(Optional, Default: true) When enabled, this user
                       can update their profile details (except for the password. Only
@@ -370,11 +322,6 @@ spec:
             required:
             - forProvider
             type: object
-            x-kubernetes-validations:
-            - message: spec.forProvider.email is a required parameter
-              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
-                || ''Update'' in self.managementPolicies) || has(self.forProvider.email)
-                || (has(self.initProvider) && has(self.initProvider.email))'
           status:
             description: ArtifactoryUserStatus defines the observed state of ArtifactoryUser.
             properties:
@@ -393,10 +340,7 @@ spec:
                     description: Email for user.
                     type: string
                   groups:
-                    description: List of groups this user is a part of. **Notes:**
-                      If this attribute is not specified then user's group membership
-                      is set to empty. User will not be part of default "readers"
-                      group automatically.
+                    description: List of groups this user is a part of.
                     items:
                       type: string
                     type: array
@@ -409,9 +353,7 @@ spec:
                       authentication (such as LDAP) is enabled.'
                     type: boolean
                   name:
-                    description: 'Username for user. May contain lowercase letters,
-                      numbers and symbols: ''.-_@'' for self-hosted. For SaaS, ''+''
-                      is also allowed.'
+                    description: Username for user.
                     type: string
                   profileUpdatable:
                     description: '(Optional, Default: true) When enabled, this user

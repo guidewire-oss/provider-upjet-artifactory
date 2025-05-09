@@ -56,7 +56,7 @@ type VirtualNpmRepositoryInitParameters struct {
 	Repositories []*string `json:"repositories,omitempty" tf:"repositories,omitempty"`
 
 	// This value refers to the number of seconds to cache metadata files before checking for newer versions on aggregated repositories. A value of 0 indicates no caching.
-	RetrievalCachePeriodSeconds *float64 `json:"retrievalCachePeriodSeconds,omitempty" tf:"retrieval_cache_period_seconds,omitempty"`
+	RetrievalCachePeriodSeconds *int64 `json:"retrievalCachePeriodSeconds,omitempty" tf:"retrieval_cache_period_seconds,omitempty"`
 }
 
 type VirtualNpmRepositoryObservation struct {
@@ -106,7 +106,7 @@ type VirtualNpmRepositoryObservation struct {
 	Repositories []*string `json:"repositories,omitempty" tf:"repositories,omitempty"`
 
 	// This value refers to the number of seconds to cache metadata files before checking for newer versions on aggregated repositories. A value of 0 indicates no caching.
-	RetrievalCachePeriodSeconds *float64 `json:"retrievalCachePeriodSeconds,omitempty" tf:"retrieval_cache_period_seconds,omitempty"`
+	RetrievalCachePeriodSeconds *int64 `json:"retrievalCachePeriodSeconds,omitempty" tf:"retrieval_cache_period_seconds,omitempty"`
 }
 
 type VirtualNpmRepositoryParameters struct {
@@ -166,7 +166,7 @@ type VirtualNpmRepositoryParameters struct {
 
 	// This value refers to the number of seconds to cache metadata files before checking for newer versions on aggregated repositories. A value of 0 indicates no caching.
 	// +kubebuilder:validation:Optional
-	RetrievalCachePeriodSeconds *float64 `json:"retrievalCachePeriodSeconds,omitempty" tf:"retrieval_cache_period_seconds,omitempty"`
+	RetrievalCachePeriodSeconds *int64 `json:"retrievalCachePeriodSeconds,omitempty" tf:"retrieval_cache_period_seconds,omitempty"`
 }
 
 // VirtualNpmRepositorySpec defines the desired state of VirtualNpmRepository
@@ -201,7 +201,7 @@ type VirtualNpmRepositoryStatus struct {
 // +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
-// +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,jfrogartifactory}
+// +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,artifactory}
 type VirtualNpmRepository struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

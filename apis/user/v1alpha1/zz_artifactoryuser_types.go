@@ -24,15 +24,12 @@ type ArtifactoryUserInitParameters struct {
 	// Email for user.
 	Email *string `json:"email,omitempty" tf:"email,omitempty"`
 
-	// List of groups this user is a part of. **Notes:** If this attribute is not specified then user's group membership is set to empty. User will not be part of default "readers" group automatically.
+	// List of groups this user is a part of.
 	// +listType=set
 	Groups []*string `json:"groups,omitempty" tf:"groups,omitempty"`
 
 	// (Optional, Default: false) When enabled, disables the fallback mechanism for using an internal password when external authentication (such as LDAP) is enabled.
 	InternalPasswordDisabled *bool `json:"internalPasswordDisabled,omitempty" tf:"internal_password_disabled,omitempty"`
-
-	// (Optional, Sensitive) Password for the user. When omitted, a random password is generated using the following password policy: 12 characters with 1 digit, 1 symbol, with upper and lower case letters
-	PasswordSecretRef *v1.SecretKeySelector `json:"passwordSecretRef,omitempty" tf:"-"`
 
 	// (Optional, Default: true) When enabled, this user can update their profile details (except for the password. Only an administrator can update the password). There may be cases in which you want to leave this unset to prevent users from updating their profile. For example, a departmental user with a single password shared between all department members.
 	ProfileUpdatable *bool `json:"profileUpdatable,omitempty" tf:"profile_updatable,omitempty"`
@@ -49,7 +46,7 @@ type ArtifactoryUserObservation struct {
 	// Email for user.
 	Email *string `json:"email,omitempty" tf:"email,omitempty"`
 
-	// List of groups this user is a part of. **Notes:** If this attribute is not specified then user's group membership is set to empty. User will not be part of default "readers" group automatically.
+	// List of groups this user is a part of.
 	// +listType=set
 	Groups []*string `json:"groups,omitempty" tf:"groups,omitempty"`
 
@@ -58,7 +55,7 @@ type ArtifactoryUserObservation struct {
 	// (Optional, Default: false) When enabled, disables the fallback mechanism for using an internal password when external authentication (such as LDAP) is enabled.
 	InternalPasswordDisabled *bool `json:"internalPasswordDisabled,omitempty" tf:"internal_password_disabled,omitempty"`
 
-	// Username for user. May contain lowercase letters, numbers and symbols: '.-_@' for self-hosted. For SaaS, '+' is also allowed.
+	// Username for user.
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
 	// (Optional, Default: true) When enabled, this user can update their profile details (except for the password. Only an administrator can update the password). There may be cases in which you want to leave this unset to prevent users from updating their profile. For example, a departmental user with a single password shared between all department members.
@@ -79,7 +76,7 @@ type ArtifactoryUserParameters struct {
 	// +kubebuilder:validation:Optional
 	Email *string `json:"email,omitempty" tf:"email,omitempty"`
 
-	// List of groups this user is a part of. **Notes:** If this attribute is not specified then user's group membership is set to empty. User will not be part of default "readers" group automatically.
+	// List of groups this user is a part of.
 	// +kubebuilder:validation:Optional
 	// +listType=set
 	Groups []*string `json:"groups,omitempty" tf:"groups,omitempty"`
@@ -88,13 +85,9 @@ type ArtifactoryUserParameters struct {
 	// +kubebuilder:validation:Optional
 	InternalPasswordDisabled *bool `json:"internalPasswordDisabled,omitempty" tf:"internal_password_disabled,omitempty"`
 
-	// Username for user. May contain lowercase letters, numbers and symbols: '.-_@' for self-hosted. For SaaS, '+' is also allowed.
+	// Username for user.
 	// +kubebuilder:validation:Required
 	Name *string `json:"name" tf:"name,omitempty"`
-
-	// (Optional, Sensitive) Password for the user. When omitted, a random password is generated using the following password policy: 12 characters with 1 digit, 1 symbol, with upper and lower case letters
-	// +kubebuilder:validation:Optional
-	PasswordSecretRef *v1.SecretKeySelector `json:"passwordSecretRef,omitempty" tf:"-"`
 
 	// (Optional, Default: true) When enabled, this user can update their profile details (except for the password. Only an administrator can update the password). There may be cases in which you want to leave this unset to prevent users from updating their profile. For example, a departmental user with a single password shared between all department members.
 	// +kubebuilder:validation:Optional
@@ -133,13 +126,12 @@ type ArtifactoryUserStatus struct {
 // +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
-// +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,jfrogartifactory}
+// +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,artifactory}
 type ArtifactoryUser struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.email) || (has(self.initProvider) && has(self.initProvider.email))",message="spec.forProvider.email is a required parameter"
-	Spec   ArtifactoryUserSpec   `json:"spec"`
-	Status ArtifactoryUserStatus `json:"status,omitempty"`
+	Spec              ArtifactoryUserSpec   `json:"spec"`
+	Status            ArtifactoryUserStatus `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true

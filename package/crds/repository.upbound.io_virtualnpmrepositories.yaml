@@ -11,7 +11,7 @@ spec:
     categories:
     - crossplane
     - managed
-    - jfrogartifactory
+    - artifactory
     kind: VirtualNpmRepository
     listKind: VirtualNpmRepositoryList
     plural: virtualnpmrepositories
@@ -144,7 +144,8 @@ spec:
                     description: This value refers to the number of seconds to cache
                       metadata files before checking for newer versions on aggregated
                       repositories. A value of 0 indicates no caching.
-                    type: number
+                    format: int64
+                    type: integer
                 type: object
               initProvider:
                 description: |-
@@ -230,7 +231,8 @@ spec:
                     description: This value refers to the number of seconds to cache
                       metadata files before checking for newer versions on aggregated
                       repositories. A value of 0 indicates no caching.
-                    type: number
+                    format: int64
+                    type: integer
                 type: object
               managementPolicies:
                 default:
@@ -480,7 +482,8 @@ spec:
                     description: This value refers to the number of seconds to cache
                       metadata files before checking for newer versions on aggregated
                       repositories. A value of 0 indicates no caching.
-                    type: number
+                    format: int64
+                    type: integer
                 type: object
               conditions:
                 description: Conditions of the resource.

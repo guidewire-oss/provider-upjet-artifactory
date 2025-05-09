@@ -11,7 +11,7 @@ spec:
     categories:
     - crossplane
     - managed
-    - jfrogartifactory
+    - artifactory
     kind: GenericRepository
     listKind: GenericRepositoryList
     plural: genericrepositories

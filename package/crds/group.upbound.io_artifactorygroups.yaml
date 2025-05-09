@@ -11,7 +11,7 @@ spec:
     categories:
     - crossplane
     - managed
-    - jfrogartifactory
+    - artifactory
     kind: ArtifactoryGroup
     listKind: ArtifactoryGroupList
     plural: artifactorygroups
@@ -74,48 +74,40 @@ spec:
               forProvider:
                 properties:
                   adminPrivileges:
-                    description: Any users added to this group will automatically
-                      be assigned with admin privileges in the system.
                     type: boolean
                   autoJoin:
-                    description: When this parameter is set, any new users defined
-                      in the system are automatically assigned to this group.
                     type: boolean
                   description:
-                    description: A description for the group.
                     type: string
-                  detachAllUsers:
-                    description: When this is set to `true`, an empty or missing usernames
-                      array will detach all users from the group.
-                    type: boolean
                   externalId:
                     description: New external group ID used to configure the corresponding
                       group in Azure AD.
                     type: string
+                  includeUsers:
+                    description: Setting includeUsers to true will return the group
+                      with its associated user list attached.
+                    type: string
                   policyManager:
-                    description: When this override is set, User in the group can
+                    description: When this override is set,  User in the group can
                       set Xray security and compliance policies. Default value is
-                      `false`.
+                      'false'.
                     type: boolean
                   realm:
-                    description: The realm for the group.
                     type: string
                   realmAttributes:
-                    description: The realm attributes for the group.
                     type: string
                   reportsManager:
-                    description: When this override is set, User in the group can
-                      manage Xray Reports on any resource type. Default value is `false`.
+                    description: When this override is set,  User in the group can
+                      manage Xray Reports. Default value is 'false'.
                     type: boolean
                   usersNames:
-                    description: List of users assigned to the group.
                     items:
                       type: string
                     type: array
                     x-kubernetes-list-type: set
                   watchManager:
-                    description: When this override is set, User in the group can
-                      manage Xray Watches on any resource type. Default value is `false`.
+                    description: When this override is set,  User in the group can
+                      manage Xray Watches on any resource type. Default value is 'false'.
                     type: boolean
                 type: object
               initProvider:
@@ -132,48 +124,40 @@ spec:
                   autoscaler.
                 properties:
                   adminPrivileges:
-                    description: Any users added to this group will automatically
-                      be assigned with admin privileges in the system.
                     type: boolean
                   autoJoin:
-                    description: When this parameter is set, any new users defined
-                      in the system are automatically assigned to this group.
                     type: boolean
                   description:
-                    description: A description for the group.
                     type: string
-                  detachAllUsers:
-                    description: When this is set to `true`, an empty or missing usernames
-                      array will detach all users from the group.
-                    type: boolean
                   externalId:
                     description: New external group ID used to configure the corresponding
                       group in Azure AD.
                     type: string
+                  includeUsers:
+                    description: Setting includeUsers to true will return the group
+                      with its associated user list attached.
+                    type: string
                   policyManager:
-                    description: When this override is set, User in the group can
+                    description: When this override is set,  User in the group can
                       set Xray security and compliance policies. Default value is
-                      `false`.
+                      'false'.
                     type: boolean
                   realm:
-                    description: The realm for the group.
                     type: string
                   realmAttributes:
-                    description: The realm attributes for the group.
                     type: string
                   reportsManager:
-                    description: When this override is set, User in the group can
-                      manage Xray Reports on any resource type. Default value is `false`.
+                    description: When this override is set,  User in the group can
+                      manage Xray Reports. Default value is 'false'.
                     type: boolean
                   usersNames:
-                    description: List of users assigned to the group.
                     items:
                       type: string
                     type: array
                     x-kubernetes-list-type: set
                   watchManager:
-                    description: When this override is set, User in the group can
-                      manage Xray Watches on any resource type. Default value is `false`.
+                    description: When this override is set,  User in the group can
+                      manage Xray Watches on any resource type. Default value is 'false'.
                     type: boolean
                 type: object
               managementPolicies:
@@ -349,50 +333,42 @@ spec:
               atProvider:
                 properties:
                   adminPrivileges:
-                    description: Any users added to this group will automatically
-                      be assigned with admin privileges in the system.
                     type: boolean
                   autoJoin:
-                    description: When this parameter is set, any new users defined
-                      in the system are automatically assigned to this group.
                     type: boolean
                   description:
-                    description: A description for the group.
                     type: string
-                  detachAllUsers:
-                    description: When this is set to `true`, an empty or missing usernames
-                      array will detach all users from the group.
-                    type: boolean
                   externalId:
                     description: New external group ID used to configure the corresponding
                       group in Azure AD.
                     type: string
                   id:
                     type: string
+                  includeUsers:
+                    description: Setting includeUsers to true will return the group
+                      with its associated user list attached.
+                    type: string
                   policyManager:
-                    description: When this override is set, User in the group can
+                    description: When this override is set,  User in the group can
                       set Xray security and compliance policies. Default value is
-                      `false`.
+                      'false'.
                     type: boolean
                   realm:
-                    description: The realm for the group.
                     type: string
                   realmAttributes:
-                    description: The realm attributes for the group.
                     type: string
                   reportsManager:
-                    description: When this override is set, User in the group can
-                      manage Xray Reports on any resource type. Default value is `false`.
+                    description: When this override is set,  User in the group can
+                      manage Xray Reports. Default value is 'false'.
                     type: boolean
                   usersNames:
-                    description: List of users assigned to the group.
                     items:
                       type: string
                     type: array
                     x-kubernetes-list-type: set
                   watchManager:
-                    description: When this override is set, User in the group can
-                      manage Xray Watches on any resource type. Default value is `false`.
+                    description: When this override is set,  User in the group can
+                      manage Xray Watches on any resource type. Default value is 'false'.
                     type: boolean
                 type: object
               conditions:

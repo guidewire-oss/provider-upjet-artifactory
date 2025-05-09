@@ -11,7 +11,7 @@ spec:
     categories:
     - crossplane
     - managed
-    - jfrogartifactory
+    - artifactory
     kind: LocalNpmRepository
     listKind: LocalNpmRepositoryList
     plural: localnpmrepositories

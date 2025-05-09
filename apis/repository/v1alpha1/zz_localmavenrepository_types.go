@@ -49,7 +49,7 @@ type LocalMavenRepositoryInitParameters struct {
 	// The maximum number of unique snapshots of a single artifact to store.
 	// Once the number of snapshots exceeds this setting, older versions are removed.
 	// A value of 0 (default) indicates there is no limit, and unique snapshots are not cleaned up.
-	MaxUniqueSnapshots *float64 `json:"maxUniqueSnapshots,omitempty" tf:"max_unique_snapshots,omitempty"`
+	MaxUniqueSnapshots *int64 `json:"maxUniqueSnapshots,omitempty" tf:"max_unique_snapshots,omitempty"`
 
 	// Internal description.
 	Notes *string `json:"notes,omitempty" tf:"notes,omitempty"`
@@ -125,7 +125,7 @@ type LocalMavenRepositoryObservation struct {
 	// The maximum number of unique snapshots of a single artifact to store.
 	// Once the number of snapshots exceeds this setting, older versions are removed.
 	// A value of 0 (default) indicates there is no limit, and unique snapshots are not cleaned up.
-	MaxUniqueSnapshots *float64 `json:"maxUniqueSnapshots,omitempty" tf:"max_unique_snapshots,omitempty"`
+	MaxUniqueSnapshots *int64 `json:"maxUniqueSnapshots,omitempty" tf:"max_unique_snapshots,omitempty"`
 
 	// Internal description.
 	Notes *string `json:"notes,omitempty" tf:"notes,omitempty"`
@@ -212,7 +212,7 @@ type LocalMavenRepositoryParameters struct {
 	// Once the number of snapshots exceeds this setting, older versions are removed.
 	// A value of 0 (default) indicates there is no limit, and unique snapshots are not cleaned up.
 	// +kubebuilder:validation:Optional
-	MaxUniqueSnapshots *float64 `json:"maxUniqueSnapshots,omitempty" tf:"max_unique_snapshots,omitempty"`
+	MaxUniqueSnapshots *int64 `json:"maxUniqueSnapshots,omitempty" tf:"max_unique_snapshots,omitempty"`
 
 	// Internal description.
 	// +kubebuilder:validation:Optional
@@ -291,7 +291,7 @@ type LocalMavenRepositoryStatus struct {
 // +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
-// +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,jfrogartifactory}
+// +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,artifactory}
 type LocalMavenRepository struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

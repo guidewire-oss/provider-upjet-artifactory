@@ -21,7 +21,7 @@ func (mg *ArtifactoryUser) GetTerraformResourceType() string {
 
 // GetConnectionDetailsMapping for this ArtifactoryUser
 func (tr *ArtifactoryUser) GetConnectionDetailsMapping() map[string]string {
-	return map[string]string{"password": "passwordSecretRef"}
+	return nil
 }
 
 // GetObservation of this ArtifactoryUser
@@ -125,5 +125,5 @@ func (tr *ArtifactoryUser) LateInitialize(attrs []byte) (bool, error) {
 
 // GetTerraformSchemaVersion returns the associated Terraform schema version
 func (tr *ArtifactoryUser) GetTerraformSchemaVersion() int {
-	return 1
+	return 0
 }
