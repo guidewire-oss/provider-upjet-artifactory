@@ -125,5 +125,5 @@ func (tr *GenericRepository) LateInitialize(attrs []byte) (bool, error) {
 
 // GetTerraformSchemaVersion returns the associated Terraform schema version
 func (tr *GenericRepository) GetTerraformSchemaVersion() int {
-	return 0
+	return 1
 }

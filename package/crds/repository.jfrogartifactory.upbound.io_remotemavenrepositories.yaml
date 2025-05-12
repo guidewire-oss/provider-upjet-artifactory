@@ -3,10 +3,10 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.14.0
-  name: remotemavenrepositories.repository.upbound.io
+    controller-gen.kubebuilder.io/version: v0.16.5
+  name: remotemavenrepositories.repository.jfrogartifactory.upbound.io
 spec:
-  group: repository.upbound.io
+  group: repository.jfrogartifactory.upbound.io
   names:
     categories:
     - crossplane
@@ -88,8 +88,7 @@ spec:
                       offline state after a connection error. At the end of this time,
                       an online check is attempted in order to reset the offline status.
                       A value of 0 means the repository is never assumed offline.
-                    format: int64
-                    type: integer
+                    type: number
                   blackedOut:
                     description: (A.K.A 'Ignore Repository' on the UI) When set, the
                       repository or its local cache do not participate in artifact
@@ -214,6 +213,11 @@ spec:
                       When used, only artifacts matching one of the include patterns
                       are served. By default, all artifacts are included (`**/*`).
                     type: string
+                  key:
+                    description: A mandatory identifier for the repository that must
+                      be unique. Must be 1 - 64 alphanumeric and hyphen characters.
+                      It cannot contain spaces or special characters.
+                    type: string
                   listRemoteFolderItems:
                     description: Lists the items of remote folders in simple and list
                       browsing. The remote content is cached according to the value
@@ -231,15 +235,13 @@ spec:
                       setting, older versions are removed. A value of 0 (default)
                       indicates there is no limit, and unique snapshots are not cleaned
                       up.
-                    format: int64
-                    type: integer
+                    type: number
                   metadataRetrievalTimeoutSecs:
                     description: Metadata Retrieval Cache Timeout (Sec) in the UI.This
                       value refers to the number of seconds to wait for retrieval
                       from the remote before serving locally cached artifact or fail
                       the request.
-                    format: int64
-                    type: integer
+                    type: number
                   mismatchingMimeTypesOverrideList:
                     description: 'The set of mime types that should override the block_mismatching_mime_types
                       setting. Eg: ''application/json,application/xml''. Default value
@@ -249,8 +251,7 @@ spec:
                     description: Missed Retrieval Cache Period (Sec) in the UI. The
                       number of seconds to cache artifact retrieval misses (artifact
                       not found). A value of 0 indicates no caching.
-                    format: int64
-                    type: integer
+                    type: number
                   notes:
                     description: Internal description.
                     type: string
@@ -343,16 +344,14 @@ spec:
                       This value refers to the number of seconds to cache metadata
                       files before checking for newer versions on remote server. A
                       value of 0 indicates no caching.
-                    format: int64
-                    type: integer
+                    type: number
                   shareConfiguration:
                     type: boolean
                   socketTimeoutMillis:
                     description: Network timeout (in ms) to use when establishing
                       a connection and for unanswered requests. Timing out on a network
                       operation is considered a retrieval failure.
-                    format: int64
-                    type: integer
+                    type: number
                   storeArtifactsLocally:
                     description: When set, the repository should store cached artifacts
                       locally. When not set, artifacts are not stored locally, and
@@ -378,8 +377,7 @@ spec:
                       number of hours to wait before an artifact is deemed 'unused'
                       and eligible for cleanup from the repository. A value of 0 means
                       automatic cleanup of cached artifacts is disabled.
-                    format: int64
-                    type: integer
+                    type: number
                   url:
                     description: This is a URL to the remote registry. Consider using
                       HTTPS to ensure a secure connection.
@@ -420,8 +418,7 @@ spec:
                       offline state after a connection error. At the end of this time,
                       an online check is attempted in order to reset the offline status.
                       A value of 0 means the repository is never assumed offline.
-                    format: int64
-                    type: integer
+                    type: number
                   blackedOut:
                     description: (A.K.A 'Ignore Repository' on the UI) When set, the
                       repository or its local cache do not participate in artifact
@@ -546,6 +543,11 @@ spec:
                       When used, only artifacts matching one of the include patterns
                       are served. By default, all artifacts are included (`**/*`).
                     type: string
+                  key:
+                    description: A mandatory identifier for the repository that must
+                      be unique. Must be 1 - 64 alphanumeric and hyphen characters.
+                      It cannot contain spaces or special characters.
+                    type: string
                   listRemoteFolderItems:
                     description: Lists the items of remote folders in simple and list
                       browsing. The remote content is cached according to the value
@@ -563,15 +565,13 @@ spec:
                       setting, older versions are removed. A value of 0 (default)
                       indicates there is no limit, and unique snapshots are not cleaned
                       up.
-                    format: int64
-                    type: integer
+                    type: number
                   metadataRetrievalTimeoutSecs:
                     description: Metadata Retrieval Cache Timeout (Sec) in the UI.This
                       value refers to the number of seconds to wait for retrieval
                       from the remote before serving locally cached artifact or fail
                       the request.
-                    format: int64
-                    type: integer
+                    type: number
                   mismatchingMimeTypesOverrideList:
                     description: 'The set of mime types that should override the block_mismatching_mime_types
                       setting. Eg: ''application/json,application/xml''. Default value
@@ -581,8 +581,7 @@ spec:
                     description: Missed Retrieval Cache Period (Sec) in the UI. The
                       number of seconds to cache artifact retrieval misses (artifact
                       not found). A value of 0 indicates no caching.
-                    format: int64
-                    type: integer
+                    type: number
                   notes:
                     description: Internal description.
                     type: string
@@ -675,16 +674,14 @@ spec:
                       This value refers to the number of seconds to cache metadata
                       files before checking for newer versions on remote server. A
                       value of 0 indicates no caching.
-                    format: int64
-                    type: integer
+                    type: number
                   shareConfiguration:
                     type: boolean
                   socketTimeoutMillis:
                     description: Network timeout (in ms) to use when establishing
                       a connection and for unanswered requests. Timing out on a network
                       operation is considered a retrieval failure.
-                    format: int64
-                    type: integer
+                    type: number
                   storeArtifactsLocally:
                     description: When set, the repository should store cached artifacts
                       locally. When not set, artifacts are not stored locally, and
@@ -710,8 +707,7 @@ spec:
                       number of hours to wait before an artifact is deemed 'unused'
                       and eligible for cleanup from the repository. A value of 0 means
                       automatic cleanup of cached artifacts is disabled.
-                    format: int64
-                    type: integer
+                    type: number
                   url:
                     description: This is a URL to the remote registry. Consider using
                       HTTPS to ensure a secure connection.
@@ -891,6 +887,11 @@ spec:
             required:
             - forProvider
             type: object
+            x-kubernetes-validations:
+            - message: spec.forProvider.key is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.key)
+                || (has(self.initProvider) && has(self.initProvider.key))'
           status:
             description: RemoteMavenRepositoryStatus defines the observed state of
               RemoteMavenRepository.
@@ -912,8 +913,7 @@ spec:
                       offline state after a connection error. At the end of this time,
                       an online check is attempted in order to reset the offline status.
                       A value of 0 means the repository is never assumed offline.
-                    format: int64
-                    type: integer
+                    type: number
                   blackedOut:
                     description: (A.K.A 'Ignore Repository' on the UI) When set, the
                       repository or its local cache do not participate in artifact
@@ -1040,6 +1040,11 @@ spec:
                       When used, only artifacts matching one of the include patterns
                       are served. By default, all artifacts are included (`**/*`).
                     type: string
+                  key:
+                    description: A mandatory identifier for the repository that must
+                      be unique. Must be 1 - 64 alphanumeric and hyphen characters.
+                      It cannot contain spaces or special characters.
+                    type: string
                   listRemoteFolderItems:
                     description: Lists the items of remote folders in simple and list
                       browsing. The remote content is cached according to the value
@@ -1057,15 +1062,13 @@ spec:
                       setting, older versions are removed. A value of 0 (default)
                       indicates there is no limit, and unique snapshots are not cleaned
                       up.
-                    format: int64
-                    type: integer
+                    type: number
                   metadataRetrievalTimeoutSecs:
                     description: Metadata Retrieval Cache Timeout (Sec) in the UI.This
                       value refers to the number of seconds to wait for retrieval
                       from the remote before serving locally cached artifact or fail
                       the request.
-                    format: int64
-                    type: integer
+                    type: number
                   mismatchingMimeTypesOverrideList:
                     description: 'The set of mime types that should override the block_mismatching_mime_types
                       setting. Eg: ''application/json,application/xml''. Default value
@@ -1075,8 +1078,7 @@ spec:
                     description: Missed Retrieval Cache Period (Sec) in the UI. The
                       number of seconds to cache artifact retrieval misses (artifact
                       not found). A value of 0 indicates no caching.
-                    format: int64
-                    type: integer
+                    type: number
                   notes:
                     description: Internal description.
                     type: string
@@ -1153,16 +1155,14 @@ spec:
                       This value refers to the number of seconds to cache metadata
                       files before checking for newer versions on remote server. A
                       value of 0 indicates no caching.
-                    format: int64
-                    type: integer
+                    type: number
                   shareConfiguration:
                     type: boolean
                   socketTimeoutMillis:
                     description: Network timeout (in ms) to use when establishing
                       a connection and for unanswered requests. Timing out on a network
                       operation is considered a retrieval failure.
-                    format: int64
-                    type: integer
+                    type: number
                   storeArtifactsLocally:
                     description: When set, the repository should store cached artifacts
                       locally. When not set, artifacts are not stored locally, and
@@ -1188,8 +1188,7 @@ spec:
                       number of hours to wait before an artifact is deemed 'unused'
                       and eligible for cleanup from the repository. A value of 0 means
                       automatic cleanup of cached artifacts is disabled.
-                    format: int64
-                    type: integer
+                    type: number
                   url:
                     description: This is a URL to the remote registry. Consider using
                       HTTPS to ensure a secure connection.

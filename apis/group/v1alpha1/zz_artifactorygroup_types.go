@@ -14,105 +14,125 @@ import (
 )
 
 type ArtifactoryGroupInitParameters struct {
+
+	// Any users added to this group will automatically be assigned with admin privileges in the system.
 	AdminPrivileges *bool `json:"adminPrivileges,omitempty" tf:"admin_privileges,omitempty"`
 
+	// When this parameter is set, any new users defined in the system are automatically assigned to this group.
 	AutoJoin *bool `json:"autoJoin,omitempty" tf:"auto_join,omitempty"`
 
+	// A description for the group.
 	Description *string `json:"description,omitempty" tf:"description,omitempty"`
+
+	// When this is set to `true`, an empty or missing usernames array will detach all users from the group.
+	DetachAllUsers *bool `json:"detachAllUsers,omitempty" tf:"detach_all_users,omitempty"`
 
 	// New external group ID used to configure the corresponding group in Azure AD.
 	ExternalID *string `json:"externalId,omitempty" tf:"external_id,omitempty"`
 
-	// Setting includeUsers to true will return the group with its associated user list attached.
-	IncludeUsers *string `json:"includeUsers,omitempty" tf:"include_users,omitempty"`
-
-	// When this override is set,  User in the group can set Xray security and compliance policies. Default value is 'false'.
+	// When this override is set, User in the group can set Xray security and compliance policies. Default value is `false`.
 	PolicyManager *bool `json:"policyManager,omitempty" tf:"policy_manager,omitempty"`
 
+	// The realm for the group.
 	Realm *string `json:"realm,omitempty" tf:"realm,omitempty"`
 
+	// The realm attributes for the group.
 	RealmAttributes *string `json:"realmAttributes,omitempty" tf:"realm_attributes,omitempty"`
 
-	// When this override is set,  User in the group can manage Xray Reports. Default value is 'false'.
+	// When this override is set, User in the group can manage Xray Reports on any resource type. Default value is `false`.
 	ReportsManager *bool `json:"reportsManager,omitempty" tf:"reports_manager,omitempty"`
 
+	// List of users assigned to the group.
 	// +listType=set
 	UsersNames []*string `json:"usersNames,omitempty" tf:"users_names,omitempty"`
 
-	// When this override is set,  User in the group can manage Xray Watches on any resource type. Default value is 'false'.
+	// When this override is set, User in the group can manage Xray Watches on any resource type. Default value is `false`.
 	WatchManager *bool `json:"watchManager,omitempty" tf:"watch_manager,omitempty"`
 }
 
 type ArtifactoryGroupObservation struct {
+
+	// Any users added to this group will automatically be assigned with admin privileges in the system.
 	AdminPrivileges *bool `json:"adminPrivileges,omitempty" tf:"admin_privileges,omitempty"`
 
+	// When this parameter is set, any new users defined in the system are automatically assigned to this group.
 	AutoJoin *bool `json:"autoJoin,omitempty" tf:"auto_join,omitempty"`
 
+	// A description for the group.
 	Description *string `json:"description,omitempty" tf:"description,omitempty"`
+
+	// When this is set to `true`, an empty or missing usernames array will detach all users from the group.
+	DetachAllUsers *bool `json:"detachAllUsers,omitempty" tf:"detach_all_users,omitempty"`
 
 	// New external group ID used to configure the corresponding group in Azure AD.
 	ExternalID *string `json:"externalId,omitempty" tf:"external_id,omitempty"`
 
 	ID *string `json:"id,omitempty" tf:"id,omitempty"`
 
-	// Setting includeUsers to true will return the group with its associated user list attached.
-	IncludeUsers *string `json:"includeUsers,omitempty" tf:"include_users,omitempty"`
-
-	// When this override is set,  User in the group can set Xray security and compliance policies. Default value is 'false'.
+	// When this override is set, User in the group can set Xray security and compliance policies. Default value is `false`.
 	PolicyManager *bool `json:"policyManager,omitempty" tf:"policy_manager,omitempty"`
 
+	// The realm for the group.
 	Realm *string `json:"realm,omitempty" tf:"realm,omitempty"`
 
+	// The realm attributes for the group.
 	RealmAttributes *string `json:"realmAttributes,omitempty" tf:"realm_attributes,omitempty"`
 
-	// When this override is set,  User in the group can manage Xray Reports. Default value is 'false'.
+	// When this override is set, User in the group can manage Xray Reports on any resource type. Default value is `false`.
 	ReportsManager *bool `json:"reportsManager,omitempty" tf:"reports_manager,omitempty"`
 
+	// List of users assigned to the group.
 	// +listType=set
 	UsersNames []*string `json:"usersNames,omitempty" tf:"users_names,omitempty"`
 
-	// When this override is set,  User in the group can manage Xray Watches on any resource type. Default value is 'false'.
+	// When this override is set, User in the group can manage Xray Watches on any resource type. Default value is `false`.
 	WatchManager *bool `json:"watchManager,omitempty" tf:"watch_manager,omitempty"`
 }
 
 type ArtifactoryGroupParameters struct {
 
+	// Any users added to this group will automatically be assigned with admin privileges in the system.
 	// +kubebuilder:validation:Optional
 	AdminPrivileges *bool `json:"adminPrivileges,omitempty" tf:"admin_privileges,omitempty"`
 
+	// When this parameter is set, any new users defined in the system are automatically assigned to this group.
 	// +kubebuilder:validation:Optional
 	AutoJoin *bool `json:"autoJoin,omitempty" tf:"auto_join,omitempty"`
 
+	// A description for the group.
 	// +kubebuilder:validation:Optional
 	Description *string `json:"description,omitempty" tf:"description,omitempty"`
+
+	// When this is set to `true`, an empty or missing usernames array will detach all users from the group.
+	// +kubebuilder:validation:Optional
+	DetachAllUsers *bool `json:"detachAllUsers,omitempty" tf:"detach_all_users,omitempty"`
 
 	// New external group ID used to configure the corresponding group in Azure AD.
 	// +kubebuilder:validation:Optional
 	ExternalID *string `json:"externalId,omitempty" tf:"external_id,omitempty"`
 
-	// Setting includeUsers to true will return the group with its associated user list attached.
-	// +kubebuilder:validation:Optional
-	IncludeUsers *string `json:"includeUsers,omitempty" tf:"include_users,omitempty"`
-
-	// When this override is set,  User in the group can set Xray security and compliance policies. Default value is 'false'.
+	// When this override is set, User in the group can set Xray security and compliance policies. Default value is `false`.
 	// +kubebuilder:validation:Optional
 	PolicyManager *bool `json:"policyManager,omitempty" tf:"policy_manager,omitempty"`
 
+	// The realm for the group.
 	// +kubebuilder:validation:Optional
 	Realm *string `json:"realm,omitempty" tf:"realm,omitempty"`
 
+	// The realm attributes for the group.
 	// +kubebuilder:validation:Optional
 	RealmAttributes *string `json:"realmAttributes,omitempty" tf:"realm_attributes,omitempty"`
 
-	// When this override is set,  User in the group can manage Xray Reports. Default value is 'false'.
+	// When this override is set, User in the group can manage Xray Reports on any resource type. Default value is `false`.
 	// +kubebuilder:validation:Optional
 	ReportsManager *bool `json:"reportsManager,omitempty" tf:"reports_manager,omitempty"`
 
+	// List of users assigned to the group.
 	// +kubebuilder:validation:Optional
 	// +listType=set
 	UsersNames []*string `json:"usersNames,omitempty" tf:"users_names,omitempty"`
 
-	// When this override is set,  User in the group can manage Xray Watches on any resource type. Default value is 'false'.
+	// When this override is set, User in the group can manage Xray Watches on any resource type. Default value is `false`.
 	// +kubebuilder:validation:Optional
 	WatchManager *bool `json:"watchManager,omitempty" tf:"watch_manager,omitempty"`
 }

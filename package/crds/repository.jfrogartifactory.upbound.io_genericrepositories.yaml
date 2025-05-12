@@ -3,19 +3,19 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.14.0
-  name: artifactoryusers.user.upbound.io
+    controller-gen.kubebuilder.io/version: v0.16.5
+  name: genericrepositories.repository.jfrogartifactory.upbound.io
 spec:
-  group: user.upbound.io
+  group: repository.jfrogartifactory.upbound.io
   names:
     categories:
     - crossplane
     - managed
     - artifactory
-    kind: ArtifactoryUser
-    listKind: ArtifactoryUserList
-    plural: artifactoryusers
-    singular: artifactoryuser
+    kind: GenericRepository
+    listKind: GenericRepositoryList
+    plural: genericrepositories
+    singular: genericrepository
   scope: Cluster
   versions:
   - additionalPrinterColumns:
@@ -34,8 +34,8 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: ArtifactoryUser is the Schema for the ArtifactoryUsers API. <no
-          value>
+        description: GenericRepository is the Schema for the GenericRepositorys API.
+          <no value>
         properties:
           apiVersion:
             description: |-
@@ -55,7 +55,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: ArtifactoryUserSpec defines the desired state of ArtifactoryUser
+            description: GenericRepositorySpec defines the desired state of GenericRepository
             properties:
               deletionPolicy:
                 default: Delete
@@ -73,42 +73,84 @@ spec:
                 type: string
               forProvider:
                 properties:
-                  admin:
-                    description: '(Optional, Default: false) When enabled, this user
-                      is an administrator with all the ensuing privileges.'
+                  archiveBrowsingEnabled:
+                    description: |-
+                      When set, you may view content such as HTML or Javadoc files directly from Artifactory.
+                      This may not be safe and therefore requires strict content moderation to prevent malicious users from uploading content that may compromise security (e.g., cross-site scripting attacks).
                     type: boolean
-                  disableUiAccess:
-                    description: '(Optional, Default: true) When enabled, this user
-                      can only access the system through the REST API. This option
-                      cannot be set if the user has Admin privileges.'
+                  blackedOut:
+                    description: When set, the repository does not participate in
+                      artifact resolution and new artifacts cannot be deployed.
                     type: boolean
-                  email:
-                    description: Email for user.
+                  cdnRedirect:
+                    description: When set, download requests to this repository will
+                      redirect the client to download the artifact directly from AWS
+                      CloudFront. Available in Enterprise+ and Edge licenses only.
+                      Default value is 'false'
+                    type: boolean
+                  description:
+                    description: Public description.
                     type: string
-                  groups:
-                    description: List of groups this user is a part of.
+                  downloadDirect:
+                    description: When set, download requests to this repository will
+                      redirect the client to download the artifact directly from the
+                      cloud storage provider. Available in Enterprise+ and Edge licenses
+                      only.
+                    type: boolean
+                  excludesPattern:
+                    description: List of artifact patterns to exclude when evaluating
+                      artifact requests, in the form of `x/y/**/z/*`.By default no
+                      artifacts are excluded.
+                    type: string
+                  includesPattern:
+                    description: List of comma-separated artifact patterns to include
+                      when evaluating artifact requests in the form of `x/y/**/z/*`.
+                      When used, only artifacts matching one of the include patterns
+                      are served. By default, all artifacts are included (`**/*`).
+                    type: string
+                  key:
+                    description: A mandatory identifier for the repository that must
+                      be unique. Must be 1 - 64 alphanumeric and hyphen characters.
+                      It cannot contain spaces or special characters.
+                    type: string
+                  notes:
+                    description: Internal description.
+                    type: string
+                  priorityResolution:
+                    description: Setting repositories with priority will cause metadata
+                      to be merged only from repositories set with this field
+                    type: boolean
+                  projectEnvironments:
+                    description: 'Project environment for assigning this repository
+                      to. Allow values: "DEV", "PROD", or one of custom environment.
+                      Before Artifactory 7.53.1, up to 2 values ("DEV" and "PROD")
+                      are allowed. From 7.53.1 onward, only one value is allowed.
+                      The attribute should only be used if the repository is already
+                      assigned to the existing project.'
                     items:
                       type: string
                     type: array
                     x-kubernetes-list-type: set
-                  internalPasswordDisabled:
-                    description: '(Optional, Default: false) When enabled, disables
-                      the fallback mechanism for using an internal password when external
-                      authentication (such as LDAP) is enabled.'
-                    type: boolean
-                  name:
-                    description: Username for user.
+                  projectKey:
+                    description: Project key for assigning this repository to. Must
+                      be 2 - 32 lowercase alphanumeric and hyphen characters. When
+                      assigning repository to a project, repository key must be prefixed
+                      with project key, separated by a dash.
                     type: string
-                  profileUpdatable:
-                    description: '(Optional, Default: true) When enabled, this user
-                      can update their profile details (except for the password. Only
-                      an administrator can update the password). There may be cases
-                      in which you want to leave this unset to prevent users from
-                      updating their profile. For example, a departmental user with
-                      a single password shared between all department members.'
+                  propertySets:
+                    description: List of property set name
+                    items:
+                      type: string
+                    type: array
+                    x-kubernetes-list-type: set
+                  repoLayoutRef:
+                    description: Repository layout key for the local repository
+                    type: string
+                  xrayIndex:
+                    description: Enable Indexing In Xray. Repository will be indexed
+                      with the default retention period. You will be able to change
+                      it via Xray settings.
                     type: boolean
-                required:
-                - name
                 type: object
               initProvider:
                 description: |-
@@ -123,36 +165,83 @@ spec:
                   for example because of an external controller is managing them, like an
                   autoscaler.
                 properties:
-                  admin:
-                    description: '(Optional, Default: false) When enabled, this user
-                      is an administrator with all the ensuing privileges.'
+                  archiveBrowsingEnabled:
+                    description: |-
+                      When set, you may view content such as HTML or Javadoc files directly from Artifactory.
+                      This may not be safe and therefore requires strict content moderation to prevent malicious users from uploading content that may compromise security (e.g., cross-site scripting attacks).
                     type: boolean
-                  disableUiAccess:
-                    description: '(Optional, Default: true) When enabled, this user
-                      can only access the system through the REST API. This option
-                      cannot be set if the user has Admin privileges.'
+                  blackedOut:
+                    description: When set, the repository does not participate in
+                      artifact resolution and new artifacts cannot be deployed.
                     type: boolean
-                  email:
-                    description: Email for user.
+                  cdnRedirect:
+                    description: When set, download requests to this repository will
+                      redirect the client to download the artifact directly from AWS
+                      CloudFront. Available in Enterprise+ and Edge licenses only.
+                      Default value is 'false'
+                    type: boolean
+                  description:
+                    description: Public description.
                     type: string
-                  groups:
-                    description: List of groups this user is a part of.
+                  downloadDirect:
+                    description: When set, download requests to this repository will
+                      redirect the client to download the artifact directly from the
+                      cloud storage provider. Available in Enterprise+ and Edge licenses
+                      only.
+                    type: boolean
+                  excludesPattern:
+                    description: List of artifact patterns to exclude when evaluating
+                      artifact requests, in the form of `x/y/**/z/*`.By default no
+                      artifacts are excluded.
+                    type: string
+                  includesPattern:
+                    description: List of comma-separated artifact patterns to include
+                      when evaluating artifact requests in the form of `x/y/**/z/*`.
+                      When used, only artifacts matching one of the include patterns
+                      are served. By default, all artifacts are included (`**/*`).
+                    type: string
+                  key:
+                    description: A mandatory identifier for the repository that must
+                      be unique. Must be 1 - 64 alphanumeric and hyphen characters.
+                      It cannot contain spaces or special characters.
+                    type: string
+                  notes:
+                    description: Internal description.
+                    type: string
+                  priorityResolution:
+                    description: Setting repositories with priority will cause metadata
+                      to be merged only from repositories set with this field
+                    type: boolean
+                  projectEnvironments:
+                    description: 'Project environment for assigning this repository
+                      to. Allow values: "DEV", "PROD", or one of custom environment.
+                      Before Artifactory 7.53.1, up to 2 values ("DEV" and "PROD")
+                      are allowed. From 7.53.1 onward, only one value is allowed.
+                      The attribute should only be used if the repository is already
+                      assigned to the existing project.'
                     items:
                       type: string
                     type: array
                     x-kubernetes-list-type: set
-                  internalPasswordDisabled:
-                    description: '(Optional, Default: false) When enabled, disables
-                      the fallback mechanism for using an internal password when external
-                      authentication (such as LDAP) is enabled.'
-                    type: boolean
-                  profileUpdatable:
-                    description: '(Optional, Default: true) When enabled, this user
-                      can update their profile details (except for the password. Only
-                      an administrator can update the password). There may be cases
-                      in which you want to leave this unset to prevent users from
-                      updating their profile. For example, a departmental user with
-                      a single password shared between all department members.'
+                  projectKey:
+                    description: Project key for assigning this repository to. Must
+                      be 2 - 32 lowercase alphanumeric and hyphen characters. When
+                      assigning repository to a project, repository key must be prefixed
+                      with project key, separated by a dash.
+                    type: string
+                  propertySets:
+                    description: List of property set name
+                    items:
+                      type: string
+                    type: array
+                    x-kubernetes-list-type: set
+                  repoLayoutRef:
+                    description: Repository layout key for the local repository
+                    type: string
+                  xrayIndex:
+                    description: Enable Indexing In Xray. Repository will be indexed
+                      with the default retention period. You will be able to change
+                      it via Xray settings.
                     type: boolean
                 type: object
               managementPolicies:
@@ -322,46 +411,97 @@ spec:
             required:
             - forProvider
             type: object
+            x-kubernetes-validations:
+            - message: spec.forProvider.key is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.key)
+                || (has(self.initProvider) && has(self.initProvider.key))'
           status:
-            description: ArtifactoryUserStatus defines the observed state of ArtifactoryUser.
+            description: GenericRepositoryStatus defines the observed state of GenericRepository.
             properties:
               atProvider:
                 properties:
-                  admin:
-                    description: '(Optional, Default: false) When enabled, this user
-                      is an administrator with all the ensuing privileges.'
+                  archiveBrowsingEnabled:
+                    description: |-
+                      When set, you may view content such as HTML or Javadoc files directly from Artifactory.
+                      This may not be safe and therefore requires strict content moderation to prevent malicious users from uploading content that may compromise security (e.g., cross-site scripting attacks).
                     type: boolean
-                  disableUiAccess:
-                    description: '(Optional, Default: true) When enabled, this user
-                      can only access the system through the REST API. This option
-                      cannot be set if the user has Admin privileges.'
+                  blackedOut:
+                    description: When set, the repository does not participate in
+                      artifact resolution and new artifacts cannot be deployed.
                     type: boolean
-                  email:
-                    description: Email for user.
+                  cdnRedirect:
+                    description: When set, download requests to this repository will
+                      redirect the client to download the artifact directly from AWS
+                      CloudFront. Available in Enterprise+ and Edge licenses only.
+                      Default value is 'false'
+                    type: boolean
+                  description:
+                    description: Public description.
                     type: string
-                  groups:
-                    description: List of groups this user is a part of.
+                  downloadDirect:
+                    description: When set, download requests to this repository will
+                      redirect the client to download the artifact directly from the
+                      cloud storage provider. Available in Enterprise+ and Edge licenses
+                      only.
+                    type: boolean
+                  excludesPattern:
+                    description: List of artifact patterns to exclude when evaluating
+                      artifact requests, in the form of `x/y/**/z/*`.By default no
+                      artifacts are excluded.
+                    type: string
+                  id:
+                    type: string
+                  includesPattern:
+                    description: List of comma-separated artifact patterns to include
+                      when evaluating artifact requests in the form of `x/y/**/z/*`.
+                      When used, only artifacts matching one of the include patterns
+                      are served. By default, all artifacts are included (`**/*`).
+                    type: string
+                  key:
+                    description: A mandatory identifier for the repository that must
+                      be unique. Must be 1 - 64 alphanumeric and hyphen characters.
+                      It cannot contain spaces or special characters.
+                    type: string
+                  notes:
+                    description: Internal description.
+                    type: string
+                  packageType:
+                    type: string
+                  priorityResolution:
+                    description: Setting repositories with priority will cause metadata
+                      to be merged only from repositories set with this field
+                    type: boolean
+                  projectEnvironments:
+                    description: 'Project environment for assigning this repository
+                      to. Allow values: "DEV", "PROD", or one of custom environment.
+                      Before Artifactory 7.53.1, up to 2 values ("DEV" and "PROD")
+                      are allowed. From 7.53.1 onward, only one value is allowed.
+                      The attribute should only be used if the repository is already
+                      assigned to the existing project.'
                     items:
                       type: string
                     type: array
                     x-kubernetes-list-type: set
-                  id:
+                  projectKey:
+                    description: Project key for assigning this repository to. Must
+                      be 2 - 32 lowercase alphanumeric and hyphen characters. When
+                      assigning repository to a project, repository key must be prefixed
+                      with project key, separated by a dash.
                     type: string
-                  internalPasswordDisabled:
-                    description: '(Optional, Default: false) When enabled, disables
-                      the fallback mechanism for using an internal password when external
-                      authentication (such as LDAP) is enabled.'
-                    type: boolean
-                  name:
-                    description: Username for user.
+                  propertySets:
+                    description: List of property set name
+                    items:
+                      type: string
+                    type: array
+                    x-kubernetes-list-type: set
+                  repoLayoutRef:
+                    description: Repository layout key for the local repository
                     type: string
-                  profileUpdatable:
-                    description: '(Optional, Default: true) When enabled, this user
-                      can update their profile details (except for the password. Only
-                      an administrator can update the password). There may be cases
-                      in which you want to leave this unset to prevent users from
-                      updating their profile. For example, a departmental user with
-                      a single password shared between all department members.'
+                  xrayIndex:
+                    description: Enable Indexing In Xray. Repository will be indexed
+                      with the default retention period. You will be able to change
+                      it via Xray settings.
                     type: boolean
                 type: object
               conditions:

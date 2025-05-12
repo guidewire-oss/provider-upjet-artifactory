@@ -183,6 +183,11 @@ func (in *GenericRepositoryInitParameters) DeepCopyInto(out *GenericRepositoryIn
 		*out = new(string)
 		**out = **in
 	}
+	if in.Key != nil {
+		in, out := &in.Key, &out.Key
+		*out = new(string)
+		**out = **in
+	}
 	if in.Notes != nil {
 		in, out := &in.Notes, &out.Notes
 		*out = new(string)
@@ -317,6 +322,11 @@ func (in *GenericRepositoryObservation) DeepCopyInto(out *GenericRepositoryObser
 		*out = new(string)
 		**out = **in
 	}
+	if in.Key != nil {
+		in, out := &in.Key, &out.Key
+		*out = new(string)
+		**out = **in
+	}
 	if in.Notes != nil {
 		in, out := &in.Notes, &out.Notes
 		*out = new(string)
@@ -416,6 +426,11 @@ func (in *GenericRepositoryParameters) DeepCopyInto(out *GenericRepositoryParame
 	}
 	if in.IncludesPattern != nil {
 		in, out := &in.IncludesPattern, &out.IncludesPattern
+		*out = new(string)
+		**out = **in
+	}
+	if in.Key != nil {
+		in, out := &in.Key, &out.Key
 		*out = new(string)
 		**out = **in
 	}
@@ -593,9 +608,14 @@ func (in *LocalMavenRepositoryInitParameters) DeepCopyInto(out *LocalMavenReposi
 		*out = new(string)
 		**out = **in
 	}
+	if in.Key != nil {
+		in, out := &in.Key, &out.Key
+		*out = new(string)
+		**out = **in
+	}
 	if in.MaxUniqueSnapshots != nil {
 		in, out := &in.MaxUniqueSnapshots, &out.MaxUniqueSnapshots
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.Notes != nil {
@@ -757,9 +777,14 @@ func (in *LocalMavenRepositoryObservation) DeepCopyInto(out *LocalMavenRepositor
 		*out = new(string)
 		**out = **in
 	}
+	if in.Key != nil {
+		in, out := &in.Key, &out.Key
+		*out = new(string)
+		**out = **in
+	}
 	if in.MaxUniqueSnapshots != nil {
 		in, out := &in.MaxUniqueSnapshots, &out.MaxUniqueSnapshots
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.Notes != nil {
@@ -889,9 +914,14 @@ func (in *LocalMavenRepositoryParameters) DeepCopyInto(out *LocalMavenRepository
 		*out = new(string)
 		**out = **in
 	}
+	if in.Key != nil {
+		in, out := &in.Key, &out.Key
+		*out = new(string)
+		**out = **in
+	}
 	if in.MaxUniqueSnapshots != nil {
 		in, out := &in.MaxUniqueSnapshots, &out.MaxUniqueSnapshots
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.Notes != nil {
@@ -1063,6 +1093,11 @@ func (in *LocalNpmRepositoryInitParameters) DeepCopyInto(out *LocalNpmRepository
 		*out = new(string)
 		**out = **in
 	}
+	if in.Key != nil {
+		in, out := &in.Key, &out.Key
+		*out = new(string)
+		**out = **in
+	}
 	if in.Notes != nil {
 		in, out := &in.Notes, &out.Notes
 		*out = new(string)
@@ -1197,6 +1232,11 @@ func (in *LocalNpmRepositoryObservation) DeepCopyInto(out *LocalNpmRepositoryObs
 		*out = new(string)
 		**out = **in
 	}
+	if in.Key != nil {
+		in, out := &in.Key, &out.Key
+		*out = new(string)
+		**out = **in
+	}
 	if in.Notes != nil {
 		in, out := &in.Notes, &out.Notes
 		*out = new(string)
@@ -1296,6 +1336,11 @@ func (in *LocalNpmRepositoryParameters) DeepCopyInto(out *LocalNpmRepositoryPara
 	}
 	if in.IncludesPattern != nil {
 		in, out := &in.IncludesPattern, &out.IncludesPattern
+		*out = new(string)
+		**out = **in
+	}
+	if in.Key != nil {
+		in, out := &in.Key, &out.Key
 		*out = new(string)
 		**out = **in
 	}
@@ -1435,7 +1480,7 @@ func (in *RemoteMavenRepositoryInitParameters) DeepCopyInto(out *RemoteMavenRepo
 	}
 	if in.AssumedOfflinePeriodSecs != nil {
 		in, out := &in.AssumedOfflinePeriodSecs, &out.AssumedOfflinePeriodSecs
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.BlackedOut != nil {
@@ -1535,6 +1580,11 @@ func (in *RemoteMavenRepositoryInitParameters) DeepCopyInto(out *RemoteMavenRepo
 		*out = new(string)
 		**out = **in
 	}
+	if in.Key != nil {
+		in, out := &in.Key, &out.Key
+		*out = new(string)
+		**out = **in
+	}
 	if in.ListRemoteFolderItems != nil {
 		in, out := &in.ListRemoteFolderItems, &out.ListRemoteFolderItems
 		*out = new(bool)
@@ -1547,12 +1597,12 @@ func (in *RemoteMavenRepositoryInitParameters) DeepCopyInto(out *RemoteMavenRepo
 	}
 	if in.MaxUniqueSnapshots != nil {
 		in, out := &in.MaxUniqueSnapshots, &out.MaxUniqueSnapshots
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.MetadataRetrievalTimeoutSecs != nil {
 		in, out := &in.MetadataRetrievalTimeoutSecs, &out.MetadataRetrievalTimeoutSecs
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.MismatchingMimeTypesOverrideList != nil {
@@ -1562,7 +1612,7 @@ func (in *RemoteMavenRepositoryInitParameters) DeepCopyInto(out *RemoteMavenRepo
 	}
 	if in.MissedCachePeriodSeconds != nil {
 		in, out := &in.MissedCachePeriodSeconds, &out.MissedCachePeriodSeconds
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.Notes != nil {
@@ -1644,7 +1694,7 @@ func (in *RemoteMavenRepositoryInitParameters) DeepCopyInto(out *RemoteMavenRepo
 	}
 	if in.RetrievalCachePeriodSeconds != nil {
 		in, out := &in.RetrievalCachePeriodSeconds, &out.RetrievalCachePeriodSeconds
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.ShareConfiguration != nil {
@@ -1654,7 +1704,7 @@ func (in *RemoteMavenRepositoryInitParameters) DeepCopyInto(out *RemoteMavenRepo
 	}
 	if in.SocketTimeoutMillis != nil {
 		in, out := &in.SocketTimeoutMillis, &out.SocketTimeoutMillis
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.StoreArtifactsLocally != nil {
@@ -1679,7 +1729,7 @@ func (in *RemoteMavenRepositoryInitParameters) DeepCopyInto(out *RemoteMavenRepo
 	}
 	if in.UnusedArtifactsCleanupPeriodHours != nil {
 		in, out := &in.UnusedArtifactsCleanupPeriodHours, &out.UnusedArtifactsCleanupPeriodHours
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.Username != nil {
@@ -1751,7 +1801,7 @@ func (in *RemoteMavenRepositoryObservation) DeepCopyInto(out *RemoteMavenReposit
 	}
 	if in.AssumedOfflinePeriodSecs != nil {
 		in, out := &in.AssumedOfflinePeriodSecs, &out.AssumedOfflinePeriodSecs
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.BlackedOut != nil {
@@ -1856,6 +1906,11 @@ func (in *RemoteMavenRepositoryObservation) DeepCopyInto(out *RemoteMavenReposit
 		*out = new(string)
 		**out = **in
 	}
+	if in.Key != nil {
+		in, out := &in.Key, &out.Key
+		*out = new(string)
+		**out = **in
+	}
 	if in.ListRemoteFolderItems != nil {
 		in, out := &in.ListRemoteFolderItems, &out.ListRemoteFolderItems
 		*out = new(bool)
@@ -1868,12 +1923,12 @@ func (in *RemoteMavenRepositoryObservation) DeepCopyInto(out *RemoteMavenReposit
 	}
 	if in.MaxUniqueSnapshots != nil {
 		in, out := &in.MaxUniqueSnapshots, &out.MaxUniqueSnapshots
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.MetadataRetrievalTimeoutSecs != nil {
 		in, out := &in.MetadataRetrievalTimeoutSecs, &out.MetadataRetrievalTimeoutSecs
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.MismatchingMimeTypesOverrideList != nil {
@@ -1883,7 +1938,7 @@ func (in *RemoteMavenRepositoryObservation) DeepCopyInto(out *RemoteMavenReposit
 	}
 	if in.MissedCachePeriodSeconds != nil {
 		in, out := &in.MissedCachePeriodSeconds, &out.MissedCachePeriodSeconds
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.Notes != nil {
@@ -1965,7 +2020,7 @@ func (in *RemoteMavenRepositoryObservation) DeepCopyInto(out *RemoteMavenReposit
 	}
 	if in.RetrievalCachePeriodSeconds != nil {
 		in, out := &in.RetrievalCachePeriodSeconds, &out.RetrievalCachePeriodSeconds
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.ShareConfiguration != nil {
@@ -1975,7 +2030,7 @@ func (in *RemoteMavenRepositoryObservation) DeepCopyInto(out *RemoteMavenReposit
 	}
 	if in.SocketTimeoutMillis != nil {
 		in, out := &in.SocketTimeoutMillis, &out.SocketTimeoutMillis
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.StoreArtifactsLocally != nil {
@@ -2000,7 +2055,7 @@ func (in *RemoteMavenRepositoryObservation) DeepCopyInto(out *RemoteMavenReposit
 	}
 	if in.UnusedArtifactsCleanupPeriodHours != nil {
 		in, out := &in.UnusedArtifactsCleanupPeriodHours, &out.UnusedArtifactsCleanupPeriodHours
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.Username != nil {
@@ -2040,7 +2095,7 @@ func (in *RemoteMavenRepositoryParameters) DeepCopyInto(out *RemoteMavenReposito
 	}
 	if in.AssumedOfflinePeriodSecs != nil {
 		in, out := &in.AssumedOfflinePeriodSecs, &out.AssumedOfflinePeriodSecs
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.BlackedOut != nil {
@@ -2140,6 +2195,11 @@ func (in *RemoteMavenRepositoryParameters) DeepCopyInto(out *RemoteMavenReposito
 		*out = new(string)
 		**out = **in
 	}
+	if in.Key != nil {
+		in, out := &in.Key, &out.Key
+		*out = new(string)
+		**out = **in
+	}
 	if in.ListRemoteFolderItems != nil {
 		in, out := &in.ListRemoteFolderItems, &out.ListRemoteFolderItems
 		*out = new(bool)
@@ -2152,12 +2212,12 @@ func (in *RemoteMavenRepositoryParameters) DeepCopyInto(out *RemoteMavenReposito
 	}
 	if in.MaxUniqueSnapshots != nil {
 		in, out := &in.MaxUniqueSnapshots, &out.MaxUniqueSnapshots
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.MetadataRetrievalTimeoutSecs != nil {
 		in, out := &in.MetadataRetrievalTimeoutSecs, &out.MetadataRetrievalTimeoutSecs
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.MismatchingMimeTypesOverrideList != nil {
@@ -2167,7 +2227,7 @@ func (in *RemoteMavenRepositoryParameters) DeepCopyInto(out *RemoteMavenReposito
 	}
 	if in.MissedCachePeriodSeconds != nil {
 		in, out := &in.MissedCachePeriodSeconds, &out.MissedCachePeriodSeconds
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.Notes != nil {
@@ -2249,7 +2309,7 @@ func (in *RemoteMavenRepositoryParameters) DeepCopyInto(out *RemoteMavenReposito
 	}
 	if in.RetrievalCachePeriodSeconds != nil {
 		in, out := &in.RetrievalCachePeriodSeconds, &out.RetrievalCachePeriodSeconds
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.ShareConfiguration != nil {
@@ -2259,7 +2319,7 @@ func (in *RemoteMavenRepositoryParameters) DeepCopyInto(out *RemoteMavenReposito
 	}
 	if in.SocketTimeoutMillis != nil {
 		in, out := &in.SocketTimeoutMillis, &out.SocketTimeoutMillis
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.StoreArtifactsLocally != nil {
@@ -2284,7 +2344,7 @@ func (in *RemoteMavenRepositoryParameters) DeepCopyInto(out *RemoteMavenReposito
 	}
 	if in.UnusedArtifactsCleanupPeriodHours != nil {
 		in, out := &in.UnusedArtifactsCleanupPeriodHours, &out.UnusedArtifactsCleanupPeriodHours
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.Username != nil {
@@ -2491,7 +2551,7 @@ func (in *RemoteNpmRepositoryInitParameters) DeepCopyInto(out *RemoteNpmReposito
 	}
 	if in.AssumedOfflinePeriodSecs != nil {
 		in, out := &in.AssumedOfflinePeriodSecs, &out.AssumedOfflinePeriodSecs
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.BlackedOut != nil {
@@ -2571,6 +2631,11 @@ func (in *RemoteNpmRepositoryInitParameters) DeepCopyInto(out *RemoteNpmReposito
 		*out = new(string)
 		**out = **in
 	}
+	if in.Key != nil {
+		in, out := &in.Key, &out.Key
+		*out = new(string)
+		**out = **in
+	}
 	if in.ListRemoteFolderItems != nil {
 		in, out := &in.ListRemoteFolderItems, &out.ListRemoteFolderItems
 		*out = new(bool)
@@ -2583,7 +2648,7 @@ func (in *RemoteNpmRepositoryInitParameters) DeepCopyInto(out *RemoteNpmReposito
 	}
 	if in.MetadataRetrievalTimeoutSecs != nil {
 		in, out := &in.MetadataRetrievalTimeoutSecs, &out.MetadataRetrievalTimeoutSecs
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.MismatchingMimeTypesOverrideList != nil {
@@ -2593,7 +2658,7 @@ func (in *RemoteNpmRepositoryInitParameters) DeepCopyInto(out *RemoteNpmReposito
 	}
 	if in.MissedCachePeriodSeconds != nil {
 		in, out := &in.MissedCachePeriodSeconds, &out.MissedCachePeriodSeconds
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.Notes != nil {
@@ -2665,7 +2730,7 @@ func (in *RemoteNpmRepositoryInitParameters) DeepCopyInto(out *RemoteNpmReposito
 	}
 	if in.RetrievalCachePeriodSeconds != nil {
 		in, out := &in.RetrievalCachePeriodSeconds, &out.RetrievalCachePeriodSeconds
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.ShareConfiguration != nil {
@@ -2675,7 +2740,7 @@ func (in *RemoteNpmRepositoryInitParameters) DeepCopyInto(out *RemoteNpmReposito
 	}
 	if in.SocketTimeoutMillis != nil {
 		in, out := &in.SocketTimeoutMillis, &out.SocketTimeoutMillis
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.StoreArtifactsLocally != nil {
@@ -2695,7 +2760,7 @@ func (in *RemoteNpmRepositoryInitParameters) DeepCopyInto(out *RemoteNpmReposito
 	}
 	if in.UnusedArtifactsCleanupPeriodHours != nil {
 		in, out := &in.UnusedArtifactsCleanupPeriodHours, &out.UnusedArtifactsCleanupPeriodHours
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.Username != nil {
@@ -2767,7 +2832,7 @@ func (in *RemoteNpmRepositoryObservation) DeepCopyInto(out *RemoteNpmRepositoryO
 	}
 	if in.AssumedOfflinePeriodSecs != nil {
 		in, out := &in.AssumedOfflinePeriodSecs, &out.AssumedOfflinePeriodSecs
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.BlackedOut != nil {
@@ -2852,6 +2917,11 @@ func (in *RemoteNpmRepositoryObservation) DeepCopyInto(out *RemoteNpmRepositoryO
 		*out = new(string)
 		**out = **in
 	}
+	if in.Key != nil {
+		in, out := &in.Key, &out.Key
+		*out = new(string)
+		**out = **in
+	}
 	if in.ListRemoteFolderItems != nil {
 		in, out := &in.ListRemoteFolderItems, &out.ListRemoteFolderItems
 		*out = new(bool)
@@ -2864,7 +2934,7 @@ func (in *RemoteNpmRepositoryObservation) DeepCopyInto(out *RemoteNpmRepositoryO
 	}
 	if in.MetadataRetrievalTimeoutSecs != nil {
 		in, out := &in.MetadataRetrievalTimeoutSecs, &out.MetadataRetrievalTimeoutSecs
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.MismatchingMimeTypesOverrideList != nil {
@@ -2874,7 +2944,7 @@ func (in *RemoteNpmRepositoryObservation) DeepCopyInto(out *RemoteNpmRepositoryO
 	}
 	if in.MissedCachePeriodSeconds != nil {
 		in, out := &in.MissedCachePeriodSeconds, &out.MissedCachePeriodSeconds
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.Notes != nil {
@@ -2946,7 +3016,7 @@ func (in *RemoteNpmRepositoryObservation) DeepCopyInto(out *RemoteNpmRepositoryO
 	}
 	if in.RetrievalCachePeriodSeconds != nil {
 		in, out := &in.RetrievalCachePeriodSeconds, &out.RetrievalCachePeriodSeconds
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.ShareConfiguration != nil {
@@ -2956,7 +3026,7 @@ func (in *RemoteNpmRepositoryObservation) DeepCopyInto(out *RemoteNpmRepositoryO
 	}
 	if in.SocketTimeoutMillis != nil {
 		in, out := &in.SocketTimeoutMillis, &out.SocketTimeoutMillis
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.StoreArtifactsLocally != nil {
@@ -2976,7 +3046,7 @@ func (in *RemoteNpmRepositoryObservation) DeepCopyInto(out *RemoteNpmRepositoryO
 	}
 	if in.UnusedArtifactsCleanupPeriodHours != nil {
 		in, out := &in.UnusedArtifactsCleanupPeriodHours, &out.UnusedArtifactsCleanupPeriodHours
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.Username != nil {
@@ -3016,7 +3086,7 @@ func (in *RemoteNpmRepositoryParameters) DeepCopyInto(out *RemoteNpmRepositoryPa
 	}
 	if in.AssumedOfflinePeriodSecs != nil {
 		in, out := &in.AssumedOfflinePeriodSecs, &out.AssumedOfflinePeriodSecs
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.BlackedOut != nil {
@@ -3096,6 +3166,11 @@ func (in *RemoteNpmRepositoryParameters) DeepCopyInto(out *RemoteNpmRepositoryPa
 		*out = new(string)
 		**out = **in
 	}
+	if in.Key != nil {
+		in, out := &in.Key, &out.Key
+		*out = new(string)
+		**out = **in
+	}
 	if in.ListRemoteFolderItems != nil {
 		in, out := &in.ListRemoteFolderItems, &out.ListRemoteFolderItems
 		*out = new(bool)
@@ -3108,7 +3183,7 @@ func (in *RemoteNpmRepositoryParameters) DeepCopyInto(out *RemoteNpmRepositoryPa
 	}
 	if in.MetadataRetrievalTimeoutSecs != nil {
 		in, out := &in.MetadataRetrievalTimeoutSecs, &out.MetadataRetrievalTimeoutSecs
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.MismatchingMimeTypesOverrideList != nil {
@@ -3118,7 +3193,7 @@ func (in *RemoteNpmRepositoryParameters) DeepCopyInto(out *RemoteNpmRepositoryPa
 	}
 	if in.MissedCachePeriodSeconds != nil {
 		in, out := &in.MissedCachePeriodSeconds, &out.MissedCachePeriodSeconds
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.Notes != nil {
@@ -3190,7 +3265,7 @@ func (in *RemoteNpmRepositoryParameters) DeepCopyInto(out *RemoteNpmRepositoryPa
 	}
 	if in.RetrievalCachePeriodSeconds != nil {
 		in, out := &in.RetrievalCachePeriodSeconds, &out.RetrievalCachePeriodSeconds
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.ShareConfiguration != nil {
@@ -3200,7 +3275,7 @@ func (in *RemoteNpmRepositoryParameters) DeepCopyInto(out *RemoteNpmRepositoryPa
 	}
 	if in.SocketTimeoutMillis != nil {
 		in, out := &in.SocketTimeoutMillis, &out.SocketTimeoutMillis
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.StoreArtifactsLocally != nil {
@@ -3220,7 +3295,7 @@ func (in *RemoteNpmRepositoryParameters) DeepCopyInto(out *RemoteNpmRepositoryPa
 	}
 	if in.UnusedArtifactsCleanupPeriodHours != nil {
 		in, out := &in.UnusedArtifactsCleanupPeriodHours, &out.UnusedArtifactsCleanupPeriodHours
-		*out = new(int64)
+		*out = new(float64)
 		**out = **in
 	}
 	if in.Username != nil {

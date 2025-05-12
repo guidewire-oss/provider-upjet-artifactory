@@ -3,19 +3,19 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.14.0
-  name: artifactorygroups.group.upbound.io
+    controller-gen.kubebuilder.io/version: v0.16.5
+  name: artifactoryusers.user.jfrogartifactory.upbound.io
 spec:
-  group: group.upbound.io
+  group: user.jfrogartifactory.upbound.io
   names:
     categories:
     - crossplane
     - managed
     - artifactory
-    kind: ArtifactoryGroup
-    listKind: ArtifactoryGroupList
-    plural: artifactorygroups
-    singular: artifactorygroup
+    kind: ArtifactoryUser
+    listKind: ArtifactoryUserList
+    plural: artifactoryusers
+    singular: artifactoryuser
   scope: Cluster
   versions:
   - additionalPrinterColumns:
@@ -34,8 +34,8 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: ArtifactoryGroup is the Schema for the ArtifactoryGroups API.
-          <no value>
+        description: ArtifactoryUser is the Schema for the ArtifactoryUsers API. <no
+          value>
         properties:
           apiVersion:
             description: |-
@@ -55,7 +55,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: ArtifactoryGroupSpec defines the desired state of ArtifactoryGroup
+            description: ArtifactoryUserSpec defines the desired state of ArtifactoryUser
             properties:
               deletionPolicy:
                 default: Delete
@@ -73,41 +73,64 @@ spec:
                 type: string
               forProvider:
                 properties:
-                  adminPrivileges:
+                  admin:
+                    description: '(Optional, Default: false) When enabled, this user
+                      is an administrator with all the ensuing privileges.'
                     type: boolean
-                  autoJoin:
+                  disableUiAccess:
+                    description: '(Optional, Default: true) When enabled, this user
+                      can only access the system through the REST API. This option
+                      cannot be set if the user has Admin privileges.'
                     type: boolean
-                  description:
+                  email:
+                    description: Email for user.
                     type: string
-                  externalId:
-                    description: New external group ID used to configure the corresponding
-                      group in Azure AD.
-                    type: string
-                  includeUsers:
-                    description: Setting includeUsers to true will return the group
-                      with its associated user list attached.
-                    type: string
-                  policyManager:
-                    description: When this override is set,  User in the group can
-                      set Xray security and compliance policies. Default value is
-                      'false'.
-                    type: boolean
-                  realm:
-                    type: string
-                  realmAttributes:
-                    type: string
-                  reportsManager:
-                    description: When this override is set,  User in the group can
-                      manage Xray Reports. Default value is 'false'.
-                    type: boolean
-                  usersNames:
+                  groups:
+                    description: List of groups this user is a part of. **Notes:**
+                      If this attribute is not specified then user's group membership
+                      is set to empty. User will not be part of default "readers"
+                      group automatically.
                     items:
                       type: string
                     type: array
                     x-kubernetes-list-type: set
-                  watchManager:
-                    description: When this override is set,  User in the group can
-                      manage Xray Watches on any resource type. Default value is 'false'.
+                  internalPasswordDisabled:
+                    description: '(Optional, Default: false) When enabled, disables
+                      the fallback mechanism for using an internal password when external
+                      authentication (such as LDAP) is enabled.'
+                    type: boolean
+                  name:
+                    description: 'Username for user. May contain lowercase letters,
+                      numbers and symbols: ''.-_@'' for self-hosted. For SaaS, ''+''
+                      is also allowed.'
+                    type: string
+                  passwordSecretRef:
+                    description: '(Optional, Sensitive) Password for the user. When
+                      omitted, a random password is generated using the following
+                      password policy: 12 characters with 1 digit, 1 symbol, with
+                      upper and lower case letters'
+                    properties:
+                      key:
+                        description: The key to select.
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                      namespace:
+                        description: Namespace of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    - namespace
+                    type: object
+                  profileUpdatable:
+                    description: '(Optional, Default: true) When enabled, this user
+                      can update their profile details (except for the password. Only
+                      an administrator can update the password). There may be cases
+                      in which you want to leave this unset to prevent users from
+                      updating their profile. For example, a departmental user with
+                      a single password shared between all department members.'
                     type: boolean
                 type: object
               initProvider:
@@ -123,41 +146,64 @@ spec:
                   for example because of an external controller is managing them, like an
                   autoscaler.
                 properties:
-                  adminPrivileges:
+                  admin:
+                    description: '(Optional, Default: false) When enabled, this user
+                      is an administrator with all the ensuing privileges.'
                     type: boolean
-                  autoJoin:
+                  disableUiAccess:
+                    description: '(Optional, Default: true) When enabled, this user
+                      can only access the system through the REST API. This option
+                      cannot be set if the user has Admin privileges.'
                     type: boolean
-                  description:
+                  email:
+                    description: Email for user.
                     type: string
-                  externalId:
-                    description: New external group ID used to configure the corresponding
-                      group in Azure AD.
-                    type: string
-                  includeUsers:
-                    description: Setting includeUsers to true will return the group
-                      with its associated user list attached.
-                    type: string
-                  policyManager:
-                    description: When this override is set,  User in the group can
-                      set Xray security and compliance policies. Default value is
-                      'false'.
-                    type: boolean
-                  realm:
-                    type: string
-                  realmAttributes:
-                    type: string
-                  reportsManager:
-                    description: When this override is set,  User in the group can
-                      manage Xray Reports. Default value is 'false'.
-                    type: boolean
-                  usersNames:
+                  groups:
+                    description: List of groups this user is a part of. **Notes:**
+                      If this attribute is not specified then user's group membership
+                      is set to empty. User will not be part of default "readers"
+                      group automatically.
                     items:
                       type: string
                     type: array
                     x-kubernetes-list-type: set
-                  watchManager:
-                    description: When this override is set,  User in the group can
-                      manage Xray Watches on any resource type. Default value is 'false'.
+                  internalPasswordDisabled:
+                    description: '(Optional, Default: false) When enabled, disables
+                      the fallback mechanism for using an internal password when external
+                      authentication (such as LDAP) is enabled.'
+                    type: boolean
+                  name:
+                    description: 'Username for user. May contain lowercase letters,
+                      numbers and symbols: ''.-_@'' for self-hosted. For SaaS, ''+''
+                      is also allowed.'
+                    type: string
+                  passwordSecretRef:
+                    description: '(Optional, Sensitive) Password for the user. When
+                      omitted, a random password is generated using the following
+                      password policy: 12 characters with 1 digit, 1 symbol, with
+                      upper and lower case letters'
+                    properties:
+                      key:
+                        description: The key to select.
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                      namespace:
+                        description: Namespace of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    - namespace
+                    type: object
+                  profileUpdatable:
+                    description: '(Optional, Default: true) When enabled, this user
+                      can update their profile details (except for the password. Only
+                      an administrator can update the password). There may be cases
+                      in which you want to leave this unset to prevent users from
+                      updating their profile. For example, a departmental user with
+                      a single password shared between all department members.'
                     type: boolean
                 type: object
               managementPolicies:
@@ -327,48 +373,60 @@ spec:
             required:
             - forProvider
             type: object
+            x-kubernetes-validations:
+            - message: spec.forProvider.email is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.email)
+                || (has(self.initProvider) && has(self.initProvider.email))'
+            - message: spec.forProvider.name is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.name)
+                || (has(self.initProvider) && has(self.initProvider.name))'
           status:
-            description: ArtifactoryGroupStatus defines the observed state of ArtifactoryGroup.
+            description: ArtifactoryUserStatus defines the observed state of ArtifactoryUser.
             properties:
               atProvider:
                 properties:
-                  adminPrivileges:
+                  admin:
+                    description: '(Optional, Default: false) When enabled, this user
+                      is an administrator with all the ensuing privileges.'
                     type: boolean
-                  autoJoin:
+                  disableUiAccess:
+                    description: '(Optional, Default: true) When enabled, this user
+                      can only access the system through the REST API. This option
+                      cannot be set if the user has Admin privileges.'
                     type: boolean
-                  description:
+                  email:
+                    description: Email for user.
                     type: string
-                  externalId:
-                    description: New external group ID used to configure the corresponding
-                      group in Azure AD.
-                    type: string
-                  id:
-                    type: string
-                  includeUsers:
-                    description: Setting includeUsers to true will return the group
-                      with its associated user list attached.
-                    type: string
-                  policyManager:
-                    description: When this override is set,  User in the group can
-                      set Xray security and compliance policies. Default value is
-                      'false'.
-                    type: boolean
-                  realm:
-                    type: string
-                  realmAttributes:
-                    type: string
-                  reportsManager:
-                    description: When this override is set,  User in the group can
-                      manage Xray Reports. Default value is 'false'.
-                    type: boolean
-                  usersNames:
+                  groups:
+                    description: List of groups this user is a part of. **Notes:**
+                      If this attribute is not specified then user's group membership
+                      is set to empty. User will not be part of default "readers"
+                      group automatically.
                     items:
                       type: string
                     type: array
                     x-kubernetes-list-type: set
-                  watchManager:
-                    description: When this override is set,  User in the group can
-                      manage Xray Watches on any resource type. Default value is 'false'.
+                  id:
+                    type: string
+                  internalPasswordDisabled:
+                    description: '(Optional, Default: false) When enabled, disables
+                      the fallback mechanism for using an internal password when external
+                      authentication (such as LDAP) is enabled.'
+                    type: boolean
+                  name:
+                    description: 'Username for user. May contain lowercase letters,
+                      numbers and symbols: ''.-_@'' for self-hosted. For SaaS, ''+''
+                      is also allowed.'
+                    type: string
+                  profileUpdatable:
+                    description: '(Optional, Default: true) When enabled, this user
+                      can update their profile details (except for the password. Only
+                      an administrator can update the password). There may be cases
+                      in which you want to leave this unset to prevent users from
+                      updating their profile. For example, a departmental user with
+                      a single password shared between all department members.'
                     type: boolean
                 type: object
               conditions:

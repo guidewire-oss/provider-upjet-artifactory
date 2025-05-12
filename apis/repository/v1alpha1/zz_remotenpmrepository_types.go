@@ -72,7 +72,7 @@ type RemoteNpmRepositoryInitParameters struct {
 	ArchiveBrowsingEnabled *bool `json:"archiveBrowsingEnabled,omitempty" tf:"archive_browsing_enabled,omitempty"`
 
 	// The number of seconds the repository stays in assumed offline state after a connection error. At the end of this time, an online check is attempted in order to reset the offline status. A value of 0 means the repository is never assumed offline.
-	AssumedOfflinePeriodSecs *int64 `json:"assumedOfflinePeriodSecs,omitempty" tf:"assumed_offline_period_secs,omitempty"`
+	AssumedOfflinePeriodSecs *float64 `json:"assumedOfflinePeriodSecs,omitempty" tf:"assumed_offline_period_secs,omitempty"`
 
 	// (A.K.A 'Ignore Repository' on the UI) When set, the repository or its local cache do not participate in artifact resolution.
 	BlackedOut *bool `json:"blackedOut,omitempty" tf:"blacked_out,omitempty"`
@@ -118,6 +118,9 @@ type RemoteNpmRepositoryInitParameters struct {
 	// List of comma-separated artifact patterns to include when evaluating artifact requests in the form of `x/y/**/z/*`. When used, only artifacts matching one of the include patterns are served. By default, all artifacts are included (`**/*`).
 	IncludesPattern *string `json:"includesPattern,omitempty" tf:"includes_pattern,omitempty"`
 
+	// A mandatory identifier for the repository that must be unique. Must be 1 - 64 alphanumeric and hyphen characters. It cannot contain spaces or special characters.
+	Key *string `json:"key,omitempty" tf:"key,omitempty"`
+
 	// Lists the items of remote folders in simple and list browsing. The remote content is cached according to the value of the 'Retrieval Cache Period'. Default value is 'false'. This field exists in the API but not in the UI.
 	ListRemoteFolderItems *bool `json:"listRemoteFolderItems,omitempty" tf:"list_remote_folder_items,omitempty"`
 
@@ -125,13 +128,13 @@ type RemoteNpmRepositoryInitParameters struct {
 	LocalAddress *string `json:"localAddress,omitempty" tf:"local_address,omitempty"`
 
 	// Metadata Retrieval Cache Timeout (Sec) in the UI.This value refers to the number of seconds to wait for retrieval from the remote before serving locally cached artifact or fail the request.
-	MetadataRetrievalTimeoutSecs *int64 `json:"metadataRetrievalTimeoutSecs,omitempty" tf:"metadata_retrieval_timeout_secs,omitempty"`
+	MetadataRetrievalTimeoutSecs *float64 `json:"metadataRetrievalTimeoutSecs,omitempty" tf:"metadata_retrieval_timeout_secs,omitempty"`
 
 	// The set of mime types that should override the block_mismatching_mime_types setting. Eg: 'application/json,application/xml'. Default value is empty.
 	MismatchingMimeTypesOverrideList *string `json:"mismatchingMimeTypesOverrideList,omitempty" tf:"mismatching_mime_types_override_list,omitempty"`
 
 	// Missed Retrieval Cache Period (Sec) in the UI. The number of seconds to cache artifact retrieval misses (artifact not found). A value of 0 indicates no caching.
-	MissedCachePeriodSeconds *int64 `json:"missedCachePeriodSeconds,omitempty" tf:"missed_cache_period_seconds,omitempty"`
+	MissedCachePeriodSeconds *float64 `json:"missedCachePeriodSeconds,omitempty" tf:"missed_cache_period_seconds,omitempty"`
 
 	// Internal description.
 	Notes *string `json:"notes,omitempty" tf:"notes,omitempty"`
@@ -168,12 +171,12 @@ type RemoteNpmRepositoryInitParameters struct {
 	RepoLayoutRef *string `json:"repoLayoutRef,omitempty" tf:"repo_layout_ref,omitempty"`
 
 	// Metadata Retrieval Cache Period (Sec) in the UI. This value refers to the number of seconds to cache metadata files before checking for newer versions on remote server. A value of 0 indicates no caching.
-	RetrievalCachePeriodSeconds *int64 `json:"retrievalCachePeriodSeconds,omitempty" tf:"retrieval_cache_period_seconds,omitempty"`
+	RetrievalCachePeriodSeconds *float64 `json:"retrievalCachePeriodSeconds,omitempty" tf:"retrieval_cache_period_seconds,omitempty"`
 
 	ShareConfiguration *bool `json:"shareConfiguration,omitempty" tf:"share_configuration,omitempty"`
 
 	// Network timeout (in ms) to use when establishing a connection and for unanswered requests. Timing out on a network operation is considered a retrieval failure.
-	SocketTimeoutMillis *int64 `json:"socketTimeoutMillis,omitempty" tf:"socket_timeout_millis,omitempty"`
+	SocketTimeoutMillis *float64 `json:"socketTimeoutMillis,omitempty" tf:"socket_timeout_millis,omitempty"`
 
 	// When set, the repository should store cached artifacts locally. When not set, artifacts are not stored locally, and direct repository-to-client streaming is used. This can be useful for multi-server setups over a high-speed LAN, with one Artifactory caching certain data on central storage, and streaming it directly to satellite pass-though Artifactory servers.
 	StoreArtifactsLocally *bool `json:"storeArtifactsLocally,omitempty" tf:"store_artifacts_locally,omitempty"`
@@ -185,7 +188,7 @@ type RemoteNpmRepositoryInitParameters struct {
 	URL *string `json:"url,omitempty" tf:"url,omitempty"`
 
 	// Unused Artifacts Cleanup Period (Hr) in the UI. The number of hours to wait before an artifact is deemed 'unused' and eligible for cleanup from the repository. A value of 0 means automatic cleanup of cached artifacts is disabled.
-	UnusedArtifactsCleanupPeriodHours *int64 `json:"unusedArtifactsCleanupPeriodHours,omitempty" tf:"unused_artifacts_cleanup_period_hours,omitempty"`
+	UnusedArtifactsCleanupPeriodHours *float64 `json:"unusedArtifactsCleanupPeriodHours,omitempty" tf:"unused_artifacts_cleanup_period_hours,omitempty"`
 
 	Username *string `json:"username,omitempty" tf:"username,omitempty"`
 
@@ -203,7 +206,7 @@ type RemoteNpmRepositoryObservation struct {
 	ArchiveBrowsingEnabled *bool `json:"archiveBrowsingEnabled,omitempty" tf:"archive_browsing_enabled,omitempty"`
 
 	// The number of seconds the repository stays in assumed offline state after a connection error. At the end of this time, an online check is attempted in order to reset the offline status. A value of 0 means the repository is never assumed offline.
-	AssumedOfflinePeriodSecs *int64 `json:"assumedOfflinePeriodSecs,omitempty" tf:"assumed_offline_period_secs,omitempty"`
+	AssumedOfflinePeriodSecs *float64 `json:"assumedOfflinePeriodSecs,omitempty" tf:"assumed_offline_period_secs,omitempty"`
 
 	// (A.K.A 'Ignore Repository' on the UI) When set, the repository or its local cache do not participate in artifact resolution.
 	BlackedOut *bool `json:"blackedOut,omitempty" tf:"blacked_out,omitempty"`
@@ -251,6 +254,9 @@ type RemoteNpmRepositoryObservation struct {
 	// List of comma-separated artifact patterns to include when evaluating artifact requests in the form of `x/y/**/z/*`. When used, only artifacts matching one of the include patterns are served. By default, all artifacts are included (`**/*`).
 	IncludesPattern *string `json:"includesPattern,omitempty" tf:"includes_pattern,omitempty"`
 
+	// A mandatory identifier for the repository that must be unique. Must be 1 - 64 alphanumeric and hyphen characters. It cannot contain spaces or special characters.
+	Key *string `json:"key,omitempty" tf:"key,omitempty"`
+
 	// Lists the items of remote folders in simple and list browsing. The remote content is cached according to the value of the 'Retrieval Cache Period'. Default value is 'false'. This field exists in the API but not in the UI.
 	ListRemoteFolderItems *bool `json:"listRemoteFolderItems,omitempty" tf:"list_remote_folder_items,omitempty"`
 
@@ -258,13 +264,13 @@ type RemoteNpmRepositoryObservation struct {
 	LocalAddress *string `json:"localAddress,omitempty" tf:"local_address,omitempty"`
 
 	// Metadata Retrieval Cache Timeout (Sec) in the UI.This value refers to the number of seconds to wait for retrieval from the remote before serving locally cached artifact or fail the request.
-	MetadataRetrievalTimeoutSecs *int64 `json:"metadataRetrievalTimeoutSecs,omitempty" tf:"metadata_retrieval_timeout_secs,omitempty"`
+	MetadataRetrievalTimeoutSecs *float64 `json:"metadataRetrievalTimeoutSecs,omitempty" tf:"metadata_retrieval_timeout_secs,omitempty"`
 
 	// The set of mime types that should override the block_mismatching_mime_types setting. Eg: 'application/json,application/xml'. Default value is empty.
 	MismatchingMimeTypesOverrideList *string `json:"mismatchingMimeTypesOverrideList,omitempty" tf:"mismatching_mime_types_override_list,omitempty"`
 
 	// Missed Retrieval Cache Period (Sec) in the UI. The number of seconds to cache artifact retrieval misses (artifact not found). A value of 0 indicates no caching.
-	MissedCachePeriodSeconds *int64 `json:"missedCachePeriodSeconds,omitempty" tf:"missed_cache_period_seconds,omitempty"`
+	MissedCachePeriodSeconds *float64 `json:"missedCachePeriodSeconds,omitempty" tf:"missed_cache_period_seconds,omitempty"`
 
 	// Internal description.
 	Notes *string `json:"notes,omitempty" tf:"notes,omitempty"`
@@ -301,12 +307,12 @@ type RemoteNpmRepositoryObservation struct {
 	RepoLayoutRef *string `json:"repoLayoutRef,omitempty" tf:"repo_layout_ref,omitempty"`
 
 	// Metadata Retrieval Cache Period (Sec) in the UI. This value refers to the number of seconds to cache metadata files before checking for newer versions on remote server. A value of 0 indicates no caching.
-	RetrievalCachePeriodSeconds *int64 `json:"retrievalCachePeriodSeconds,omitempty" tf:"retrieval_cache_period_seconds,omitempty"`
+	RetrievalCachePeriodSeconds *float64 `json:"retrievalCachePeriodSeconds,omitempty" tf:"retrieval_cache_period_seconds,omitempty"`
 
 	ShareConfiguration *bool `json:"shareConfiguration,omitempty" tf:"share_configuration,omitempty"`
 
 	// Network timeout (in ms) to use when establishing a connection and for unanswered requests. Timing out on a network operation is considered a retrieval failure.
-	SocketTimeoutMillis *int64 `json:"socketTimeoutMillis,omitempty" tf:"socket_timeout_millis,omitempty"`
+	SocketTimeoutMillis *float64 `json:"socketTimeoutMillis,omitempty" tf:"socket_timeout_millis,omitempty"`
 
 	// When set, the repository should store cached artifacts locally. When not set, artifacts are not stored locally, and direct repository-to-client streaming is used. This can be useful for multi-server setups over a high-speed LAN, with one Artifactory caching certain data on central storage, and streaming it directly to satellite pass-though Artifactory servers.
 	StoreArtifactsLocally *bool `json:"storeArtifactsLocally,omitempty" tf:"store_artifacts_locally,omitempty"`
@@ -318,7 +324,7 @@ type RemoteNpmRepositoryObservation struct {
 	URL *string `json:"url,omitempty" tf:"url,omitempty"`
 
 	// Unused Artifacts Cleanup Period (Hr) in the UI. The number of hours to wait before an artifact is deemed 'unused' and eligible for cleanup from the repository. A value of 0 means automatic cleanup of cached artifacts is disabled.
-	UnusedArtifactsCleanupPeriodHours *int64 `json:"unusedArtifactsCleanupPeriodHours,omitempty" tf:"unused_artifacts_cleanup_period_hours,omitempty"`
+	UnusedArtifactsCleanupPeriodHours *float64 `json:"unusedArtifactsCleanupPeriodHours,omitempty" tf:"unused_artifacts_cleanup_period_hours,omitempty"`
 
 	Username *string `json:"username,omitempty" tf:"username,omitempty"`
 
@@ -339,7 +345,7 @@ type RemoteNpmRepositoryParameters struct {
 
 	// The number of seconds the repository stays in assumed offline state after a connection error. At the end of this time, an online check is attempted in order to reset the offline status. A value of 0 means the repository is never assumed offline.
 	// +kubebuilder:validation:Optional
-	AssumedOfflinePeriodSecs *int64 `json:"assumedOfflinePeriodSecs,omitempty" tf:"assumed_offline_period_secs,omitempty"`
+	AssumedOfflinePeriodSecs *float64 `json:"assumedOfflinePeriodSecs,omitempty" tf:"assumed_offline_period_secs,omitempty"`
 
 	// (A.K.A 'Ignore Repository' on the UI) When set, the repository or its local cache do not participate in artifact resolution.
 	// +kubebuilder:validation:Optional
@@ -400,6 +406,10 @@ type RemoteNpmRepositoryParameters struct {
 	// +kubebuilder:validation:Optional
 	IncludesPattern *string `json:"includesPattern,omitempty" tf:"includes_pattern,omitempty"`
 
+	// A mandatory identifier for the repository that must be unique. Must be 1 - 64 alphanumeric and hyphen characters. It cannot contain spaces or special characters.
+	// +kubebuilder:validation:Optional
+	Key *string `json:"key,omitempty" tf:"key,omitempty"`
+
 	// Lists the items of remote folders in simple and list browsing. The remote content is cached according to the value of the 'Retrieval Cache Period'. Default value is 'false'. This field exists in the API but not in the UI.
 	// +kubebuilder:validation:Optional
 	ListRemoteFolderItems *bool `json:"listRemoteFolderItems,omitempty" tf:"list_remote_folder_items,omitempty"`
@@ -410,7 +420,7 @@ type RemoteNpmRepositoryParameters struct {
 
 	// Metadata Retrieval Cache Timeout (Sec) in the UI.This value refers to the number of seconds to wait for retrieval from the remote before serving locally cached artifact or fail the request.
 	// +kubebuilder:validation:Optional
-	MetadataRetrievalTimeoutSecs *int64 `json:"metadataRetrievalTimeoutSecs,omitempty" tf:"metadata_retrieval_timeout_secs,omitempty"`
+	MetadataRetrievalTimeoutSecs *float64 `json:"metadataRetrievalTimeoutSecs,omitempty" tf:"metadata_retrieval_timeout_secs,omitempty"`
 
 	// The set of mime types that should override the block_mismatching_mime_types setting. Eg: 'application/json,application/xml'. Default value is empty.
 	// +kubebuilder:validation:Optional
@@ -418,7 +428,7 @@ type RemoteNpmRepositoryParameters struct {
 
 	// Missed Retrieval Cache Period (Sec) in the UI. The number of seconds to cache artifact retrieval misses (artifact not found). A value of 0 indicates no caching.
 	// +kubebuilder:validation:Optional
-	MissedCachePeriodSeconds *int64 `json:"missedCachePeriodSeconds,omitempty" tf:"missed_cache_period_seconds,omitempty"`
+	MissedCachePeriodSeconds *float64 `json:"missedCachePeriodSeconds,omitempty" tf:"missed_cache_period_seconds,omitempty"`
 
 	// Internal description.
 	// +kubebuilder:validation:Optional
@@ -467,14 +477,14 @@ type RemoteNpmRepositoryParameters struct {
 
 	// Metadata Retrieval Cache Period (Sec) in the UI. This value refers to the number of seconds to cache metadata files before checking for newer versions on remote server. A value of 0 indicates no caching.
 	// +kubebuilder:validation:Optional
-	RetrievalCachePeriodSeconds *int64 `json:"retrievalCachePeriodSeconds,omitempty" tf:"retrieval_cache_period_seconds,omitempty"`
+	RetrievalCachePeriodSeconds *float64 `json:"retrievalCachePeriodSeconds,omitempty" tf:"retrieval_cache_period_seconds,omitempty"`
 
 	// +kubebuilder:validation:Optional
 	ShareConfiguration *bool `json:"shareConfiguration,omitempty" tf:"share_configuration,omitempty"`
 
 	// Network timeout (in ms) to use when establishing a connection and for unanswered requests. Timing out on a network operation is considered a retrieval failure.
 	// +kubebuilder:validation:Optional
-	SocketTimeoutMillis *int64 `json:"socketTimeoutMillis,omitempty" tf:"socket_timeout_millis,omitempty"`
+	SocketTimeoutMillis *float64 `json:"socketTimeoutMillis,omitempty" tf:"socket_timeout_millis,omitempty"`
 
 	// When set, the repository should store cached artifacts locally. When not set, artifacts are not stored locally, and direct repository-to-client streaming is used. This can be useful for multi-server setups over a high-speed LAN, with one Artifactory caching certain data on central storage, and streaming it directly to satellite pass-though Artifactory servers.
 	// +kubebuilder:validation:Optional
@@ -490,7 +500,7 @@ type RemoteNpmRepositoryParameters struct {
 
 	// Unused Artifacts Cleanup Period (Hr) in the UI. The number of hours to wait before an artifact is deemed 'unused' and eligible for cleanup from the repository. A value of 0 means automatic cleanup of cached artifacts is disabled.
 	// +kubebuilder:validation:Optional
-	UnusedArtifactsCleanupPeriodHours *int64 `json:"unusedArtifactsCleanupPeriodHours,omitempty" tf:"unused_artifacts_cleanup_period_hours,omitempty"`
+	UnusedArtifactsCleanupPeriodHours *float64 `json:"unusedArtifactsCleanupPeriodHours,omitempty" tf:"unused_artifacts_cleanup_period_hours,omitempty"`
 
 	// +kubebuilder:validation:Optional
 	Username *string `json:"username,omitempty" tf:"username,omitempty"`
@@ -536,8 +546,9 @@ type RemoteNpmRepositoryStatus struct {
 type RemoteNpmRepository struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Spec              RemoteNpmRepositorySpec   `json:"spec"`
-	Status            RemoteNpmRepositoryStatus `json:"status,omitempty"`
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.key) || (has(self.initProvider) && has(self.initProvider.key))",message="spec.forProvider.key is a required parameter"
+	Spec   RemoteNpmRepositorySpec   `json:"spec"`
+	Status RemoteNpmRepositoryStatus `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true

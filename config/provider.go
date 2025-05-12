@@ -9,16 +9,15 @@ import (
 	"context"
 	_ "embed"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/myorg/provider-jfrogartifactory/config/artifactorygroup"
-	"github.com/myorg/provider-jfrogartifactory/config/artifactoryuser"
-	"github.com/myorg/provider-jfrogartifactory/config/localmavenrepository"
-	"github.com/myorg/provider-jfrogartifactory/config/localnpmrepository"
-	"github.com/myorg/provider-jfrogartifactory/config/remotemavenrepository"
-	"github.com/myorg/provider-jfrogartifactory/config/remotenpmrepository"
-	"github.com/myorg/provider-jfrogartifactory/config/repository"
-	"github.com/myorg/provider-jfrogartifactory/config/virtualmavenrepository"
-	"github.com/myorg/provider-jfrogartifactory/config/virtualnpmrepository"
+	"github.com/guidewire-oss/provider-jfrogartifactory/config/artifactorygroup"
+	"github.com/guidewire-oss/provider-jfrogartifactory/config/artifactoryuser"
+	"github.com/guidewire-oss/provider-jfrogartifactory/config/localmavenrepository"
+	"github.com/guidewire-oss/provider-jfrogartifactory/config/localnpmrepository"
+	"github.com/guidewire-oss/provider-jfrogartifactory/config/remotemavenrepository"
+	"github.com/guidewire-oss/provider-jfrogartifactory/config/remotenpmrepository"
+	"github.com/guidewire-oss/provider-jfrogartifactory/config/repository"
+	"github.com/guidewire-oss/provider-jfrogartifactory/config/virtualmavenrepository"
+	"github.com/guidewire-oss/provider-jfrogartifactory/config/virtualnpmrepository"
 
 	artifactory "github.com/jfrog/terraform-provider-artifactory/v12/pkg/artifactory/provider"
 
@@ -28,7 +27,7 @@ import (
 
 const (
 	resourcePrefix = "jfrogartifactory"
-	modulePath     = "github.com/myorg/provider-jfrogartifactory"
+	modulePath     = "github.com/guidewire-oss/provider-jfrogartifactory"
 )
 
 //go:embed schema.json
@@ -39,30 +38,19 @@ var providerMetadata string
 
 // GetProvider returns provider configuration
 func GetProvider(ctx context.Context) (*ujconfig.Provider, error) {
-	newProvider := artifactory.SdkV2()
-	//newProvider.ResourcesMap artifactory.SdkV2().DataSourcesMap
+	sdkProvider := artifactory.SdkV2()
+	fwProvider := artifactory.Framework()
 
-	combinedMap := make(map[string]*schema.Resource)
-
-	// Add resources to the combined map
-	for key, resource := range artifactory.SdkV2().ResourcesMap {
-	combinedMap[key] = resource
-	}
-
-	// Add data sources to the combined map
-	for key, dataSource := range artifactory.SdkV2().DataSourcesMap {
-	combinedMap[key] = dataSource
-	}
-	newProvider.ResourcesMap = combinedMap
-	
 	pc := ujconfig.NewProvider([]byte(providerSchema), resourcePrefix, modulePath, []byte(providerMetadata),
-		ujconfig.WithRootGroup("upbound.io"),
+		ujconfig.WithRootGroup("jfrogartifactory.upbound.io"),
 		ujconfig.WithShortName("artifactory"),
 		ujconfig.WithIncludeList(resourceList(cliReconciledExternalNameConfigs)),
 		ujconfig.WithTerraformPluginSDKIncludeList(resourceList(terraformPluginSDKExternalNameConfigs)),
+		ujconfig.WithTerraformPluginFrameworkIncludeList(resourceList(terraformPluginFrameworkExternalNameConfigs)),
 		ujconfig.WithFeaturesPackage("internal/features"),
 		ujconfig.WithReferenceInjectors([]ujconfig.ReferenceInjector{reference.NewInjector(modulePath)}),
-		ujconfig.WithTerraformProvider(newProvider), 
+		ujconfig.WithTerraformProvider(sdkProvider),
+		ujconfig.WithTerraformPluginFrameworkProvider(fwProvider()),
 		ujconfig.WithDefaultResourceOptions(
 			resourceConfigurator(),
 		))

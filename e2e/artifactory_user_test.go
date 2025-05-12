@@ -17,7 +17,7 @@ import (
 	"k8s.io/utils/ptr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/myorg/provider-jfrogartifactory/apis/user/v1alpha1"
+	"github.com/guidewire-oss/provider-jfrogartifactory/apis/user/v1alpha1"
 )
 
 var _ = Describe("Artifactory User", func() {

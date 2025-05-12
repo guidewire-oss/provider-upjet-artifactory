@@ -125,5 +125,5 @@ func (tr *RemoteMavenRepository) LateInitialize(attrs []byte) (bool, error) {
 
 // GetTerraformSchemaVersion returns the associated Terraform schema version
 func (tr *RemoteMavenRepository) GetTerraformSchemaVersion() int {
-	return 0
+	return 2
 }

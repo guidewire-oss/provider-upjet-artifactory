@@ -18,7 +18,7 @@ import (
 
 	"github.com/crossplane/upjet/pkg/terraform"
 
-	"github.com/myorg/provider-jfrogartifactory/apis/v1beta1"
+	"github.com/guidewire-oss/provider-jfrogartifactory/apis/v1beta1"
 )
 
 // Got the provider config fields from https://registry.terraform.io/providers/jfrog/artifactory/latest/docs
