@@ -9,16 +9,16 @@ import (
 
 	"github.com/crossplane/upjet/pkg/controller"
 
-	artifactorygroup "github.com/myorg/provider-jfrogartifactory/internal/controller/group/artifactorygroup"
+	artifactorygroup "github.com/myorg/provider-jfrogartifactory/internal/controller/jfrogartifactory/artifactorygroup"
+	artifactoryuser "github.com/myorg/provider-jfrogartifactory/internal/controller/jfrogartifactory/artifactoryuser"
+	genericrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/jfrogartifactory/genericrepository"
+	localmavenrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/jfrogartifactory/localmavenrepository"
+	localnpmrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/jfrogartifactory/localnpmrepository"
+	remotemavenrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/jfrogartifactory/remotemavenrepository"
+	remotenpmrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/jfrogartifactory/remotenpmrepository"
+	virtualmavenrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/jfrogartifactory/virtualmavenrepository"
+	virtualnpmrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/jfrogartifactory/virtualnpmrepository"
 	providerconfig "github.com/myorg/provider-jfrogartifactory/internal/controller/providerconfig"
-	genericrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/genericrepository"
-	localmavenrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/localmavenrepository"
-	localnpmrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/localnpmrepository"
-	remotemavenrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/remotemavenrepository"
-	remotenpmrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/remotenpmrepository"
-	virtualmavenrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/virtualmavenrepository"
-	virtualnpmrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/repository/virtualnpmrepository"
-	artifactoryuser "github.com/myorg/provider-jfrogartifactory/internal/controller/user/artifactoryuser"
 )
 
 // Setup creates all controllers with the supplied logger and adds them to
@@ -26,7 +26,7 @@ import (
 func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
 		artifactorygroup.Setup,
-		providerconfig.Setup,
+		artifactoryuser.Setup,
 		genericrepository.Setup,
 		localmavenrepository.Setup,
 		localnpmrepository.Setup,
@@ -34,7 +34,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 		remotenpmrepository.Setup,
 		virtualmavenrepository.Setup,
 		virtualnpmrepository.Setup,
-		artifactoryuser.Setup,
+		providerconfig.Setup,
 	} {
 		if err := setup(mgr, o); err != nil {
 			return err
