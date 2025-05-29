@@ -1,4 +1,4 @@
-apiVersion: repository.upbound.io/v1alpha1
+apiVersion: jfrogartifactory.upbound.io/v1alpha1
 kind: VirtualNpmRepository
 metadata:
   name: virtualnpmrepository

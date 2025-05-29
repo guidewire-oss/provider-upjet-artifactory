@@ -1,4 +1,4 @@
-apiVersion: repository.upbound.io/v1alpha1
+apiVersion: jfrogartifactory.upbound.io/v1alpha1
 kind: RemoteNpmRepository
 metadata:
   name: remotenpmrepository
