@@ -9,16 +9,16 @@ import (
 
 	"github.com/crossplane/upjet/pkg/controller"
 
-	artifactorygroup "github.com/myorg/provider-jfrogartifactory/internal/controller/jfrogartifactory/artifactorygroup"
-	artifactoryuser "github.com/myorg/provider-jfrogartifactory/internal/controller/jfrogartifactory/artifactoryuser"
-	genericrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/jfrogartifactory/genericrepository"
-	localmavenrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/jfrogartifactory/localmavenrepository"
-	localnpmrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/jfrogartifactory/localnpmrepository"
-	remotemavenrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/jfrogartifactory/remotemavenrepository"
-	remotenpmrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/jfrogartifactory/remotenpmrepository"
-	virtualmavenrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/jfrogartifactory/virtualmavenrepository"
-	virtualnpmrepository "github.com/myorg/provider-jfrogartifactory/internal/controller/jfrogartifactory/virtualnpmrepository"
-	providerconfig "github.com/myorg/provider-jfrogartifactory/internal/controller/providerconfig"
+	artifactorygroup "github.com/guidewire-oss/provider-jfrogartifactory/internal/controller/jfrogartifactory/artifactorygroup"
+	artifactoryuser "github.com/guidewire-oss/provider-jfrogartifactory/internal/controller/jfrogartifactory/artifactoryuser"
+	genericrepository "github.com/guidewire-oss/provider-jfrogartifactory/internal/controller/jfrogartifactory/genericrepository"
+	localmavenrepository "github.com/guidewire-oss/provider-jfrogartifactory/internal/controller/jfrogartifactory/localmavenrepository"
+	localnpmrepository "github.com/guidewire-oss/provider-jfrogartifactory/internal/controller/jfrogartifactory/localnpmrepository"
+	remotemavenrepository "github.com/guidewire-oss/provider-jfrogartifactory/internal/controller/jfrogartifactory/remotemavenrepository"
+	remotenpmrepository "github.com/guidewire-oss/provider-jfrogartifactory/internal/controller/jfrogartifactory/remotenpmrepository"
+	virtualmavenrepository "github.com/guidewire-oss/provider-jfrogartifactory/internal/controller/jfrogartifactory/virtualmavenrepository"
+	virtualnpmrepository "github.com/guidewire-oss/provider-jfrogartifactory/internal/controller/jfrogartifactory/virtualnpmrepository"
+	providerconfig "github.com/guidewire-oss/provider-jfrogartifactory/internal/controller/providerconfig"
 )
 
 // Setup creates all controllers with the supplied logger and adds them to

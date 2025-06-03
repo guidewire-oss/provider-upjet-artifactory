@@ -8,9 +8,9 @@ Artifactory API.
 ## Getting Started
 
 Install the provider by using the following command after changing the image tag
-to the [latest release](https://marketplace.upbound.io/providers/myorg/provider-jfrogartifactory):
+to the [latest release](https://marketplace.upbound.io/providers/guidewire-oss/provider-jfrogartifactory):
 ```
-up ctp provider install myorg/provider-jfrogartifactory:v0.1.0
+up ctp provider install guidewire-oss/provider-jfrogartifactory:v0.1.0
 ```
 
 Alternatively, you can use declarative installation:
@@ -21,13 +21,13 @@ kind: Provider
 metadata:
   name: provider-jfrogartifactory
 spec:
-  package: myorg/provider-jfrogartifactory:v0.1.0
+  package: guidewire-oss/provider-jfrogartifactory:v0.1.0
 EOF
 ```
 
 Notice that in this example Provider resource is referencing ControllerConfig with debug enabled.
 
-You can see the API reference [here](https://doc.crds.dev/github.com/myorg/provider-jfrogartifactory).
+You can see the API reference [here](https://doc.crds.dev/github.com/guidewire-oss/provider-jfrogartifactory).
 
 ## Developing
 
@@ -57,7 +57,7 @@ make build
 ## Report a Bug
 
 For filing bugs, suggesting improvements, or requesting new features, please
-open an [issue](https://github.com/myorg/provider-jfrogartifactory/issues).
+open an [issue](https://github.com/guidewire-oss/provider-jfrogartifactory/issues).
 
 # Running e2e tests using make run (using dev edge nodes)
 

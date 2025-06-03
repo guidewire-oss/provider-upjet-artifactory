@@ -14,9 +14,9 @@ import (
 	rt "github.com/jfrog/jfrog-client-go/artifactory"
 	rtAuth "github.com/jfrog/jfrog-client-go/artifactory/auth"
 	rtConfig "github.com/jfrog/jfrog-client-go/config"
-	v1alpha1group "github.com/myorg/provider-jfrogartifactory/apis/group/v1alpha1"
-	v1alpha1repository "github.com/myorg/provider-jfrogartifactory/apis/repository/v1alpha1"
-	v1alpha1user "github.com/myorg/provider-jfrogartifactory/apis/user/v1alpha1"
+	v1alpha1group "github.com/guidewire-oss/provider-jfrogartifactory/apis/jfrogartifactory/v1alpha1"
+	v1alpha1repository "github.com/guidewire-oss/provider-jfrogartifactory/apis/jfrogartifactory/v1alpha1"
+	v1alpha1user "github.com/guidewire-oss/provider-jfrogartifactory/apis/jfrogartifactory/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 
 	"github.com/onsi/ginkgo/v2"

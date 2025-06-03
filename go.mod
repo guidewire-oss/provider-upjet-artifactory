@@ -1,4 +1,4 @@
-module github.com/myorg/provider-jfrogartifactory
+module github.com/guidewire-oss/provider-jfrogartifactory
 
 go 1.21
 

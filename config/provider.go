@@ -8,22 +8,22 @@ import (
 	// Note(turkenh): we are importing this to embed provider schema document
 	_ "embed"
 
-	"github.com/myorg/provider-jfrogartifactory/config/artifactorygroup"
-	"github.com/myorg/provider-jfrogartifactory/config/artifactoryuser"
-	"github.com/myorg/provider-jfrogartifactory/config/localmavenrepository"
-	"github.com/myorg/provider-jfrogartifactory/config/localnpmrepository"
-	"github.com/myorg/provider-jfrogartifactory/config/remotemavenrepository"
-	"github.com/myorg/provider-jfrogartifactory/config/remotenpmrepository"
-	"github.com/myorg/provider-jfrogartifactory/config/repository"
-	"github.com/myorg/provider-jfrogartifactory/config/virtualmavenrepository"
-	"github.com/myorg/provider-jfrogartifactory/config/virtualnpmrepository"
+	"github.com/guidewire-oss/provider-jfrogartifactory/config/artifactorygroup"
+	"github.com/guidewire-oss/provider-jfrogartifactory/config/artifactoryuser"
+	"github.com/guidewire-oss/provider-jfrogartifactory/config/localmavenrepository"
+	"github.com/guidewire-oss/provider-jfrogartifactory/config/localnpmrepository"
+	"github.com/guidewire-oss/provider-jfrogartifactory/config/remotemavenrepository"
+	"github.com/guidewire-oss/provider-jfrogartifactory/config/remotenpmrepository"
+	"github.com/guidewire-oss/provider-jfrogartifactory/config/repository"
+	"github.com/guidewire-oss/provider-jfrogartifactory/config/virtualmavenrepository"
+	"github.com/guidewire-oss/provider-jfrogartifactory/config/virtualnpmrepository"
 
 	ujconfig "github.com/crossplane/upjet/pkg/config"
 )
 
 const (
 	resourcePrefix = "jfrogartifactory"
-	modulePath     = "github.com/myorg/provider-jfrogartifactory"
+	modulePath     = "github.com/guidewire-oss/provider-jfrogartifactory"
 )
 
 //go:embed schema.json

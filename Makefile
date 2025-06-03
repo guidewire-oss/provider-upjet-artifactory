@@ -2,7 +2,7 @@
 # Setup Project
 
 PROJECT_NAME ?= provider-jfrogartifactory
-PROJECT_REPO ?= github.com/myorg/$(PROJECT_NAME)
+PROJECT_REPO ?= github.com/guidewire-oss/$(PROJECT_NAME)
 
 export TERRAFORM_VERSION ?= 1.5.7
 

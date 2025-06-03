@@ -21,8 +21,8 @@ import (
 	"github.com/pkg/errors"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	v1alpha1 "github.com/myorg/provider-jfrogartifactory/apis/jfrogartifactory/v1alpha1"
-	features "github.com/myorg/provider-jfrogartifactory/internal/features"
+	v1alpha1 "github.com/guidewire-oss/provider-jfrogartifactory/apis/jfrogartifactory/v1alpha1"
+	features "github.com/guidewire-oss/provider-jfrogartifactory/internal/features"
 )
 
 // Setup adds a controller that reconciles RemoteNpmRepository managed resources.
