@@ -17,7 +17,7 @@ import (
 	"k8s.io/utils/ptr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/myorg/provider-jfrogartifactory/apis/repository/v1alpha1"
+	"github.com/guidewire-oss/provider-jfrogartifactory/apis/jfrogartifactory/v1alpha1"
 )
 
 var _ = Describe("RemoteNpmRepository", func() {

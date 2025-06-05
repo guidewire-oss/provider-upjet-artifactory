@@ -13,8 +13,8 @@ import (
 	"k8s.io/utils/ptr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	v1alpha1group "github.com/myorg/provider-jfrogartifactory/apis/group/v1alpha1"
-	v1alpha1user "github.com/myorg/provider-jfrogartifactory/apis/user/v1alpha1"
+	v1alpha1group "github.com/guidewire-oss/provider-jfrogartifactory/apis/jfrogartifactory/v1alpha1"
+	v1alpha1user "github.com/guidewire-oss/provider-jfrogartifactory/apis/jfrogartifactory/v1alpha1"
 )
 
 var _ = Describe("Artifactory Group", func() {

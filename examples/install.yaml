@@ -3,4 +3,4 @@ kind: Provider
 metadata:
   name: provider-jfrogartifactory
 spec:
-  package: myorg/provider-jfrogartifactory:v0.1.0
+  package: guidewire-oss/provider-jfrogartifactory:v0.1.0

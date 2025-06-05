@@ -33,12 +33,12 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 	"sigs.k8s.io/controller-runtime/pkg/metrics"
 
-	"github.com/myorg/provider-jfrogartifactory/apis"
-	"github.com/myorg/provider-jfrogartifactory/apis/v1alpha1"
-	"github.com/myorg/provider-jfrogartifactory/config"
-	"github.com/myorg/provider-jfrogartifactory/internal/clients"
-	"github.com/myorg/provider-jfrogartifactory/internal/controller"
-	"github.com/myorg/provider-jfrogartifactory/internal/features"
+	"github.com/guidewire-oss/provider-jfrogartifactory/apis"
+	"github.com/guidewire-oss/provider-jfrogartifactory/apis/v1alpha1"
+	"github.com/guidewire-oss/provider-jfrogartifactory/config"
+	"github.com/guidewire-oss/provider-jfrogartifactory/internal/clients"
+	"github.com/guidewire-oss/provider-jfrogartifactory/internal/controller"
+	"github.com/guidewire-oss/provider-jfrogartifactory/internal/features"
 )
 
 func main() {
