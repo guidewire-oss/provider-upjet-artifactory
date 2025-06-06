@@ -11,6 +11,7 @@ import (
 
 	"github.com/crossplane/crossplane-runtime/pkg/connection"
 	"github.com/crossplane/crossplane-runtime/pkg/event"
+	xpfeature "github.com/crossplane/crossplane-runtime/pkg/feature"
 	"github.com/crossplane/crossplane-runtime/pkg/ratelimiter"
 	"github.com/crossplane/crossplane-runtime/pkg/reconciler/managed"
 	xpresource "github.com/crossplane/crossplane-runtime/pkg/resource"
@@ -21,8 +22,8 @@ import (
 	"github.com/pkg/errors"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	v1alpha1 "github.com/myorg/provider-jfrogartifactory/apis/repository/v1alpha1"
-	features "github.com/myorg/provider-jfrogartifactory/internal/features"
+	v1alpha1 "github.com/guidewire-oss/provider-jfrogartifactory/apis/repository/v1alpha1"
+	features "github.com/guidewire-oss/provider-jfrogartifactory/internal/features"
 )
 
 // Setup adds a controller that reconciles VirtualMavenRepository managed resources.
@@ -79,6 +80,10 @@ func Setup(mgr ctrl.Manager, o tjcontroller.Options) error {
 		if err := mgr.Add(stateMetricsRecorder); err != nil {
 			return errors.Wrap(err, "cannot register MR state metrics recorder for kind v1alpha1.VirtualMavenRepositoryList")
 		}
+	}
+
+	if o.Features.Enabled(xpfeature.EnableAlphaChangeLogs) {
+		opts = append(opts, managed.WithChangeLogger(o.ChangeLogOptions.ChangeLogger))
 	}
 
 	r := managed.NewReconciler(mgr, xpresource.ManagedKind(v1alpha1.VirtualMavenRepository_GroupVersionKind), opts...)

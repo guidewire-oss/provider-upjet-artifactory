@@ -10,11 +10,11 @@ package apis
 import (
 	"k8s.io/apimachinery/pkg/runtime"
 
-	v1alpha1 "github.com/myorg/provider-jfrogartifactory/apis/group/v1alpha1"
-	v1alpha1repository "github.com/myorg/provider-jfrogartifactory/apis/repository/v1alpha1"
-	v1alpha1user "github.com/myorg/provider-jfrogartifactory/apis/user/v1alpha1"
-	v1alpha1apis "github.com/myorg/provider-jfrogartifactory/apis/v1alpha1"
-	v1beta1 "github.com/myorg/provider-jfrogartifactory/apis/v1beta1"
+	v1alpha1 "github.com/guidewire-oss/provider-jfrogartifactory/apis/group/v1alpha1"
+	v1alpha1repository "github.com/guidewire-oss/provider-jfrogartifactory/apis/repository/v1alpha1"
+	v1alpha1user "github.com/guidewire-oss/provider-jfrogartifactory/apis/user/v1alpha1"
+	v1alpha1apis "github.com/guidewire-oss/provider-jfrogartifactory/apis/v1alpha1"
+	v1beta1 "github.com/guidewire-oss/provider-jfrogartifactory/apis/v1beta1"
 )
 
 func init() {

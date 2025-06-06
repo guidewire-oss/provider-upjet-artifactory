@@ -6,20 +6,29 @@ package config
 
 import "github.com/crossplane/upjet/pkg/config"
 
-// ExternalNameConfigs contains all external name configurations for this
+// TerraformPluginFrameworkExternalNameConfigs contains all external
+// name configurations belonging to Terraform Plugin Framework
+// resources to be reconciled under the no-fork architecture for this
 // provider.
+var terraformPluginFrameworkExternalNameConfigs = map[string]config.ExternalName{
+
+	"artifactory_group":                    config.ParameterAsIdentifier("name"),
+	"artifactory_local_generic_repository": config.ParameterAsIdentifier("key"),
+	"artifactory_local_maven_repository":   config.ParameterAsIdentifier("key"),
+	"artifactory_local_npm_repository":     config.ParameterAsIdentifier("key"),
+	"artifactory_remote_maven_repository":  config.ParameterAsIdentifier("key"),
+	"artifactory_remote_npm_repository":    config.ParameterAsIdentifier("key"),
+	"artifactory_user":                     config.ParameterAsIdentifier("name"),
+}
+
+// TerraformPluginSDKExternalNameConfigs contains all external name configurations
+// belonging to Terraform Plugin SDKv2 resources to be reconciled
+// under the no-fork architecture for this provider.
 var terraformPluginSDKExternalNameConfigs = map[string]config.ExternalName{
 	// Import requires using a randomly generated ID from provider: nl-2e21sda
 	// TODO: Not implemented yet: "artifactory_unmanaged_user":           config.NameAsIdentifier,
-	"artifactory_local_generic_repository": config.ParameterAsIdentifier("key"),
-	"artifactory_local_npm_repository":     config.ParameterAsIdentifier("key"),
-	"artifactory_remote_npm_repository":    config.ParameterAsIdentifier("key"),
-	"artifactory_virtual_npm_repository":   config.ParameterAsIdentifier("key"),
-	"artifactory_local_maven_repository":   config.ParameterAsIdentifier("key"),
 	"artifactory_virtual_maven_repository": config.ParameterAsIdentifier("key"),
-	"artifactory_remote_maven_repository":  config.ParameterAsIdentifier("key"),
-	"artifactory_user":                     config.ParameterAsIdentifier("name"),
-	"artifactory_group":                    config.ParameterAsIdentifier("name"),
+	"artifactory_virtual_npm_repository":   config.ParameterAsIdentifier("key"),
 }
 
 // cliReconciledExternalNameConfigs contains all external name configurations

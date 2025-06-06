@@ -37,6 +37,9 @@ type LocalNpmRepositoryInitParameters struct {
 	// List of comma-separated artifact patterns to include when evaluating artifact requests in the form of `x/y/**/z/*`. When used, only artifacts matching one of the include patterns are served. By default, all artifacts are included (`**/*`).
 	IncludesPattern *string `json:"includesPattern,omitempty" tf:"includes_pattern,omitempty"`
 
+	// A mandatory identifier for the repository that must be unique. Must be 1 - 64 alphanumeric and hyphen characters. It cannot contain spaces or special characters.
+	Key *string `json:"key,omitempty" tf:"key,omitempty"`
+
 	// Internal description.
 	Notes *string `json:"notes,omitempty" tf:"notes,omitempty"`
 
@@ -86,6 +89,9 @@ type LocalNpmRepositoryObservation struct {
 
 	// List of comma-separated artifact patterns to include when evaluating artifact requests in the form of `x/y/**/z/*`. When used, only artifacts matching one of the include patterns are served. By default, all artifacts are included (`**/*`).
 	IncludesPattern *string `json:"includesPattern,omitempty" tf:"includes_pattern,omitempty"`
+
+	// A mandatory identifier for the repository that must be unique. Must be 1 - 64 alphanumeric and hyphen characters. It cannot contain spaces or special characters.
+	Key *string `json:"key,omitempty" tf:"key,omitempty"`
 
 	// Internal description.
 	Notes *string `json:"notes,omitempty" tf:"notes,omitempty"`
@@ -143,6 +149,10 @@ type LocalNpmRepositoryParameters struct {
 	// List of comma-separated artifact patterns to include when evaluating artifact requests in the form of `x/y/**/z/*`. When used, only artifacts matching one of the include patterns are served. By default, all artifacts are included (`**/*`).
 	// +kubebuilder:validation:Optional
 	IncludesPattern *string `json:"includesPattern,omitempty" tf:"includes_pattern,omitempty"`
+
+	// A mandatory identifier for the repository that must be unique. Must be 1 - 64 alphanumeric and hyphen characters. It cannot contain spaces or special characters.
+	// +kubebuilder:validation:Optional
+	Key *string `json:"key,omitempty" tf:"key,omitempty"`
 
 	// Internal description.
 	// +kubebuilder:validation:Optional
@@ -211,8 +221,9 @@ type LocalNpmRepositoryStatus struct {
 type LocalNpmRepository struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Spec              LocalNpmRepositorySpec   `json:"spec"`
-	Status            LocalNpmRepositoryStatus `json:"status,omitempty"`
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.key) || (has(self.initProvider) && has(self.initProvider.key))",message="spec.forProvider.key is a required parameter"
+	Spec   LocalNpmRepositorySpec   `json:"spec"`
+	Status LocalNpmRepositoryStatus `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true

@@ -9,6 +9,7 @@
 package v1alpha1
 
 import (
+	"github.com/crossplane/crossplane-runtime/apis/common/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
 
@@ -71,6 +72,16 @@ func (in *ArtifactoryUserInitParameters) DeepCopyInto(out *ArtifactoryUserInitPa
 	if in.InternalPasswordDisabled != nil {
 		in, out := &in.InternalPasswordDisabled, &out.InternalPasswordDisabled
 		*out = new(bool)
+		**out = **in
+	}
+	if in.Name != nil {
+		in, out := &in.Name, &out.Name
+		*out = new(string)
+		**out = **in
+	}
+	if in.PasswordSecretRef != nil {
+		in, out := &in.PasswordSecretRef, &out.PasswordSecretRef
+		*out = new(v1.SecretKeySelector)
 		**out = **in
 	}
 	if in.ProfileUpdatable != nil {
@@ -220,6 +231,11 @@ func (in *ArtifactoryUserParameters) DeepCopyInto(out *ArtifactoryUserParameters
 	if in.Name != nil {
 		in, out := &in.Name, &out.Name
 		*out = new(string)
+		**out = **in
+	}
+	if in.PasswordSecretRef != nil {
+		in, out := &in.PasswordSecretRef, &out.PasswordSecretRef
+		*out = new(v1.SecretKeySelector)
 		**out = **in
 	}
 	if in.ProfileUpdatable != nil {

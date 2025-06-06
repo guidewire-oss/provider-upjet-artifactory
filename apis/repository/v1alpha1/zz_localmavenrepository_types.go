@@ -46,10 +46,13 @@ type LocalMavenRepositoryInitParameters struct {
 	// List of comma-separated artifact patterns to include when evaluating artifact requests in the form of `x/y/**/z/*`. When used, only artifacts matching one of the include patterns are served. By default, all artifacts are included (`**/*`).
 	IncludesPattern *string `json:"includesPattern,omitempty" tf:"includes_pattern,omitempty"`
 
+	// A mandatory identifier for the repository that must be unique. Must be 1 - 64 alphanumeric and hyphen characters. It cannot contain spaces or special characters.
+	Key *string `json:"key,omitempty" tf:"key,omitempty"`
+
 	// The maximum number of unique snapshots of a single artifact to store.
 	// Once the number of snapshots exceeds this setting, older versions are removed.
 	// A value of 0 (default) indicates there is no limit, and unique snapshots are not cleaned up.
-	MaxUniqueSnapshots *int64 `json:"maxUniqueSnapshots,omitempty" tf:"max_unique_snapshots,omitempty"`
+	MaxUniqueSnapshots *float64 `json:"maxUniqueSnapshots,omitempty" tf:"max_unique_snapshots,omitempty"`
 
 	// Internal description.
 	Notes *string `json:"notes,omitempty" tf:"notes,omitempty"`
@@ -122,10 +125,13 @@ type LocalMavenRepositoryObservation struct {
 	// List of comma-separated artifact patterns to include when evaluating artifact requests in the form of `x/y/**/z/*`. When used, only artifacts matching one of the include patterns are served. By default, all artifacts are included (`**/*`).
 	IncludesPattern *string `json:"includesPattern,omitempty" tf:"includes_pattern,omitempty"`
 
+	// A mandatory identifier for the repository that must be unique. Must be 1 - 64 alphanumeric and hyphen characters. It cannot contain spaces or special characters.
+	Key *string `json:"key,omitempty" tf:"key,omitempty"`
+
 	// The maximum number of unique snapshots of a single artifact to store.
 	// Once the number of snapshots exceeds this setting, older versions are removed.
 	// A value of 0 (default) indicates there is no limit, and unique snapshots are not cleaned up.
-	MaxUniqueSnapshots *int64 `json:"maxUniqueSnapshots,omitempty" tf:"max_unique_snapshots,omitempty"`
+	MaxUniqueSnapshots *float64 `json:"maxUniqueSnapshots,omitempty" tf:"max_unique_snapshots,omitempty"`
 
 	// Internal description.
 	Notes *string `json:"notes,omitempty" tf:"notes,omitempty"`
@@ -208,11 +214,15 @@ type LocalMavenRepositoryParameters struct {
 	// +kubebuilder:validation:Optional
 	IncludesPattern *string `json:"includesPattern,omitempty" tf:"includes_pattern,omitempty"`
 
+	// A mandatory identifier for the repository that must be unique. Must be 1 - 64 alphanumeric and hyphen characters. It cannot contain spaces or special characters.
+	// +kubebuilder:validation:Optional
+	Key *string `json:"key,omitempty" tf:"key,omitempty"`
+
 	// The maximum number of unique snapshots of a single artifact to store.
 	// Once the number of snapshots exceeds this setting, older versions are removed.
 	// A value of 0 (default) indicates there is no limit, and unique snapshots are not cleaned up.
 	// +kubebuilder:validation:Optional
-	MaxUniqueSnapshots *int64 `json:"maxUniqueSnapshots,omitempty" tf:"max_unique_snapshots,omitempty"`
+	MaxUniqueSnapshots *float64 `json:"maxUniqueSnapshots,omitempty" tf:"max_unique_snapshots,omitempty"`
 
 	// Internal description.
 	// +kubebuilder:validation:Optional
@@ -295,8 +305,9 @@ type LocalMavenRepositoryStatus struct {
 type LocalMavenRepository struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Spec              LocalMavenRepositorySpec   `json:"spec"`
-	Status            LocalMavenRepositoryStatus `json:"status,omitempty"`
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.key) || (has(self.initProvider) && has(self.initProvider.key))",message="spec.forProvider.key is a required parameter"
+	Spec   LocalMavenRepositorySpec   `json:"spec"`
+	Status LocalMavenRepositoryStatus `json:"status,omitempty"`
 }
 
 // +kubebuilder:object:root=true

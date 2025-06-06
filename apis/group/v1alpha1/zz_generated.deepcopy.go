@@ -57,13 +57,13 @@ func (in *ArtifactoryGroupInitParameters) DeepCopyInto(out *ArtifactoryGroupInit
 		*out = new(string)
 		**out = **in
 	}
-	if in.ExternalID != nil {
-		in, out := &in.ExternalID, &out.ExternalID
-		*out = new(string)
+	if in.DetachAllUsers != nil {
+		in, out := &in.DetachAllUsers, &out.DetachAllUsers
+		*out = new(bool)
 		**out = **in
 	}
-	if in.IncludeUsers != nil {
-		in, out := &in.IncludeUsers, &out.IncludeUsers
+	if in.ExternalID != nil {
+		in, out := &in.ExternalID, &out.ExternalID
 		*out = new(string)
 		**out = **in
 	}
@@ -165,6 +165,11 @@ func (in *ArtifactoryGroupObservation) DeepCopyInto(out *ArtifactoryGroupObserva
 		*out = new(string)
 		**out = **in
 	}
+	if in.DetachAllUsers != nil {
+		in, out := &in.DetachAllUsers, &out.DetachAllUsers
+		*out = new(bool)
+		**out = **in
+	}
 	if in.ExternalID != nil {
 		in, out := &in.ExternalID, &out.ExternalID
 		*out = new(string)
@@ -172,11 +177,6 @@ func (in *ArtifactoryGroupObservation) DeepCopyInto(out *ArtifactoryGroupObserva
 	}
 	if in.ID != nil {
 		in, out := &in.ID, &out.ID
-		*out = new(string)
-		**out = **in
-	}
-	if in.IncludeUsers != nil {
-		in, out := &in.IncludeUsers, &out.IncludeUsers
 		*out = new(string)
 		**out = **in
 	}
@@ -246,13 +246,13 @@ func (in *ArtifactoryGroupParameters) DeepCopyInto(out *ArtifactoryGroupParamete
 		*out = new(string)
 		**out = **in
 	}
-	if in.ExternalID != nil {
-		in, out := &in.ExternalID, &out.ExternalID
-		*out = new(string)
+	if in.DetachAllUsers != nil {
+		in, out := &in.DetachAllUsers, &out.DetachAllUsers
+		*out = new(bool)
 		**out = **in
 	}
-	if in.IncludeUsers != nil {
-		in, out := &in.IncludeUsers, &out.IncludeUsers
+	if in.ExternalID != nil {
+		in, out := &in.ExternalID, &out.ExternalID
 		*out = new(string)
 		**out = **in
 	}

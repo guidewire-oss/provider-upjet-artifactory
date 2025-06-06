@@ -3,19 +3,19 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.14.0
-  name: localnpmrepositories.repository.upbound.io
+    controller-gen.kubebuilder.io/version: v0.16.5
+  name: localmavenrepositories.repository.jfrogartifactory.upbound.io
 spec:
-  group: repository.upbound.io
+  group: repository.jfrogartifactory.upbound.io
   names:
     categories:
     - crossplane
     - managed
     - artifactory
-    kind: LocalNpmRepository
-    listKind: LocalNpmRepositoryList
-    plural: localnpmrepositories
-    singular: localnpmrepository
+    kind: LocalMavenRepository
+    listKind: LocalMavenRepositoryList
+    plural: localmavenrepositories
+    singular: localmavenrepository
   scope: Cluster
   versions:
   - additionalPrinterColumns:
@@ -34,7 +34,7 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: LocalNpmRepository is the Schema for the LocalNpmRepositorys
+        description: LocalMavenRepository is the Schema for the LocalMavenRepositorys
           API. <no value>
         properties:
           apiVersion:
@@ -55,7 +55,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: LocalNpmRepositorySpec defines the desired state of LocalNpmRepository
+            description: LocalMavenRepositorySpec defines the desired state of LocalMavenRepository
             properties:
               deletionPolicy:
                 default: Delete
@@ -88,6 +88,14 @@ spec:
                       CloudFront. Available in Enterprise+ and Edge licenses only.
                       Default value is 'false'
                     type: boolean
+                  checksumPolicyType:
+                    description: 'Checksum policy determines how Artifactory behaves
+                      when a client checksum for a deployed resource is missing or
+                      conflicts with the locally calculated checksum (bad checksum).
+                      Options are: "client-checksums", or "server-generated-checksums".
+                      Default: "client-checksums"\n For more details, please refer
+                      to Checksum Policy - https://www.jfrog.com/confluence/display/JFROG/Local+Repositories#LocalRepositories-ChecksumPolicy'
+                    type: string
                   description:
                     description: Public description.
                     type: string
@@ -102,12 +110,31 @@ spec:
                       artifact requests, in the form of `x/y/**/z/*`.By default no
                       artifacts are excluded.
                     type: string
+                  handleReleases:
+                    description: If set, Artifactory allows you to deploy release
+                      artifacts into this repository.
+                    type: boolean
+                  handleSnapshots:
+                    description: If set, Artifactory allows you to deploy snapshot
+                      artifacts into this repository.
+                    type: boolean
                   includesPattern:
                     description: List of comma-separated artifact patterns to include
                       when evaluating artifact requests in the form of `x/y/**/z/*`.
                       When used, only artifacts matching one of the include patterns
                       are served. By default, all artifacts are included (`**/*`).
                     type: string
+                  key:
+                    description: A mandatory identifier for the repository that must
+                      be unique. Must be 1 - 64 alphanumeric and hyphen characters.
+                      It cannot contain spaces or special characters.
+                    type: string
+                  maxUniqueSnapshots:
+                    description: |-
+                      The maximum number of unique snapshots of a single artifact to store.
+                      Once the number of snapshots exceeds this setting, older versions are removed.
+                      A value of 0 (default) indicates there is no limit, and unique snapshots are not cleaned up.
+                    type: number
                   notes:
                     description: Internal description.
                     type: string
@@ -141,6 +168,20 @@ spec:
                   repoLayoutRef:
                     description: Repository layout key for the local repository
                     type: string
+                  snapshotVersionBehavior:
+                    description: |-
+                      Specifies the naming convention for Maven SNAPSHOT versions.
+                      The options are -
+                      unique: Version number is based on a time-stamp (default)
+                      non-unique: Version number uses a self-overriding naming pattern of artifactId-version-SNAPSHOT.type
+                      deployer: Respects the settings in the Maven client that is deploying the artifact.
+                    type: string
+                  suppressPomConsistencyChecks:
+                    description: |-
+                      By default, Artifactory keeps your repositories healthy by refusing POMs with incorrect coordinates (path).
+                      If the groupId:artifactId:version information inside the POM does not match the deployed path, Artifactory rejects the deployment with a "409 Conflict" error.
+                      You can disable this behavior by setting the Suppress POM Consistency Checks checkbox.
+                    type: boolean
                   xrayIndex:
                     description: Enable Indexing In Xray. Repository will be indexed
                       with the default retention period. You will be able to change
@@ -175,6 +216,14 @@ spec:
                       CloudFront. Available in Enterprise+ and Edge licenses only.
                       Default value is 'false'
                     type: boolean
+                  checksumPolicyType:
+                    description: 'Checksum policy determines how Artifactory behaves
+                      when a client checksum for a deployed resource is missing or
+                      conflicts with the locally calculated checksum (bad checksum).
+                      Options are: "client-checksums", or "server-generated-checksums".
+                      Default: "client-checksums"\n For more details, please refer
+                      to Checksum Policy - https://www.jfrog.com/confluence/display/JFROG/Local+Repositories#LocalRepositories-ChecksumPolicy'
+                    type: string
                   description:
                     description: Public description.
                     type: string
@@ -189,12 +238,31 @@ spec:
                       artifact requests, in the form of `x/y/**/z/*`.By default no
                       artifacts are excluded.
                     type: string
+                  handleReleases:
+                    description: If set, Artifactory allows you to deploy release
+                      artifacts into this repository.
+                    type: boolean
+                  handleSnapshots:
+                    description: If set, Artifactory allows you to deploy snapshot
+                      artifacts into this repository.
+                    type: boolean
                   includesPattern:
                     description: List of comma-separated artifact patterns to include
                       when evaluating artifact requests in the form of `x/y/**/z/*`.
                       When used, only artifacts matching one of the include patterns
                       are served. By default, all artifacts are included (`**/*`).
                     type: string
+                  key:
+                    description: A mandatory identifier for the repository that must
+                      be unique. Must be 1 - 64 alphanumeric and hyphen characters.
+                      It cannot contain spaces or special characters.
+                    type: string
+                  maxUniqueSnapshots:
+                    description: |-
+                      The maximum number of unique snapshots of a single artifact to store.
+                      Once the number of snapshots exceeds this setting, older versions are removed.
+                      A value of 0 (default) indicates there is no limit, and unique snapshots are not cleaned up.
+                    type: number
                   notes:
                     description: Internal description.
                     type: string
@@ -228,6 +296,20 @@ spec:
                   repoLayoutRef:
                     description: Repository layout key for the local repository
                     type: string
+                  snapshotVersionBehavior:
+                    description: |-
+                      Specifies the naming convention for Maven SNAPSHOT versions.
+                      The options are -
+                      unique: Version number is based on a time-stamp (default)
+                      non-unique: Version number uses a self-overriding naming pattern of artifactId-version-SNAPSHOT.type
+                      deployer: Respects the settings in the Maven client that is deploying the artifact.
+                    type: string
+                  suppressPomConsistencyChecks:
+                    description: |-
+                      By default, Artifactory keeps your repositories healthy by refusing POMs with incorrect coordinates (path).
+                      If the groupId:artifactId:version information inside the POM does not match the deployed path, Artifactory rejects the deployment with a "409 Conflict" error.
+                      You can disable this behavior by setting the Suppress POM Consistency Checks checkbox.
+                    type: boolean
                   xrayIndex:
                     description: Enable Indexing In Xray. Repository will be indexed
                       with the default retention period. You will be able to change
@@ -401,8 +483,14 @@ spec:
             required:
             - forProvider
             type: object
+            x-kubernetes-validations:
+            - message: spec.forProvider.key is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.key)
+                || (has(self.initProvider) && has(self.initProvider.key))'
           status:
-            description: LocalNpmRepositoryStatus defines the observed state of LocalNpmRepository.
+            description: LocalMavenRepositoryStatus defines the observed state of
+              LocalMavenRepository.
             properties:
               atProvider:
                 properties:
@@ -421,6 +509,14 @@ spec:
                       CloudFront. Available in Enterprise+ and Edge licenses only.
                       Default value is 'false'
                     type: boolean
+                  checksumPolicyType:
+                    description: 'Checksum policy determines how Artifactory behaves
+                      when a client checksum for a deployed resource is missing or
+                      conflicts with the locally calculated checksum (bad checksum).
+                      Options are: "client-checksums", or "server-generated-checksums".
+                      Default: "client-checksums"\n For more details, please refer
+                      to Checksum Policy - https://www.jfrog.com/confluence/display/JFROG/Local+Repositories#LocalRepositories-ChecksumPolicy'
+                    type: string
                   description:
                     description: Public description.
                     type: string
@@ -435,6 +531,14 @@ spec:
                       artifact requests, in the form of `x/y/**/z/*`.By default no
                       artifacts are excluded.
                     type: string
+                  handleReleases:
+                    description: If set, Artifactory allows you to deploy release
+                      artifacts into this repository.
+                    type: boolean
+                  handleSnapshots:
+                    description: If set, Artifactory allows you to deploy snapshot
+                      artifacts into this repository.
+                    type: boolean
                   id:
                     type: string
                   includesPattern:
@@ -443,6 +547,17 @@ spec:
                       When used, only artifacts matching one of the include patterns
                       are served. By default, all artifacts are included (`**/*`).
                     type: string
+                  key:
+                    description: A mandatory identifier for the repository that must
+                      be unique. Must be 1 - 64 alphanumeric and hyphen characters.
+                      It cannot contain spaces or special characters.
+                    type: string
+                  maxUniqueSnapshots:
+                    description: |-
+                      The maximum number of unique snapshots of a single artifact to store.
+                      Once the number of snapshots exceeds this setting, older versions are removed.
+                      A value of 0 (default) indicates there is no limit, and unique snapshots are not cleaned up.
+                    type: number
                   notes:
                     description: Internal description.
                     type: string
@@ -478,6 +593,20 @@ spec:
                   repoLayoutRef:
                     description: Repository layout key for the local repository
                     type: string
+                  snapshotVersionBehavior:
+                    description: |-
+                      Specifies the naming convention for Maven SNAPSHOT versions.
+                      The options are -
+                      unique: Version number is based on a time-stamp (default)
+                      non-unique: Version number uses a self-overriding naming pattern of artifactId-version-SNAPSHOT.type
+                      deployer: Respects the settings in the Maven client that is deploying the artifact.
+                    type: string
+                  suppressPomConsistencyChecks:
+                    description: |-
+                      By default, Artifactory keeps your repositories healthy by refusing POMs with incorrect coordinates (path).
+                      If the groupId:artifactId:version information inside the POM does not match the deployed path, Artifactory rejects the deployment with a "409 Conflict" error.
+                      You can disable this behavior by setting the Suppress POM Consistency Checks checkbox.
+                    type: boolean
                   xrayIndex:
                     description: Enable Indexing In Xray. Repository will be indexed
                       with the default retention period. You will be able to change

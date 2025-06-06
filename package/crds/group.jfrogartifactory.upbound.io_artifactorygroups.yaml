@@ -3,19 +3,19 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.14.0
-  name: virtualmavenrepositories.repository.upbound.io
+    controller-gen.kubebuilder.io/version: v0.16.5
+  name: artifactorygroups.group.jfrogartifactory.upbound.io
 spec:
-  group: repository.upbound.io
+  group: group.jfrogartifactory.upbound.io
   names:
     categories:
     - crossplane
     - managed
     - artifactory
-    kind: VirtualMavenRepository
-    listKind: VirtualMavenRepositoryList
-    plural: virtualmavenrepositories
-    singular: virtualmavenrepository
+    kind: ArtifactoryGroup
+    listKind: ArtifactoryGroupList
+    plural: artifactorygroups
+    singular: artifactorygroup
   scope: Cluster
   versions:
   - additionalPrinterColumns:
@@ -34,8 +34,8 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: VirtualMavenRepository is the Schema for the VirtualMavenRepositorys
-          API. <no value>
+        description: ArtifactoryGroup is the Schema for the ArtifactoryGroups API.
+          <no value>
         properties:
           apiVersion:
             description: |-
@@ -55,7 +55,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: VirtualMavenRepositorySpec defines the desired state of VirtualMavenRepository
+            description: ArtifactoryGroupSpec defines the desired state of ArtifactoryGroup
             properties:
               deletionPolicy:
                 default: Delete
@@ -73,72 +73,50 @@ spec:
                 type: string
               forProvider:
                 properties:
-                  artifactoryRequestsCanRetrieveRemoteArtifacts:
-                    description: Whether the virtual repository should search through
-                      remote repositories when trying to resolve an artifact requested
-                      by another Artifactory instance.
+                  adminPrivileges:
+                    description: Any users added to this group will automatically
+                      be assigned with admin privileges in the system.
                     type: boolean
-                  defaultDeploymentRepo:
-                    description: Default repository to deploy artifacts.
-                    type: string
+                  autoJoin:
+                    description: When this parameter is set, any new users defined
+                      in the system are automatically assigned to this group.
+                    type: boolean
                   description:
-                    description: Public description.
+                    description: A description for the group.
                     type: string
-                  excludesPattern:
-                    description: List of artifact patterns to exclude when evaluating
-                      artifact requests, in the form of `x/y/**/z/*`.By default no
-                      artifacts are excluded.
-                    type: string
-                  forceMavenAuthentication:
-                    description: User authentication is required when accessing the
-                      repository. An anonymous request will display an HTTP 401 error.
-                      This is also enforced when aggregated repositories support anonymous
-                      requests.
+                  detachAllUsers:
+                    description: When this is set to `true`, an empty or missing usernames
+                      array will detach all users from the group.
                     type: boolean
-                  includesPattern:
-                    description: List of comma-separated artifact patterns to include
-                      when evaluating artifact requests in the form of `x/y/**/z/*`.
-                      When used, only artifacts matching one of the include patterns
-                      are served. By default, all artifacts are included (`**/*`).
+                  externalId:
+                    description: New external group ID used to configure the corresponding
+                      group in Azure AD.
                     type: string
-                  keyPair:
-                    description: The keypair used to sign artifacts
+                  policyManager:
+                    description: When this override is set, User in the group can
+                      set Xray security and compliance policies. Default value is
+                      `false`.
+                    type: boolean
+                  realm:
+                    description: The realm for the group.
                     type: string
-                  notes:
-                    description: Internal description.
+                  realmAttributes:
+                    description: The realm attributes for the group.
                     type: string
-                  pomRepositoryReferencesCleanupPolicy:
-                    description: |-
-                      (1: discard_active_reference) Discard Active References - Removes repository elements that are declared directly under project or under a profile in the same POM that is activeByDefault.
-                      (2: discard_any_reference) Discard Any References - Removes all repository elements regardless of whether they are included in an active profile or not.
-                      (3: nothing) Nothing - Does not remove any repository elements declared in the POM.
-                    type: string
-                  projectEnvironments:
-                    description: 'Project environment for assigning this repository
-                      to. Allow values: "DEV", "PROD", or one of custom environment.
-                      Before Artifactory 7.53.1, up to 2 values ("DEV" and "PROD")
-                      are allowed. From 7.53.1 onward, only one value is allowed.
-                      The attribute should only be used if the repository is already
-                      assigned to the existing project.'
+                  reportsManager:
+                    description: When this override is set, User in the group can
+                      manage Xray Reports on any resource type. Default value is `false`.
+                    type: boolean
+                  usersNames:
+                    description: List of users assigned to the group.
                     items:
                       type: string
                     type: array
                     x-kubernetes-list-type: set
-                  projectKey:
-                    description: Project key for assigning this repository to. Must
-                      be 2 - 32 lowercase alphanumeric and hyphen characters. When
-                      assigning repository to a project, repository key must be prefixed
-                      with project key, separated by a dash.
-                    type: string
-                  repoLayoutRef:
-                    description: Repository layout key for the virtual repository
-                    type: string
-                  repositories:
-                    description: The effective list of actual repositories included
-                      in this virtual repository.
-                    items:
-                      type: string
-                    type: array
+                  watchManager:
+                    description: When this override is set, User in the group can
+                      manage Xray Watches on any resource type. Default value is `false`.
+                    type: boolean
                 type: object
               initProvider:
                 description: |-
@@ -153,72 +131,50 @@ spec:
                   for example because of an external controller is managing them, like an
                   autoscaler.
                 properties:
-                  artifactoryRequestsCanRetrieveRemoteArtifacts:
-                    description: Whether the virtual repository should search through
-                      remote repositories when trying to resolve an artifact requested
-                      by another Artifactory instance.
+                  adminPrivileges:
+                    description: Any users added to this group will automatically
+                      be assigned with admin privileges in the system.
                     type: boolean
-                  defaultDeploymentRepo:
-                    description: Default repository to deploy artifacts.
-                    type: string
+                  autoJoin:
+                    description: When this parameter is set, any new users defined
+                      in the system are automatically assigned to this group.
+                    type: boolean
                   description:
-                    description: Public description.
+                    description: A description for the group.
                     type: string
-                  excludesPattern:
-                    description: List of artifact patterns to exclude when evaluating
-                      artifact requests, in the form of `x/y/**/z/*`.By default no
-                      artifacts are excluded.
-                    type: string
-                  forceMavenAuthentication:
-                    description: User authentication is required when accessing the
-                      repository. An anonymous request will display an HTTP 401 error.
-                      This is also enforced when aggregated repositories support anonymous
-                      requests.
+                  detachAllUsers:
+                    description: When this is set to `true`, an empty or missing usernames
+                      array will detach all users from the group.
                     type: boolean
-                  includesPattern:
-                    description: List of comma-separated artifact patterns to include
-                      when evaluating artifact requests in the form of `x/y/**/z/*`.
-                      When used, only artifacts matching one of the include patterns
-                      are served. By default, all artifacts are included (`**/*`).
+                  externalId:
+                    description: New external group ID used to configure the corresponding
+                      group in Azure AD.
                     type: string
-                  keyPair:
-                    description: The keypair used to sign artifacts
+                  policyManager:
+                    description: When this override is set, User in the group can
+                      set Xray security and compliance policies. Default value is
+                      `false`.
+                    type: boolean
+                  realm:
+                    description: The realm for the group.
                     type: string
-                  notes:
-                    description: Internal description.
+                  realmAttributes:
+                    description: The realm attributes for the group.
                     type: string
-                  pomRepositoryReferencesCleanupPolicy:
-                    description: |-
-                      (1: discard_active_reference) Discard Active References - Removes repository elements that are declared directly under project or under a profile in the same POM that is activeByDefault.
-                      (2: discard_any_reference) Discard Any References - Removes all repository elements regardless of whether they are included in an active profile or not.
-                      (3: nothing) Nothing - Does not remove any repository elements declared in the POM.
-                    type: string
-                  projectEnvironments:
-                    description: 'Project environment for assigning this repository
-                      to. Allow values: "DEV", "PROD", or one of custom environment.
-                      Before Artifactory 7.53.1, up to 2 values ("DEV" and "PROD")
-                      are allowed. From 7.53.1 onward, only one value is allowed.
-                      The attribute should only be used if the repository is already
-                      assigned to the existing project.'
+                  reportsManager:
+                    description: When this override is set, User in the group can
+                      manage Xray Reports on any resource type. Default value is `false`.
+                    type: boolean
+                  usersNames:
+                    description: List of users assigned to the group.
                     items:
                       type: string
                     type: array
                     x-kubernetes-list-type: set
-                  projectKey:
-                    description: Project key for assigning this repository to. Must
-                      be 2 - 32 lowercase alphanumeric and hyphen characters. When
-                      assigning repository to a project, repository key must be prefixed
-                      with project key, separated by a dash.
-                    type: string
-                  repoLayoutRef:
-                    description: Repository layout key for the virtual repository
-                    type: string
-                  repositories:
-                    description: The effective list of actual repositories included
-                      in this virtual repository.
-                    items:
-                      type: string
-                    type: array
+                  watchManager:
+                    description: When this override is set, User in the group can
+                      manage Xray Watches on any resource type. Default value is `false`.
+                    type: boolean
                 type: object
               managementPolicies:
                 default:
@@ -388,81 +344,56 @@ spec:
             - forProvider
             type: object
           status:
-            description: VirtualMavenRepositoryStatus defines the observed state of
-              VirtualMavenRepository.
+            description: ArtifactoryGroupStatus defines the observed state of ArtifactoryGroup.
             properties:
               atProvider:
                 properties:
-                  artifactoryRequestsCanRetrieveRemoteArtifacts:
-                    description: Whether the virtual repository should search through
-                      remote repositories when trying to resolve an artifact requested
-                      by another Artifactory instance.
+                  adminPrivileges:
+                    description: Any users added to this group will automatically
+                      be assigned with admin privileges in the system.
                     type: boolean
-                  defaultDeploymentRepo:
-                    description: Default repository to deploy artifacts.
-                    type: string
+                  autoJoin:
+                    description: When this parameter is set, any new users defined
+                      in the system are automatically assigned to this group.
+                    type: boolean
                   description:
-                    description: Public description.
+                    description: A description for the group.
                     type: string
-                  excludesPattern:
-                    description: List of artifact patterns to exclude when evaluating
-                      artifact requests, in the form of `x/y/**/z/*`.By default no
-                      artifacts are excluded.
-                    type: string
-                  forceMavenAuthentication:
-                    description: User authentication is required when accessing the
-                      repository. An anonymous request will display an HTTP 401 error.
-                      This is also enforced when aggregated repositories support anonymous
-                      requests.
+                  detachAllUsers:
+                    description: When this is set to `true`, an empty or missing usernames
+                      array will detach all users from the group.
                     type: boolean
+                  externalId:
+                    description: New external group ID used to configure the corresponding
+                      group in Azure AD.
+                    type: string
                   id:
                     type: string
-                  includesPattern:
-                    description: List of comma-separated artifact patterns to include
-                      when evaluating artifact requests in the form of `x/y/**/z/*`.
-                      When used, only artifacts matching one of the include patterns
-                      are served. By default, all artifacts are included (`**/*`).
+                  policyManager:
+                    description: When this override is set, User in the group can
+                      set Xray security and compliance policies. Default value is
+                      `false`.
+                    type: boolean
+                  realm:
+                    description: The realm for the group.
                     type: string
-                  keyPair:
-                    description: The keypair used to sign artifacts
+                  realmAttributes:
+                    description: The realm attributes for the group.
                     type: string
-                  notes:
-                    description: Internal description.
-                    type: string
-                  packageType:
-                    type: string
-                  pomRepositoryReferencesCleanupPolicy:
-                    description: |-
-                      (1: discard_active_reference) Discard Active References - Removes repository elements that are declared directly under project or under a profile in the same POM that is activeByDefault.
-                      (2: discard_any_reference) Discard Any References - Removes all repository elements regardless of whether they are included in an active profile or not.
-                      (3: nothing) Nothing - Does not remove any repository elements declared in the POM.
-                    type: string
-                  projectEnvironments:
-                    description: 'Project environment for assigning this repository
-                      to. Allow values: "DEV", "PROD", or one of custom environment.
-                      Before Artifactory 7.53.1, up to 2 values ("DEV" and "PROD")
-                      are allowed. From 7.53.1 onward, only one value is allowed.
-                      The attribute should only be used if the repository is already
-                      assigned to the existing project.'
+                  reportsManager:
+                    description: When this override is set, User in the group can
+                      manage Xray Reports on any resource type. Default value is `false`.
+                    type: boolean
+                  usersNames:
+                    description: List of users assigned to the group.
                     items:
                       type: string
                     type: array
                     x-kubernetes-list-type: set
-                  projectKey:
-                    description: Project key for assigning this repository to. Must
-                      be 2 - 32 lowercase alphanumeric and hyphen characters. When
-                      assigning repository to a project, repository key must be prefixed
-                      with project key, separated by a dash.
-                    type: string
-                  repoLayoutRef:
-                    description: Repository layout key for the virtual repository
-                    type: string
-                  repositories:
-                    description: The effective list of actual repositories included
-                      in this virtual repository.
-                    items:
-                      type: string
-                    type: array
+                  watchManager:
+                    description: When this override is set, User in the group can
+                      manage Xray Watches on any resource type. Default value is `false`.
+                    type: boolean
                 type: object
               conditions:
                 description: Conditions of the resource.
