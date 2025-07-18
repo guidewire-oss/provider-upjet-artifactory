@@ -1,0 +1,19 @@
+---
+apiVersion: meta.pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-jfrogartifactory
+  annotations:
+    meta.crossplane.io/maintainer: Guidewire Software, Inc. 
+    meta.crossplane.io/source: github.com/guidewire-oss/provider-upjet-artifactory
+    meta.crossplane.io/license: Apache-2.0
+    meta.crossplane.io/description: |
+      The JFrog Artifactory Crossplane provider adds support for
+      managing Artifactory resources in Kubernetes.
+
+    meta.crossplane.io/readme: |
+      `provider-jfrogartifactory` is the Crossplane infrastructure provider for [JFrog Artifactory](https://jfrog.com/artifactory/).
+
+      If you encounter an issue please create an issue in the 
+      [guidewire-oss/provider-upjet-artifactory](https://github.com/guidewire-oss/provider-upjet-artifactory)
+      repo.
