@@ -1,0 +1,44 @@
+name: Manual Dependency Update
+
+on:
+  workflow_dispatch:
+    inputs:
+      update_type:
+        description: 'Type of update'
+        required: true
+        default: 'go'
+        type: choice
+        options:
+          - go
+          - all
+
+jobs:
+  update-go-deps:
+    if: ${{ github.event.inputs.update_type == 'go' || github.event.inputs.update_type == 'all' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+      
+      - name: Update Go dependencies
+        run: |
+          go get -u ./...
+          go mod tidy
+      
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore: update go dependencies'
+          title: 'chore: update go dependencies'
+          body: |
+            Updates Go module dependencies to their latest versions.
+            
+            - Run `go get -u ./...`
+            - Run `go mod tidy`
+          branch: update-go-dependencies
+          delete-branch: true
