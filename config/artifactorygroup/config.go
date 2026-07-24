@@ -1,6 +1,6 @@
 package artifactorygroup
 
-import "github.com/crossplane/upjet/pkg/config"
+import "github.com/crossplane/upjet/v2/pkg/config"
 
 // Configure the "artifactory_*" resources.
 func Configure(p *config.Provider) {

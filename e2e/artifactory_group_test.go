@@ -3,7 +3,7 @@ package e2e_test
 import (
 	"fmt"
 
-	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
+	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
 	rtServices "github.com/jfrog/jfrog-client-go/artifactory/services"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -13,8 +13,8 @@ import (
 	"k8s.io/utils/ptr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	v1alpha1group "github.com/guidewire-oss/provider-jfrogartifactory/apis/jfrogartifactory/v1alpha1"
-	v1alpha1user "github.com/guidewire-oss/provider-jfrogartifactory/apis/jfrogartifactory/v1alpha1"
+	v1alpha1group "github.com/guidewire-oss/provider-jfrogartifactory/apis/cluster/jfrogartifactory/v1alpha1"
+	v1alpha1user "github.com/guidewire-oss/provider-jfrogartifactory/apis/cluster/jfrogartifactory/v1alpha1"
 )
 
 var _ = Describe("Artifactory Group", func() {

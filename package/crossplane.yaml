@@ -14,6 +14,12 @@ metadata:
     meta.crossplane.io/readme: |
       `provider-jfrogartifactory` is the Crossplane infrastructure provider for [JFrog Artifactory](https://jfrog.com/artifactory/).
 
-      If you encounter an issue please create an issue in the 
+      If you encounter an issue please create an issue in the
       [guidewire-oss/provider-upjet-artifactory](https://github.com/guidewire-oss/provider-upjet-artifactory)
       repo.
+spec:
+  # SafeStart lets the provider start before its CRDs are installed and begin
+  # reconciling once they appear (Crossplane v2 / Upjet v2). main.go gates the
+  # namespaced + cluster controller setup on CRD availability.
+  capabilities:
+  - SafeStart
