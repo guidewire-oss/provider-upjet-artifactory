@@ -132,9 +132,28 @@ pull-docs:
 	fi
 	@git -C "$(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)" sparse-checkout set "$(TERRAFORM_DOCS_PATH)"
 
-generate.init: $(TERRAFORM_PROVIDER_SCHEMA) pull-docs
+generate.init: $(TERRAFORM_PROVIDER_SCHEMA) pull-docs clean.generated
 
-.PHONY: $(TERRAFORM_PROVIDER_SCHEMA) pull-docs check-terraform-version
+# Remove previously generated files before `go generate` runs.
+#
+# These deletions used to be //go:generate directives in apis/generate.go.
+# `go generate ./...` enumerates every package and its file list up front, so
+# deleting files from one package's directives leaves stale entries in the list
+# for the other packages; the run then fails with "open <old file>: no such file
+# or directory" as soon as a generated file changes name (a renamed Kind, a
+# changed API group, a narrowed include list). Cleaning here -- generate.init
+# runs as a separate make invocation before generate.run -- keeps go generate's
+# enumeration consistent with what is on disk.
+clean.generated:
+	@$(INFO) removing previously generated files
+	@find apis -iname 'zz_*' -delete
+	@find apis -type d -empty -delete
+	@find internal/controller -iname 'zz_*' -delete
+	@find internal/controller -type d -empty -delete
+	@rm -rf package/crds examples-generated
+	@$(OK) removing previously generated files
+
+.PHONY: $(TERRAFORM_PROVIDER_SCHEMA) pull-docs check-terraform-version clean.generated
 # ====================================================================================
 # Targets
 

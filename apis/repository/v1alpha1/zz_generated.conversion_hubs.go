@@ -7,7 +7,19 @@
 package v1alpha1
 
 // Hub marks this type as a conversion hub.
-func (tr *GenericRepository) Hub() {}
+func (tr *LocalDockerRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *LocalGenericRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *LocalGradleRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *LocalHelmOCIRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *LocalHelmRepository) Hub() {}
 
 // Hub marks this type as a conversion hub.
 func (tr *LocalMavenRepository) Hub() {}
@@ -16,13 +28,67 @@ func (tr *LocalMavenRepository) Hub() {}
 func (tr *LocalNpmRepository) Hub() {}
 
 // Hub marks this type as a conversion hub.
+func (tr *LocalPyPIRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *LocalTerraformBackendRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *LocalTerraformModuleRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *LocalTerraformProviderRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *RemoteDockerRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *RemoteGenericRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *RemoteGradleRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *RemoteHelmOCIRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *RemoteHelmRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
 func (tr *RemoteMavenRepository) Hub() {}
 
 // Hub marks this type as a conversion hub.
 func (tr *RemoteNpmRepository) Hub() {}
 
 // Hub marks this type as a conversion hub.
+func (tr *RemotePyPIRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *RemoteTerraformRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *VirtualDockerRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *VirtualGenericRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *VirtualGradleRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *VirtualHelmOCIRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *VirtualHelmRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
 func (tr *VirtualMavenRepository) Hub() {}
 
 // Hub marks this type as a conversion hub.
 func (tr *VirtualNpmRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *VirtualPyPIRepository) Hub() {}
+
+// Hub marks this type as a conversion hub.
+func (tr *VirtualTerraformRepository) Hub() {}

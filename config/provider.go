@@ -11,13 +11,7 @@ import (
 	"github.com/guidewire-oss/provider-jfrogartifactory/config/artifactorygroup"
 	"github.com/guidewire-oss/provider-jfrogartifactory/config/artifactorypermissiontarget"
 	"github.com/guidewire-oss/provider-jfrogartifactory/config/artifactoryuser"
-	"github.com/guidewire-oss/provider-jfrogartifactory/config/localmavenrepository"
-	"github.com/guidewire-oss/provider-jfrogartifactory/config/localnpmrepository"
-	"github.com/guidewire-oss/provider-jfrogartifactory/config/remotemavenrepository"
-	"github.com/guidewire-oss/provider-jfrogartifactory/config/remotenpmrepository"
 	"github.com/guidewire-oss/provider-jfrogartifactory/config/repository"
-	"github.com/guidewire-oss/provider-jfrogartifactory/config/virtualmavenrepository"
-	"github.com/guidewire-oss/provider-jfrogartifactory/config/virtualnpmrepository"
 
 	ujconfig "github.com/crossplane/upjet/v2/pkg/config"
 )
@@ -38,12 +32,6 @@ var providerMetadata string
 // behaviour for each resource.
 var resourceConfigurators = []func(provider *ujconfig.Provider){
 	repository.Configure,
-	localnpmrepository.Configure,
-	remotenpmrepository.Configure,
-	virtualnpmrepository.Configure,
-	localmavenrepository.Configure,
-	remotemavenrepository.Configure,
-	virtualmavenrepository.Configure,
 	artifactoryuser.Configure,
 	artifactorygroup.Configure,
 	artifactorypermissiontarget.Configure,

@@ -8,15 +8,12 @@ Copyright 2021 Upbound Inc.
 // NOTE: See the below link for details on what is happening here.
 // https://github.com/golang/go/wiki/Modules#how-can-i-track-tool-dependencies-for-a-module
 
-// Remove existing CRDs
-//go:generate rm -rf ../package/crds
-
-// Remove generated files
-//go:generate bash -c "find . -iname 'zz_*' ! -iname 'zz_generated.managed*.go' -delete"
-//go:generate bash -c "find . -type d -empty -delete"
-//go:generate bash -c "find ../internal/controller -iname 'zz_*' -delete"
-//go:generate bash -c "find ../internal/controller -type d -empty -delete"
-//go:generate rm -rf ../examples-generated
+// NOTE: removal of previously generated files (package/crds, examples-generated
+// and every zz_* file under apis/ and internal/controller/) is deliberately NOT
+// done here. It happens in the Makefile's clean.generated target, which runs
+// before `go generate` is invoked. Deleting from inside a //go:generate
+// directive corrupts go generate's up-front package/file enumeration and breaks
+// the run whenever a generated file changes name. See the Makefile for detail.
 
 //Removing the documentation process here
 // Run Upjet generator
