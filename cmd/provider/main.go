@@ -38,12 +38,10 @@ import (
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
-	apisCluster "github.com/guidewire-oss/provider-jfrogartifactory/apis/cluster"
-	apisNamespaced "github.com/guidewire-oss/provider-jfrogartifactory/apis/namespaced"
+	"github.com/guidewire-oss/provider-jfrogartifactory/apis"
 	"github.com/guidewire-oss/provider-jfrogartifactory/config"
 	"github.com/guidewire-oss/provider-jfrogartifactory/internal/clients"
-	controllerCluster "github.com/guidewire-oss/provider-jfrogartifactory/internal/controller/cluster"
-	controllerNamespaced "github.com/guidewire-oss/provider-jfrogartifactory/internal/controller/namespaced"
+	"github.com/guidewire-oss/provider-jfrogartifactory/internal/controller"
 	"github.com/guidewire-oss/provider-jfrogartifactory/internal/features"
 	"github.com/guidewire-oss/provider-jfrogartifactory/internal/version"
 )
@@ -142,8 +140,7 @@ func main() {
 		RenewDeadline:              func() *time.Duration { d := 50 * time.Second; return &d }(),
 	})
 	kingpin.FatalIfError(err, "Cannot create controller manager")
-	kingpin.FatalIfError(apisCluster.AddToScheme(mgr.GetScheme()), "Cannot add cluster-scoped Artifactory APIs to scheme")
-	kingpin.FatalIfError(apisNamespaced.AddToScheme(mgr.GetScheme()), "Cannot add namespaced Artifactory APIs to scheme")
+	kingpin.FatalIfError(apis.AddToScheme(mgr.GetScheme()), "Cannot add Artifactory APIs to scheme")
 	kingpin.FatalIfError(apiextensionsv1.AddToScheme(mgr.GetScheme()), "Cannot add api-extensions APIs to scheme")
 	kingpin.FatalIfError(authv1.AddToScheme(mgr.GetScheme()), "Cannot add k8s authorization APIs to scheme")
 
@@ -153,7 +150,7 @@ func main() {
 	metrics.Registry.MustRegister(metricRecorder)
 	metrics.Registry.MustRegister(stateMetrics)
 
-	clusterOpts := tjcontroller.Options{
+	opts := tjcontroller.Options{
 		Options: xpcontroller.Options{
 			Logger:                  log,
 			GlobalRateLimiter:       ratelimiter.NewGlobal(*maxReconcileRate),
@@ -174,36 +171,13 @@ func main() {
 		StartWebhooks:  *certsDir != "",
 	}
 
-	namespacedOpts := tjcontroller.Options{
-		Options: xpcontroller.Options{
-			Logger:                  log,
-			GlobalRateLimiter:       ratelimiter.NewGlobal(*maxReconcileRate),
-			PollInterval:            *pollInterval,
-			MaxConcurrentReconciles: *maxReconcileRate,
-			Features:                &feature.Flags{},
-			MetricOptions: &xpcontroller.MetricOptions{
-				PollStateMetricInterval: *pollStateMetricInterval,
-				MRMetrics:               metricRecorder,
-				MRStateMetrics:          stateMetrics,
-			},
-		},
-		Provider: config.GetProviderNamespaced(),
-		// use the following WorkspaceStoreOption to enable the shared gRPC mode
-		// terraform.WithProviderRunner(terraform.NewSharedProvider(log, os.Getenv("TERRAFORM_NATIVE_PROVIDER_PATH"), terraform.WithNativeProviderArgs("-debuggable")))
-		WorkspaceStore: terraform.NewWorkspaceStore(log),
-		SetupFn:        clients.TerraformSetupBuilder(*terraformVersion, *providerSource, *providerVersion),
-		StartWebhooks:  *certsDir != "",
-	}
-
 	if *enableManagementPolicies {
-		clusterOpts.Features.Enable(features.EnableBetaManagementPolicies)
-		namespacedOpts.Features.Enable(features.EnableBetaManagementPolicies)
+		opts.Features.Enable(features.EnableBetaManagementPolicies)
 		log.Info("Beta feature enabled", "flag", features.EnableBetaManagementPolicies)
 	}
 
 	if *enableChangeLogs {
-		clusterOpts.Features.Enable(feature.EnableAlphaChangeLogs)
-		namespacedOpts.Features.Enable(feature.EnableAlphaChangeLogs)
+		opts.Features.Enable(feature.EnableAlphaChangeLogs)
 		log.Info("Alpha feature enabled", "flag", feature.EnableAlphaChangeLogs)
 
 		conn, err := grpc.NewClient("unix://"+*changelogsSocketPath, grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -214,27 +188,23 @@ func main() {
 				changelogsv1alpha1.NewChangeLogServiceClient(conn),
 				managed.WithProviderVersion(fmt.Sprintf("provider-jfrogartifactory:%s", version.Version))),
 		}
-		clusterOpts.ChangeLogOptions = &clo
-		namespacedOpts.ChangeLogOptions = &clo
+		opts.ChangeLogOptions = &clo
 	}
 
 	canSafeStart, err := canWatchCRD(context.TODO(), mgr)
 	kingpin.FatalIfError(err, "SafeStart precheck failed")
 	if canSafeStart {
 		crdGate := new(gate.Gate[schema.GroupVersionKind])
-		clusterOpts.Gate = crdGate
-		namespacedOpts.Gate = crdGate
+		opts.Gate = crdGate
 		kingpin.FatalIfError(customresourcesgate.Setup(mgr, xpcontroller.Options{
 			Logger:                  log,
 			Gate:                    crdGate,
 			MaxConcurrentReconciles: 1,
 		}), "Cannot setup CRD gate")
-		kingpin.FatalIfError(controllerCluster.SetupGated(mgr, clusterOpts), "Cannot setup cluster-scoped Artifactory controllers")
-		kingpin.FatalIfError(controllerNamespaced.SetupGated(mgr, namespacedOpts), "Cannot setup namespaced Artifactory controllers")
+		kingpin.FatalIfError(controller.SetupGated(mgr, opts), "Cannot setup Artifactory controllers")
 	} else {
 		log.Info("Provider has missing RBAC permissions for watching CRDs, controller SafeStart capability will be disabled")
-		kingpin.FatalIfError(controllerCluster.Setup(mgr, clusterOpts), "Cannot setup cluster-scoped Artifactory controllers")
-		kingpin.FatalIfError(controllerNamespaced.Setup(mgr, namespacedOpts), "Cannot setup namespaced Artifactory controllers")
+		kingpin.FatalIfError(controller.Setup(mgr, opts), "Cannot setup Artifactory controllers")
 	}
 
 	kingpin.FatalIfError(mgr.Start(ctrl.SetupSignalHandler()), "Cannot start controller manager")

@@ -6,6 +6,6 @@ import "github.com/crossplane/upjet/v2/pkg/config"
 func Configure(p *config.Provider) {
 	p.AddResourceConfigurator("artifactory_group", func(r *config.Resource) {
 		r.Kind = "ArtifactoryGroup"
-		r.ShortGroup = "jfrogartifactory"
+		r.ShortGroup = "group"
 	})
 }

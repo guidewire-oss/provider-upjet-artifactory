@@ -9,6 +9,7 @@ import (
 	_ "embed"
 
 	"github.com/guidewire-oss/provider-jfrogartifactory/config/artifactorygroup"
+	"github.com/guidewire-oss/provider-jfrogartifactory/config/artifactorypermissiontarget"
 	"github.com/guidewire-oss/provider-jfrogartifactory/config/artifactoryuser"
 	"github.com/guidewire-oss/provider-jfrogartifactory/config/localmavenrepository"
 	"github.com/guidewire-oss/provider-jfrogartifactory/config/localnpmrepository"
@@ -33,10 +34,8 @@ var providerSchema string
 var providerMetadata string
 
 // resourceConfigurators holds the per-resource custom config functions applied
-// to both the cluster-scoped and namespaced providers. These functions only set
-// scope-independent options (ShortGroup, external-name), so the same list is
-// reused by GetProvider and GetProviderNamespaced rather than duplicating the
-// config packages under config/cluster and config/namespaced.
+// by GetProvider. These functions set the API short group and external-name
+// behaviour for each resource.
 var resourceConfigurators = []func(provider *ujconfig.Provider){
 	repository.Configure,
 	localnpmrepository.Configure,
@@ -47,9 +46,12 @@ var resourceConfigurators = []func(provider *ujconfig.Provider){
 	virtualmavenrepository.Configure,
 	artifactoryuser.Configure,
 	artifactorygroup.Configure,
+	artifactorypermissiontarget.Configure,
 }
 
-// GetProvider returns the cluster-scoped provider configuration.
+// GetProvider returns the provider configuration. Only cluster-scoped
+// resources are generated; the provider does not serve namespaced
+// (Crossplane v2) APIs.
 func GetProvider() *ujconfig.Provider {
 	pc := ujconfig.NewProvider([]byte(providerSchema), resourcePrefix, modulePath, []byte(providerMetadata),
 		ujconfig.WithRootGroup("upbound.io"),
@@ -58,30 +60,6 @@ func GetProvider() *ujconfig.Provider {
 		ujconfig.WithDefaultResourceOptions(
 			ExternalNameConfigurations(),
 		))
-
-	for _, configure := range resourceConfigurators {
-		configure(pc)
-	}
-
-	pc.ConfigureResources()
-	return pc
-}
-
-// GetProviderNamespaced returns the namespaced provider configuration
-// (Crossplane v2 / Upjet v2). The root group gains the ".m" infix so the
-// generated API groups become e.g. jfrogartifactory.m.upbound.io, and generated
-// example manifests are namespaced.
-func GetProviderNamespaced() *ujconfig.Provider {
-	pc := ujconfig.NewProvider([]byte(providerSchema), resourcePrefix, modulePath, []byte(providerMetadata),
-		ujconfig.WithRootGroup("m.upbound.io"),
-		ujconfig.WithIncludeList(ExternalNameConfigured()),
-		ujconfig.WithFeaturesPackage("internal/features"),
-		ujconfig.WithDefaultResourceOptions(
-			ExternalNameConfigurations(),
-		),
-		ujconfig.WithExampleManifestConfiguration(ujconfig.ExampleManifestConfiguration{
-			ManagedResourceNamespace: "crossplane-system",
-		}))
 
 	for _, configure := range resourceConfigurators {
 		configure(pc)

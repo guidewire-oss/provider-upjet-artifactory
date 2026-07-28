@@ -12,7 +12,7 @@ TERRAFORM_VERSION_VALID := $(shell [ "$(TERRAFORM_VERSION)" = "`printf "$(TERRAF
 
 export TERRAFORM_PROVIDER_SOURCE ?= jfrog/artifactory
 export TERRAFORM_PROVIDER_REPO ?= https://github.com/jfrog/terraform-provider-artifactory
-export TERRAFORM_PROVIDER_VERSION ?= 12.4.1
+export TERRAFORM_PROVIDER_VERSION ?= 12.11.9
 export TERRAFORM_PROVIDER_DOWNLOAD_NAME ?= terraform-provider-artifactory
 export TERRAFORM_PROVIDER_DOWNLOAD_URL_PREFIX ?= $(TERRAFORM_PROVIDER_REPO)/releases/download/v$(TERRAFORM_PROVIDER_VERSION)
 export TERRAFORM_NATIVE_PROVIDER_BINARY ?= terraform-provider-artifactory_v${TERRAFORM_PROVIDER_VERSION}
@@ -121,7 +121,7 @@ $(TERRAFORM_PROVIDER_SCHEMA): $(TERRAFORM)
 	@$(INFO) generating provider schema for $(TERRAFORM_PROVIDER_SOURCE) $(TERRAFORM_PROVIDER_VERSION)
 	@mkdir -p $(TERRAFORM_WORKDIR)
 	@echo '{"terraform":[{"required_providers":[{"provider":{"source":"'"$(TERRAFORM_PROVIDER_SOURCE)"'","version":"'"$(TERRAFORM_PROVIDER_VERSION)"'"}}],"required_version":"'"$(TERRAFORM_VERSION)"'"}]}' > $(TERRAFORM_WORKDIR)/main.tf.json
-	@$(TERRAFORM) -chdir=$(TERRAFORM_WORKDIR) init > $(TERRAFORM_WORKDIR)/terraform-logs.txt 2>&1
+	@$(TERRAFORM) -chdir=$(TERRAFORM_WORKDIR) init -upgrade > $(TERRAFORM_WORKDIR)/terraform-logs.txt 2>&1
 	@$(TERRAFORM) -chdir=$(TERRAFORM_WORKDIR) providers schema -json=true > $(TERRAFORM_PROVIDER_SCHEMA) 2>> $(TERRAFORM_WORKDIR)/terraform-logs.txt
 	@$(OK) generating provider schema for $(TERRAFORM_PROVIDER_SOURCE) $(TERRAFORM_PROVIDER_VERSION)
 
@@ -220,7 +220,7 @@ crddiff: $(UPTEST)
 
 schema-version-diff:
 	@$(INFO) Checking for native state schema version changes
-	@export PREV_PROVIDER_VERSION=$$(git cat-file -p "${GITHUB_BASE_REF}:Makefile" | sed -nr 's/^export[[:space:]]*TERRAFORM_PROVIDER_VERSION[[:space:]]*:=[[:space:]]*(.+)/\1/p'); \
+	@export PREV_PROVIDER_VERSION=$$(git cat-file -p "${GITHUB_BASE_REF}:Makefile" | sed -nr 's/^export[[:space:]]*TERRAFORM_PROVIDER_VERSION[[:space:]]*\?=[[:space:]]*(.+)/\1/p'); \
 	echo Detected previous Terraform provider version: $${PREV_PROVIDER_VERSION}; \
 	echo Current Terraform provider version: $${TERRAFORM_PROVIDER_VERSION}; \
 	mkdir -p $(WORK_DIR); \
