@@ -1,5 +1,7 @@
 FROM alpine:3.20.3
-RUN apk --no-cache add ca-certificates bash
+RUN sed -i 's#^https://#http://#' /etc/apk/repositories \
+  && apk --no-cache add 'ca-certificates>=20261020-r0' bash \
+  && sed -i 's#^http://#https://#' /etc/apk/repositories
 
 ARG TARGETOS
 ARG TARGETARCH
