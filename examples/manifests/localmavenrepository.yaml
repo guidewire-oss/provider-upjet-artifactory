@@ -1,4 +1,4 @@
-apiVersion: jfrogartifactory.upbound.io/v1alpha1
+apiVersion: repository.upbound.io/v1alpha1
 kind: LocalMavenRepository
 metadata:
   name: localmavenrepository

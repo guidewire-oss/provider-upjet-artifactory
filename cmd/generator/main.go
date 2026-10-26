@@ -11,7 +11,7 @@ import (
 
 	"github.com/crossplane/upjet/pkg/pipeline"
 
-	"github.com/guidewire-oss/provider-jfrogartifactory/config"
+	"github.com/myorg/provider-jfrogartifactory/config"
 )
 
 func main() {

@@ -1,11 +1,11 @@
-apiVersion: jfrogartifactory.upbound.io/v1alpha1
+apiVersion: repository.upbound.io/v1alpha1
 kind: GenericRepository
 metadata:
   name: upjettestn
   annotations:
-    crossplane.io/external-name: "testgenericrepository"
+    crossplane.io/external-name: "ptest"
 spec:
   forProvider:
     description: "new"
   providerConfigRef:
-    name: my-artifactory-providerconfig
+    name: my-artifactory-providerconfig-read
